@@ -1,0 +1,542 @@
+---
+title: "Week 6: Graphical Data Exploration"
+subtitle:  "Session 1"
+date: Spring 2020
+output:
+  beamer_presentation:
+    pandoc_args: !expr paste0(here::here('css', 'beamer.yaml'))
+header-includes:
+  \input{`r here::here("css", "headers_tikz.tex")`}
+---
+
+
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+require(knitr)
+require(here)
+source(here("data", "environment_vars.R"))
+knitr::opts_chunk$set(root.dir = here(), error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
+i = 1
+set.seed(12345)
+nrow = 10
+dat = data.frame(length = runif(n = nrow), width = rexp(nrow), mass = rpois(nrow, 34))
+```
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which of the following should I use to read the file `mydata.csv` into a data frame called `dat` in R?
+
+\begin{enumerate}[A]
+\item \texttt{dat = read.csv(mydata.csv)}
+\item \texttt{read.csv(mydata.csv)}
+\item \texttt{dat = read.csv("mydata.csv")}
+\item \texttt{read.csv(mydata.csv, row.names = 1)}
+\item \texttt{read.csv("mydata.csv")}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which symbol do we use to represent the **sample mean**?
+
+\begin{enumerate}[A]
+\item $\sigma$
+\item $\bar s$
+\item $\bar{x}$
+\item $\mu$
+\item $\bar{m}$
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question  `r colorize(i, "blue")` `r i = i + 1`
+
+Which symbol do we use to represent the **population mean**?
+
+\begin{enumerate}[A]
+\item $\sigma$
+\item $\bar s$
+\item $\bar{x}$
+\item $\mu$
+\item $\bar{m}$
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which plot type is most appropriate to show the **distribution** of a set of measurements?
+
+\begin{enumerate}[A]
+\item scatterplot
+\item boxplot
+\item barchart
+\item histogram
+\item pie chart
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which of the following lines of code will make a scatterplot of the dataframe with length on the x-axis and mass on the y-axis?
+
+```{r, echo = FALSE}
+head(dat, 3)
+```
+
+\begin{enumerate}[A]
+\item \texttt{plot(dat\$mass, dat\$length)}
+\item \texttt{scatter(dat\$length, dat\$mass)}
+\item \texttt{boxplot(dat\$length, dat\$mass, type = "p")}
+\item \texttt{dotplot(dat\$length, dat\$mass)}
+\item \texttt{plot(dat\$length, dat\$mass)}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## Announcements
+
+Trying a different slide layout today
+
+
+
+
+## Graphical exploration
+
+Why use graphs?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=0cm] at (current page)
+{\includegraphics[height=2in]{`r here(slide_img_dir, "question_mark_green.png")`}};
+\end{tikzpicture}
+
+
+
+
+## Graphical exploration
+
+Two main reasons to use graphs:
+
+\begin{itemize}
+\item[1.]<1-> Inform how to analyze the data
+  \begin{itemize}
+  \item<2-> visualization
+  \item<2-> identify patterns
+  \item<2-> choose appropriate statistical test
+  \end{itemize}
+\item[2.]<1-> Presentation of the data
+  \begin{itemize}
+  \item<3-> summarize results
+  \item<3-> communicate results
+  \item<3-> publish results
+  \end{itemize}
+\end{itemize}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.8cm] at (current page)
+{\includegraphics[height=1in]{`r here(chris_img_dir, "graffs.png")`}};
+\end{tikzpicture}
+
+
+
+
+## Types of graphs - \emph{Exploratory}
+
+Exploratory graphs help understand the distribution of the data:
+
+- are the data normally distributed?
+    - Normality is an important assumption in statistics
+    - Normality determines how data are analyzed
+- what is the central tendency?
+- what is the spread?
+- general summaries of the data
+
+
+
+
+## Exploratory: \emph{Histogram}
+
+- width of bars are defined data bins or intervals
+- height of bars represent bin-specific frequencies
+
+```{r, eval=FALSE}
+hist(values)
+```
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm] at (current page.south)
+{\includegraphics[height=1.9in]{`r here(slide_img_dir, "randhist.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Exploratory: \emph{Histogram}
+
+- width of bars are defined data bins or intervals
+- height of bars represent bin-specific frequencies
+
+You can change the number and widths of the bins.
+
+```{r, eval = FALSE}
+hist(values)
+hist(values, breaks = seq(from = 10, to = 90, by = 2))
+```
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm] at (current page.south)
+{\includegraphics[height=1.9in]{`r here(slide_img_dir, "randhist2.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Exploratory: \emph{Histogram + Density Plot}
+
+A *density plot*: smoothed version of histogram
+
+- To overlay on a histogram, tell `hist()` to plot the *probability* version of the histogram:
+
+```{r, eval = FALSE}
+hist(values, probability = TRUE)
+lines(density(values))
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm] at (current page.south)
+{\includegraphics[height=1.9in]{`r here(slide_img_dir, "randhist3.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Exploratory: \emph{Box-whisker/Box plot}
+
+- distribution
+- outliers
+- symmetry or skewness
+
+```{r, eval = FALSE}
+boxplot(values)
+```
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5,-2.2) {\includegraphics[scale=0.75]{`r here(slide_img_dir, "bw.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Exploratory: \emph{Box-whisker/Box plot}
+
+- `R`: \texttt{boxplot(x)}  \texttt{\textcolor{gray}{\# x is data}}
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5,-2.7) {\includegraphics{`r here(slide_img_dir, "four.pdf")`}};
+\draw[thick,blue,<-] (6.5,-2.7) -- (7.5,-2.7) node[right, black] {Median ($Q_{2}$)};
+\draw[thick,blue,<-] (6.5,-2.1) -- (7.5,-2.1) node[right, black] {Upper quartile ($Q_{3}$)};
+\draw[thick,blue,<-] (6.5,-3.25) -- (7.5,-3.25) node[right, black] {Lower quartile ($Q_{1}$)};
+\draw[thick,blue,<->] (4.5,-3.25) -- (4.5,-2.1) node[midway, left, black, text width = 2.5cm] {Inter quartile range (IQR)};
+\draw[thick,blue,<-] (5,-0.38) -- (4,-0.38) node[left, black] {Maximum};
+\draw[thick,blue,<-] (5,-4.9) -- (4,-4.9) node[left, black] {Minimum};
+\end{tikzpicture}
+
+
+
+
+## Exploratory: \emph{Line graph}
+
+Line graph is a useful plot for running average or time series data
+
+```{r echo=T, eval=F}
+# "l": line, "p": points, "b": both
+plot(bear.run, type = "l") 
+lines(poop.run)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south) {\includegraphics[height=2.5in]{`r here(slide_img_dir, "runavg.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Differences
+
+To visualize differences between groups
+
+- box-whisker plots
+    - compares averages
+    - compares distribution
+- bar charts
+    - compares averages
+
+
+
+
+## Differences: \emph{Box-whisker plot}
+
+Compare salamander snout-vent lengths by three sexes:
+
+```{r eval=F}
+boxplot(mander$SVL ~ mander$Sex) #formula notation
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=3in]{`r here(slide_img_dir, "salbox.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Differences: \emph{Bar chart}
+
+Compare salamander snout-vent lengths by three sexes:
+
+```{r eval=F}
+bars <- tapply(mander$SVL,mander$Sex,mean) #create matrix
+barplot(bars)                              # plot it
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 3.1cm] at (current page.south)
+{\includegraphics[height=3in]{`r here(slide_img_dir, "salbar.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Differences: \emph{Bar chart} with associated error
+
+Compare salamander snout-vent lengths by three sexes:
+
+```{r eval=F}
+bars <- tapply(mander$SVL,mander$Sex,mean)
+barplot(bars)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 3.1cm] at (current page.south)
+{\includegraphics[height=3in]{`r here(slide_img_dir, "salbarse.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Links
+
+Two main approaches for relationships between data:
+
+\begin{itemize}
+\item[1.]<1-> Correlations
+\item[2.]<1-> Associations
+\end{itemize}
+
+
+
+
+## Links
+
+Two main approaches for graphing relationships between data:
+
+\vspace{0.06cm}
+
+\begin{itemize}
+\item[1.]<1-> Correlations
+  \begin{itemize}
+  \item<1-> two numeric variables
+    \begin{itemize}
+    \item<1-> \emph{de}pendent variable (of primary interest: y-axis)
+    \item<1-> \emph{inde}pendent variable (explanatory variable: x-axis)
+    \end{itemize}
+  \item<1-> how one variable is related to another
+  \item<1-> \emph{scatter plots}
+  \end{itemize}
+\end{itemize}
+
+
+
+
+## Links: \emph{Scatter plot}
+
+```{r eval=F}
+plot(x,y) # x and y are numeric vectors
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=2.5in]{`r here(slide_img_dir, "salscatter.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Links
+
+Two main approaches for graphing relationships between data:
+
+\begin{itemize}
+\item[2.]<1-> Associations
+  \begin{itemize}
+  \item<1-> categorical data
+  \item<1-> summarize categories
+    \begin{itemize}
+    \item<1-> counts
+    \item<1-> proportions
+    \item<1-> by rows and/or columns of a table
+  \end{itemize}
+  \item<1-> \emph{pie charts} for single categories
+  \item<1-> \emph{bar graphs} for several categories
+  \end{itemize}
+\end{itemize}
+
+
+
+
+## Links: \emph{Pie chart}
+
+```{r eval=F}
+pietab <- table(classData$Eyes)
+pie(pietab) # number of people with each eye color
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 3.5cm] at (current page.south)
+{\includegraphics[height=2in]{`r here(slide_img_dir, "classpie.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Links: \emph{Bar chart}
+
+```{r eval=F}
+bartab <- table(classData$Gender, classData$Eyes)
+#(number of each gender with each eye color)
+barplot(pietab, beside=TRUE)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3.5cm] at (current page.south)
+{\includegraphics[height=2.5in]{`r here(slide_img_dir, "classbar.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+**BUT** we must label them well or they are useless!
+
+- label both axes
+- provide a main title for your graph
+- avoid clutter
+- make it readable
+- *I expect graphs to be properly labeled from now on*!
+
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+\vspace{1cm}
+
+|Purpose | Graph Type|
+|--------|-----------|
+| Illustrating *distribution* | Histogram, Density plot |
+|                             | Box(-whisker) plot      |
+| Illustrating *differences*  | Bar chart, Box plot     |
+| Illustrating *correlations* | Scatter plot            |
+| Illustrating *associations* | Pie chart, Bar chart    |
+| Illustrating *sample size*  | Line plot of running avg|
+
+
+
+## Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Graphs alone don't give us the complete answer.  We need to **quantify** the relationships we see in our plots.
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- How can we **quantify** our evidence for relationships?
+    - Are differences between groups *significant*?
+    - Are differences between groups *meaningful*?
+    
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 4cm] at (current page.south)
+{\includegraphics[height = 7cm]{`r here("slides", "slide_images", "salbox.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- How can we **quantify** our evidence for relationships?
+    - Are associations between two variables *significant*?
+    - Are associations between two variables *meaningful*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 4cm] at (current page.south)
+{\includegraphics[height = 7cm]{`r here("slides", "slide_images", "salscatter.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Graphs alone don't give us the complete answer.  We need to **quantify** the relationships we see in our plots.
+
+- Statistics is the tool we use to formally answer these questions:
+    - Are differences *significant*?
+    - Are associations *significant*?
+    
+

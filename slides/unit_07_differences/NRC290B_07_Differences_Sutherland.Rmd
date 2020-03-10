@@ -1,0 +1,528 @@
+---
+title: "Tests for Differences"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2016
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \graphicspath{{"/Users/megmaclean/Box/Courses/NRC_290b_2019_Fall/Images/Diffs/"}}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+classoption: t
+---
+## Group evaluations
+
+\vfill
+
+1. *t-test*s are used to test for differences between what?
+
+2. When do you need to use the *U-test*?
+
+3. If sample $a$ has $n_a = 10$ samples, and sample $b$ has $n_b=10$ samples, then what is the degrees of freedom?
+
+4. Conducting a statistical test of differences using a t-test, you get a $p$-value or $p=0.02$. Using a 5% significance level, what would you conclude?
+
+5. Would a large or a small *t-statistic* be more likely to indicate a significant difference between the means of two samples, and why?
+
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "/Users/megmaclean/Box/Courses/NRC_290b_2019_Fall/")
+#opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+options(width=120)
+options(width.cutoff=80)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+```{r, echo=F, warning=FALSE, results='hide', message=FALSE}
+classData <- read.table(file="data/classData.txt")
+mander <- read.table(file="data/mander.txt",h=T)
+bp <- read.table(file="data/bearpoop.txt",h=T)
+```
+
+
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+x1 <- rnorm(100000,50,10)
+x2 <- rnorm(100000,150,10)
+x3 <- rnorm(100000,52,10)
+x4 <- rnorm(100000,60,10)
+
+pdf("Images/Diffs/meansA.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x2),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x2),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x2),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x2),lwd=2,col=4)
+boxplot(cbind(x1,x2),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+
+pdf("Images/Diffs/means2.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x3),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x3),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x3),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x3),lwd=2,col=4)
+boxplot(cbind(x1,x3),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+
+pdf("Images/Diffs/means3.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x4),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x4),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x4),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x4),lwd=2,col=4)
+boxplot(cbind(x1,x4),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+```
+
+## Tests for differences
+
+\begin{tikzpicture}[remember picture,overlay]
+\node at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+
+## Tests for differences
+
+Often we want to know if two of more samples are different
+
+- are the sample *means* different?
+- are the sample *medians* different?
+- are the differences *statistically significant*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1.5cm] at (current page)
+{\includegraphics[height=2in]{meansA.pdf}};
+\end{tikzpicture}
+
+## Tests for differences
+
+Often we want to know if two of more samples are different
+
+- are the sample *means* different?
+- are the sample *medians* different?
+- are the differences *statistically significant*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1.5cm] at (current page)
+{\includegraphics[height=2in]{means2.pdf}};
+\end{tikzpicture}
+
+## Tests for differences
+
+Often we want to know if two of more samples are different
+
+- are the sample *means* different?
+- are the sample *medians* different?
+- are the differences *statistically significant*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1.5cm] at (current page)
+{\includegraphics[height=2in]{means3.pdf}};
+\end{tikzpicture}
+
+## Tests for differences
+
+Often we want to know if two of more samples are different
+
+- are the sample *means* different?
+- are the sample *medians* different?
+- are the differences *statistically significant*?
+
+To determine the significance of differences between **two**, we need a statistical test
+
+- *t-test*
+- *U-test*
+
+## Differences: t-test
+
+Purpose:
+
+- compare the means of two samples (say $a$ and $b$)
+
+Assumptions:
+
+- both samples normally distributed
+- both samples have equal variances
+
+## Differences: t-test
+
+Purpose:
+
+- compare the means of two samples (say $a$ and $b$)
+
+Assumptions:
+
+- both samples normally distributed
+- both samples have equal variances
+
+$$t = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}} $$
+
+- $t$: the *t*-statistic
+- $\bar{x}$: sample mean
+- $s$: sample standard deviation
+- $n$: sample size
+
+## Differences: t-test
+
+Purpose:
+
+- compare the means of two samples (say $a$ and $b$)
+
+Assumptions:
+
+- both samples normally distributed
+- both samples have equal variances
+
+$$t = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}} $$
+
+- if $|\bar{x}_a - \bar{x}_b|$ is large, then $t$ is \textcolor{blue}{????}
+
+\vspace{0.2cm}
+
+- if $\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}$ is large, then $t$ is \textcolor{blue}{????}
+
+## Differences: t-test
+
+Purpose:
+
+- compare the means of two samples (say $a$ and $b$)
+
+Assumptions:
+
+- both samples normally distributed
+- both samples have equal variances
+
+$$t = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}} $$
+
+- if $|\bar{x}_a - \bar{x}_b|$ is large, then $t$ is \textcolor{blue}{large}
+
+\vspace{0.2cm}
+
+- if $\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}$ is large, then $t$ is \textcolor{blue}{small}
+
+
+## Differences: t-test
+
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+
+tt <- seq(-3,3,0.1)
+
+pdf("Images/Diffs/t5.pdf",height=4,width=5)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(tt,dt(tt,df=1),type="l",lwd=2,col=4,xlab="",ylim=c(0,0.4),ylab="Probability",main="Degrees of Freedom = 1", las=1,bty="l")
+abline(h=0.05,lty=2,col=2)
+dev.off()
+
+pdf("Images/Diffs/t25.pdf",height=4,width=5)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(tt,dt(tt,df=1),type="l",col=1,lwd=1,xlab="",ylim=c(0,0.4),ylab="Probability",main="Degrees of Freedom = 5", las=1,bty="l")
+lines(tt,dt(tt,df=5),type="l",lwd=2,col=4,xlab="",ylab="")
+abline(h=0.05,lty=2,col=2)
+dev.off()
+
+pdf("Images/Diffs/t50.pdf",height=4,width=5)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(tt,dt(tt,df=1),type="l",col=1,lwd=1,xlab="",ylim=c(0,0.4),ylab="Probability",main="Degrees of Freedom = 500", las=1,bty="l")
+lines(tt,dt(tt,df=5),type="l",col=1,lwd=1,xlab="",ylab="")
+lines(tt,dt(tt,df=500),type="l",lwd=2,col=4,xlab="",ylab="")
+abline(h=0.05,lty=2,col=2)
+dev.off()
+
+df <- 1:50
+pdf("Images/Diffs/samplesize.pdf",height=4,width=5)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(df,qt(0.975, df=df), type="l", lwd=2, xlab="Degrees-of-Freedom",
+     ylab="Critical t value", las=1, bty="l", ylim=c(0,13))
+points(df,qt(0.975, df=df), pch=16, col=4)
+dev.off()
+```
+
+\normalsize
+
+Understanding the *t-distribution*:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{t5.pdf}};
+\end{tikzpicture}
+
+## Differences: t-test
+
+Understanding the *t-distribution*:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{t25.pdf}};
+\end{tikzpicture}
+
+## Differences: t-test
+
+Understanding the *t-distribution*:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{t50.pdf}};
+\end{tikzpicture}
+
+## Differences: t-test
+
+Understanding the *t-distribution*:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{samplesize.pdf}};
+\end{tikzpicture}
+
+## Differences: t-test
+
+Understanding the *t-distribution*:
+
+- whether a difference is significant depends on:
+    - the *t-statistic*
+    - degrees-of-freedom ($n_a - 1 + n_b -1$)
+    
+- larger *t-statistics* more likely to be significant
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2.4cm, yshift=-2.3cm] at (current page)
+{\includegraphics[height=1.5in]{t50.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=2.4cm, yshift=-2.3cm] at (current page)
+{\includegraphics[height=1.5in]{samplesize.pdf}};
+\end{tikzpicture}
+
+## Differences: t-test
+
+Understanding the *p-value*:
+
+- *p-value* is the probability of observing a *t-statistic* as high as we did by chance
+- if *p-value* is lower than significance level (e.g. 5%):
+    - difference is significant
+    - reject the null hypothesis
+    - accept the alternative hypothesis
+
+## Differences: t-test
+
+Which *t-test*?
+
+- standard *t-test*
+    - compare two independent samples
+    - both normally distributed
+    - equal (similar) variances
+    - samples sizes can be the same or not
+    
+$$t = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}} $$
+
+- $t$: the *t*-statistic
+- $\bar{x}$: sample mean
+- $s$: sample standard deviation
+- $n$: sample size
+
+## Differences: paired t-test
+
+Sometimes samples are not independent
+
+- compare pairs of samples
+    - e.g., before-after
+    - e.g., north-south
+    - e.g., left-right
+- both normally distributed
+- equal (similar) variances
+- samples sizes *must* be the
+
+## Differences: paired t-test
+
+Which *t-test*?
+
+- paired *t-test*
+    - compare pairs of samples
+    - both normally distributed
+    - equal (similar) variances
+    - samples sizes *must* be the
+    
+$$t = \frac{\bar{D}}{\sqrt{\frac{s^2_D}{n}}} $$
+
+- $t$: the *t*-statistic
+- $\bar{D}$: mean of the *differences*
+- $s$: standard deviation of the *differences*
+- $n$: number of *paired* samples
+
+## Differences: U-test
+
+\begin{tikzpicture}[remember picture,overlay]
+\node at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Differences: U-test
+
+- compare two samples
+- both *not* normally distributed
+- based on *median*, *range*, and *ranks*
+- rank all values as one sample, calculate group rank sums $R$
+- calculate a *U*-value, a measure of overlap
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=1.8in]{distributions.jpg}};
+\end{tikzpicture}
+
+    
+## Differences: U-test
+
+- compare two samples
+- both or differences *not* normally distributed
+- based on *median*, *range*, and *ranks*
+- rank all values as one sample, calculate group rank sums $R$
+- calculate a *U*-value, a measure of overlap
+
+$$U_a = n_a \times n_b + \frac{n_a(n_a+1)}{2}-R_a $$
+$$U_b = n_b \times n_a + \frac{n_b(n_b+1)}{2}-R_b $$
+
+- $n_a$: number of samples in sample $a$
+- $n_b$: number of samples in sample $b$
+- $R_a$: sum of the ranks of values in $a$
+- $R_b$: sum of the ranks of values in $b$
+
+## Differences: U-test
+
+- compare two samples
+- both or differences *not* normally distributed
+- based on *median*, *range*, and *ranks*
+- rank all values as one sample, calculate group rank sums $R$
+- calculate a *U*-value, a measure of overlap
+
+$$U_a = n_a \times n_b + \frac{n_a(n_a+1)}{2}-R_a $$
+$$U_b = n_b \times n_a + \frac{n_b(n_b+1)}{2}-R_b $$
+
+- smallest is used to find the $p$-value
+- unlike the t-statistic, lower U-values are more likely to be significant
+
+## Differences: Wilcoxon matched-pairs test
+
+- both or differences *not* normally distributed
+- based on ranked *differences*
+    - first calculate the differences
+    - second rank the differences
+    - 0's not ranked
+- sum and compare +ve and -ve ranks
+    
+$$W^+ = \sum R^+$$
+$$W^- = \sum R^-$$
+
+- $W^+$: the Wilcoxon test statistic for positive differences
+- $W^+$: the Wilcoxon test statistic for negative differences
+- $R^+$: the sum of the ranks of positive differences
+- $R^+$: the sum of the ranks of negative differences
+
+## Differences: Wilcoxon matched-pairs test
+
+- pairs or differences *not* normally distributed
+- based on ranked *differences*
+    - first calculate the differences
+    - second rank the differences
+    - 0's not ranked
+- sum and compare +ve and -ve ranks
+    
+$$W^+ = \sum R^+$$
+$$W^- = \sum R^-$$
+
+- smallest is used to find the $p$-value
+- lower *W*-values are more likely to be significant
+   
+## Group Assignment
+
+Using the whale count data, compare the differences between first and second abundance guesstimates using first `excel` and then `R`.
+
+Submit a single written group report that outlines the following points:
+
+1. state the null and alternative hypotheses being tested
+2. the reason for choosing the statistical test you used 
+3. a summary of the results:
+    - degrees-of-freedom, test statistic, p-values (at 5% level)?
+    - did you accept or reject the null hypothesis?
+    - is there a difference?
+4. conduct the analysis in `R` and `excel` and submit:
+    - a written report of points 1, 2 and 3 as **PDF**
+    - an `excel` workbook showing your results
+    - a saved `R` file showing results

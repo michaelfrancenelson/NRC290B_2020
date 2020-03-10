@@ -1,0 +1,85 @@
+---
+title: "Saving Figures in RStudio"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+mander = read.csv("../data/mander.csv")
+require(ggplot2)
+```
+
+
+This is a simple tutorial on how to save a plot as an image file in R/RStudio.
+
+
+
+
+
+
+# Creating a figure
+
+Suppose I have loaded the salamander into a variable called `mander`.
+
+```{r}
+head(mander)
+```
+
+
+I'll make a conditional boxplot of SVL by Site and Sex: (don't worry if you don't know what that means yet).
+
+```{r}
+ggplot(mander, aes(x = Sex, y = SVL, fill = Site)) + 
+  geom_boxplot() + 
+  ggtitle("Salamander Snout to Vent Length")
+
+```
+
+
+
+
+
+
+My RStudio session will look something like this:
+
+![r session](../figures/mander_svl_boxplot.png)
+
+
+
+# Save the figure method 1
+
+Notice that above the plot there is a button that says *Export*.
+Click there and choose whether you want to save the image as a `.pdf` or `.png` file.
+
+
+# Save the figure method 2
+
+You can also save a figure directly using code in R.  I prefer this method becuase you can more easily specify the options that you want to use for the image.
+
+The image will be saved as the `filename` that you provide.  The image will be saved in your **current working directory**.
+
+The syntax is slightly different than what you're used to.  You have to use `png()` on the line before your plotting code.  You have to place `dev.off()` on the line after your plotting code.
+
+
+```{r, eval = FALSE}
+
+# This tells R to start an image file:
+png(filename = "salamander_boxplot.png")
+
+# These lines create the plot.
+# You won't see the plot in the RStudio plot window.
+ggplot(mander, aes(x = Sex, y = SVL, fill = Site)) + 
+  geom_boxplot() + 
+  ggtitle("Salamander Snout to Vent Length")
+
+# This tells R to finish creating the image file and save it.
+dev.off()
+```
+
+`png()` has lots of options (see the help entry).  For example, you can specify the height and width of the output image (in pixels).
+
+I'll now have a file called **salamander_boxplot.png** in my current working directory.
+
+The best way to learn is to try it!
+
+

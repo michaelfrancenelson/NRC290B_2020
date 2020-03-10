@@ -1,0 +1,72 @@
+---
+title: "testing"
+subtitle:  "Session 1"
+date: "`r format (Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+# includes:
+  # in_header: 'beamer.yaml'
+output:
+  beamer_presentation:
+    # template: beamer.yaml
+    # includes: beamer.yaml
+    includes:
+      in_header: 'beamer.yaml'
+    # highlight: tango
+    # theme: "default"
+    # colortheme: "spruce"
+    # fonttheme: "serif"
+    # slide_level: 2
+    # incremental: false
+urlcolor: blue
+classoption: t
+# header-includes:
+ # - \input{../../css/chris_slides_header_includes.yaml}
+ # - \usepackage{multicol}
+ # - \usepackage{tikz}
+ # - \usepackage{tikzpagenodes}
+ # - \definecolor{grn}{rgb}{0.0, 0.2, 0.0}
+ # - \usepackage{tabto}
+ # - \usepackage{verbatim}
+ # - \usepackage{amsmath}
+ # - \usepackage{mathtools}
+ # - \usepackage{graphicx}
+ # - \definecolor{OG}{RGB}{0,64,8}
+ # - \definecolor{LG}{RGB}{0,102,51}
+ # - \definecolor{myRed}{RGB}{228,26,28}
+ # - \definecolor{myBlue}{RGB}{55,126,184}
+ # - \definecolor{myGreen}{RGB}{77,175,74}
+ # - \definecolor{myPurple}{RGB}{152,78,163}
+ # - \setbeamercolor{itemize item}{fg=white!0!LG}
+ # - \setbeamercolor{enumerate item}{fg=white!0!LG}
+ # - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+ # - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+ # - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+ # - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+ # - \usepackage{inputenc}
+ # - \usepackage{booktabs}
+ # - \usepackage{caption}
+ # - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

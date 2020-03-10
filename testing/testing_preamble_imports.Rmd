@@ -1,0 +1,34 @@
+---
+title: "importing files in the preamble"
+subtitle:  "Session 1"
+date: "`r format (Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+output:
+  beamer_presentation:
+    pandoc_args: !expr paste0(here::here('css', 'beamer.yaml'))
+header-includes: 
+  \input{`r here::here("css", "headers_tikz.yaml")`}
+---
+
+# newest test slide
+\newcommand{\atest}{
+ \begin{tikzpicture}[remember picture,overlay]
+  \node[xshift=-2cm,yshift=1cm] at (current page.south east){
+   \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}
+  };
+\end{tikzpicture}
+}
+
+\atest
+
+# newest test slide
+
+
+# Chris's iClicker logo code
+
+\vfill
+\begin{tikzpicture}[remember picture,overlay]
+ \node[xshift=-2cm,yshift=1cm] at (current page.south east){
+  \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}
+ };
+\end{tikzpicture}
+

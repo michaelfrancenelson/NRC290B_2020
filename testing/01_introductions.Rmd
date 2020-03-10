@@ -1,0 +1,65 @@
+---
+title: "ECO 290B - Introduction to Quantitative Ecology"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+tmp = rprojroot::find_rstudio_root_file()
+knitr::opts_chunk$set(root.dir = tmp, error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = tmp)
+rm(tmp)
+
+image_path = "../lecture_images/"
+
+```
+
+
+```{r instructors info, include = FALSE}
+inst_name = "Michael France Nelson"
+inst_email = "michaelnelso@umass.edu"
+inst_office = "Holdsworth 311"
+clas_room = "Holdsworth XXXXX"
+ta_name = "???? Joe Drake"
+ta_email = "___@umass.edu"
+ta_office = "xxxx xxxx"
+
+
+```
+
+<!-- ## Contact info -->
+<!-- `r inst_name` -->
+
+
+
+## Testing a text variable
+the test variable contains 
+![text_var1].
+
+## Today's Agenda
+<ol>
+<li>Introductions<ul>
+  <li> About us </li>
+  <li> About you </li>
+</ul></li>
+<li> What is quantitative ecology? </li>
+<li> Course objectives </li>
+<li> How do you learn? </li>
+<li> Course structure </li>
+<li> Overall </li>
+<li> Monday specifics </li>
+<li> Wednesday specifics </li>
+<li> Assessments </li>
+<li> Course responsibilities </li>
+
+</ol>
+
+## Introductions: About us
+`r inst_name`
+![alt text][test_img1]
+
+
+
+
+[test_img1]: `r paste0(image_path, "test_img_01.png")` "me"
+

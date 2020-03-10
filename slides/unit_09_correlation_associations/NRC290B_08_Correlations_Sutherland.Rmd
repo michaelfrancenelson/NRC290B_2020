@@ -1,0 +1,1388 @@
+---
+title: "Correlations"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2018
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \usepackage{arydshln}
+   - \graphicspath{{"G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/Corr/"}, {"C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/Corr/"}}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+#opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+
+options(width=120)
+options(width.cutoff=80)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+## Group evaluations
+
+1. We would *not* use the Spearman's rank test to calculate a correlation coefficient - which one?
+
+```{r,echo=F, results='hide'}
+pdf("Images//Corr//corQuiz1.pdf",height=3,width=8.5)
+par(mfrow=c(1,3),mar=c(2,2,4,1),oma=c(0,0,0,0))
+set.seed(3)
+plot(log(1:20),rlnorm(20,seq(0,0.7,length=20)*2,0.1),main="A",axes=F,xlab="",ylab="",pch=21,bg=adjustcolor(4,0.4),cex=2,cex.main=2)
+box(bty="l")
+plot(1:20,rnorm(20,seq(0,0.7,length=20)*2,0.1),main="B",axes=F,xlab="",ylab="",pch=21,bg=adjustcolor(4,0.4),cex=2,cex.main=2)
+box(bty="l")
+plot(1:20,rnorm(20,seq(0,0.7,length=20)*3 - seq(0,0.7,length=20)^2*5,0.1),main="C",axes=F,xlab="",ylab="",pch=21,bg=adjustcolor(4,0.4),cex=2,cex.main=2)
+box(bty="l")
+dev.off()
+```
+
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=1.5in]{corQuiz1.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+
+## Group evaluations
+
+2. For her PhD, Eugene is studying the effects of annual temperature on American robin reproductive success (number of eggs hatched). What is the *dependent* variable? 
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] American robin
+  \item[B)] Eugene
+  \item[C)] Temperature
+  \item[D)] Number of eggs
+\end{enumerate}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group evaluations
+
+3. What is the most likely Pearson's correlation coefficient ($r$) for this relationship?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] 0.90
+  \item[B)] 0.09
+  \item[C)] -0.9
+  \item[D)] -0.09
+\end{enumerate}
+
+\vfill
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-4cm, yshift=-1cm] at (current page.east)
+{\includegraphics[height=2in]{corrr.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group evaluations
+
+4. What is the slope in this equation of a straight line?
+
+$$y = mx + c$$
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] $y$
+  \item[B)] $m$
+  \item[C)] $x$
+  \item[D)] $c$
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group evaluations
+
+\vfill
+
+5. Which of the following is *polynomial* relationship?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] $y = ax + c$
+  \item[B)] $y = ax + bx^2 + c$
+  \item[C)] $y = log(ax) + c$
+  \item[D)] $y = c$
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+x1 <- rnorm(100000,50,10)
+x2 <- rnorm(100000,150,10)
+x3 <- rnorm(100000,52,10)
+x4 <- rnorm(100000,60,10)
+
+pdf("Images//Corr//meansA.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x2),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x2),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x2),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x2),lwd=2,col=4)
+boxplot(cbind(x1,x2),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+
+pdf("Images//Corr//means2.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x3),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x3),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x3),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x3),lwd=2,col=4)
+boxplot(cbind(x1,x3),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+
+pdf("Images//Corr//means3.pdf",height=4,width=5)
+par(mfrow=c(2,1),oma=c(0,0,0,0),mar=c(2,2,1,1))
+plot(density(x1),col=1,lwd=1,xlim=c(0,200),ylim=c(0,0.05),
+     main="",axes=F,xlab="",ylab="")
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x4),lwd=2,col=4)
+lines(density(x1),col=1, lwd=1)
+lines(density(x4),col=1, lwd=1)
+axis(1)
+box(bty="l")
+boxplot(cbind(x1,x4),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F)
+axis(1)
+abline(v=mean(x1),lwd=2,col=2)
+abline(v=mean(x4),lwd=2,col=4)
+boxplot(cbind(x1,x4),ylim=c(0,200),horizontal=TRUE,pch="",
+        col=adjustcolor(c(2,4),0.3),axes=F,add=T)
+box(bty="l")
+dev.off()
+```
+
+## Correlations
+
+- What are examples of correlations? 
+- Why would we be interested in correlations?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Correlations
+
+Interested in the relationship between two samples
+
+- Dependent variable:
+    - data we are interested in explaining
+    - Y-axis
+    - *response* variable
+    
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+set.seed(12)
+AR <- runif(25,0,10)
+SR <- rnorm(25,10 + 2*AR,2)
+pdf("Images//Corr//specareaA.pdf",height=3,width=4)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1),mgp=c(1,1,1))
+plot(AR,SR,type="p",bg=adjustcolor(4,0.4),xlab="",ylab="Dependent variable",ylim=c(5,30),las=1, bty="l",pch=21, cex=2, axes=F)
+box(bty="l")
+dev.off()
+
+set.seed(1)
+x1 <- runif(25,0,10)
+y1 <- rnorm(25,10 + 5*x1,6)
+pdf("Images//Corr//specareaWith.pdf",height=3,width=4)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(x1,y1,type="p",bg=adjustcolor(4,0.4),ylab="Species Richness",xlab="Area (ha)",las=1, bty="l",pch=21, cex=2, axes=F, ylim=c(0,70))
+box(bty="l")
+axis(2, las=1)
+axis(1,at=1:10)
+dev.off()
+
+pdf("Images//Corr//specareaWithout.pdf",height=3,width=4)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1))
+plot(x1,y1,type="p",col=adjustcolor(4,0.05),ylab="Species Richness",xlab="Area (ha)",las=1, bty="l",pch=16, cex=2, axes=F, ylim=c(0,70))
+box(bty="l")
+axis(2,las=1)
+axis(1,at=1:10)
+dev.off()
+
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-3cm] at (current page.south east)
+{\includegraphics[height=1.5in]{specareaA.pdf}};
+\end{tikzpicture}
+
+## Correlations
+
+Interested in the relationship between two samples
+
+- Dependent variable:
+    - data we are interested in explaining
+    - Y-axis
+    - *response* variable
+    
+- Independent variable:
+    - data used to describe variation in dependent variable 
+    - X-axis
+    - *explanatory* variable
+
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+pdf("Images//Corr//specareaB.pdf",height=3,width=4)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,1,1),mgp=c(1,1,1))
+plot(AR,SR,type="p",bg=adjustcolor(4,0.4),xlab="Independent variable",ylab="Dependent variable",ylim=c(5,30),las=1, bty="l",pch=21, cex=2,axes=F)
+box(bty="l")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-3cm] at (current page.south east)
+{\includegraphics[height=1.5in]{specareaB.pdf}};
+\end{tikzpicture}
+
+## Correlations
+
+Interested in the relationship between two samples
+
+- Dependent variable:
+    - data we are interested in explaining
+    - Y-axis
+    - *response* variable
+    
+- Independent variable:
+    - data used to describe variation in dependent variable 
+    - X-axis
+    - *explanatory* variable
+
+- Dealing with *pairs* of values!
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-3cm] at (current page.south east)
+{\includegraphics[height=1.5in]{specareaB.pdf}};
+\end{tikzpicture}
+
+## Correlations
+
+What is the sign of the correlation?
+
+```{r,eval=TRUE,echo=FALSE,results="hide"}
+X <- runif(25,0,10)
+Pos <- rnorm(25,10 + 2*X,2)
+No <- rnorm(25,10 + 0*X,2)
+Neg <- rnorm(25,10 - 2*X,2)
+pdf("Images//Corr//signA.pdf",height=2,width=6)
+par(mfrow=c(1,3),oma=c(0,0,0,0),mar=c(4,4,3,1),mgp=c(1,1,1))
+plot(X,Pos,type="p",bg=adjustcolor(1,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8,axes=F)
+box(bty="l")
+plot(X,No, type="p",bg=adjustcolor(1,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8,axes=F)
+box(bty="l")
+plot(X,Neg,type="p",bg=adjustcolor(1,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8,axes=F)
+box(bty="l")
+dev.off()
+pdf("Images//Corr//signB.pdf",height=2,width=6)
+par(mfrow=c(1,3),oma=c(0,0,0,0),mar=c(4,4,3,1),mgp=c(1,1,1))
+plot(X,Pos,type="p",bg=adjustcolor(3,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8, main="Positive Correlation",axes=F)
+box(bty="l")
+plot(X,No, type="p",bg=adjustcolor(1,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8, main="No Correlation",axes=F)
+box(bty="l")
+plot(X,Neg,type="p",bg=adjustcolor(2,0.3),xlab="Independent",ylab="Dependent",las=1, bty="l",pch=21, cex=1.8, main="Negative Correlation",axes=F)
+box(bty="l")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=1.5in]{signA.pdf}};
+\end{tikzpicture}
+
+## Correlations
+
+What is the sign of the correlation?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1cm] at (current page)
+{\includegraphics[height=1.5in]{signB.pdf}};
+\end{tikzpicture}
+
+## Correlations
+
+Lets play a game!
+
+\vspace{1cm}
+\large
+\begin{center}
+\textcolor{blue}{http://www.istics.net/Correlations/}
+\end{center}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=1.5in]{jigsaw.jpg}};
+\end{tikzpicture}
+
+## Correlations
+
+We need a way to 
+
+- quantify correlations/relationships
+- assess whether correlations/relationships are *significant*
+
+## Correlations
+
+We need a *test*!
+
+1. Spearman's rank test ($r_s$)
+
+    - determine the strength of the link between 2 samples 
+    - data are *not* normally distributed
+    - realtionship not linear
+        - but still exhibits a positive of negative trend
+        - is not u-shaped or n-shaped
+    - use the *ranks* of values
+    - correlation strenght ranges from -1 to 1
+        - -1: perfect *negative* correlation
+        - 1: perfect *positive* correlation
+        - 0: no correlation
+        
+## Correlations
+
+We need a *test*!
+
+2. Pearson's product moment  ($r$)
+
+    - determine the strength of the link between 2 samples 
+    - data *are* normally distributed
+    - relationship assumed to be linear
+        - positive of negative trend
+        - not u- or n-shaped
+    - use actual values
+    - correlation strenght ranges from -1 to 1
+        - -1: perfect *negative* correlation
+        - 1: perfect *positive* correlation
+        - 0: no correlation
+
+## Correlations
+
+1. Spearman's rank test ($r_s$)
+
+    - determine the strength of the link between 2 samples 
+    - data are *not* normally distributed
+    - not neccesarily linear
+    - use the *ranks* of values
+
+2. Pearson's product moment  ($r$)
+
+    - determine the strength of the link between 2 samples 
+    - data *are* normally distributed
+    - assumed to be linear linear
+    - use actual values
+
+- For both, the *correlation coefficient* ranges from -1 to 1
+    - -1: perfect *negative* correlation
+    - 1: perfect *positive* correlation
+    - 0: no correlation
+
+## Example: the Mayfly data
+
+```{r,echo=FALSE, results="hide"}
+mayfly <- data.frame(Speed = c(2,3,5,9,14,24,29,34),
+                     Abundance = c(6,3,5,23,16,12,48,43))
+pdf("Images//Corr//spearMayfly.pdf",height=3.5,width=3.5, bg="white")
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,3,1))
+with(mayfly,
+     plot(Speed, Abundance,pch=21,bg=adjustcolor(4,0.5),cex=1.5, las=1,ylim=c(0,50))
+)
+dev.off()
+```
+
+\vfill
+
+```{r}
+head(mayfly)
+```
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-4cm] at (current page.east)
+{\includegraphics[height=3in]{spearMayfly.pdf}};
+\end{tikzpicture}
+
+## Spearman's rank test ($r_s$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-2cm] at (current page.south east)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Spearman's rank test ($r_s$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+## Spearman's rank test ($r_s$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+- $H_1$ (the *alternative* hypothesis):
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-2cm] at (current page.south east)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Spearman's rank test ($r_s$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+- $H_1$ (the *alternative* hypothesis):
+
+*There is a positive correlation between stream speed and mayfly abundance*
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- programs (`Excel` and `R`) will do the math for us
+- \underline{BUT} we should be aware of what's going on!
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- programs (`Excel` and `R`) will do the math for us
+- \underline{BUT} we should be aware of what's going on!
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- first, calculate the *ranks* of the values: speed
+
+```{r,echo=FALSE}
+mayfly$Speed.rank <- order(mayfly$Speed)
+```
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- first, calculate the *ranks* of the values: abundance
+
+```{r,echo=FALSE}
+mayfly$Abundance.rank <- rank(mayfly$Abundance)
+```
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- then, calculate the difference in the *ranks*: $D$
+
+```{r,echo=FALSE}
+mayfly$Diff <- mayfly$Abundance.rank - mayfly$Speed.rank
+```
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- then, square the difference in the *ranks*: $D^2$
+
+```{r,echo=FALSE}
+mayfly$Diff.sq <- mayfly$Diff^2
+```
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - the statistical test
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- so now we have all the pieces!
+    - $n$: number of pairs of observations (each has an $x$ and a $y$)
+    - $D$: difference in ranks between variables
+    - $D^2$: the difference squared
+
+## Spearman's rank test ($r_s$) - in practice
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+```{r}
+mayfly
+```
+
+## Spearman's rank test ($r_s$) - in practice
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+$$r_s = 0.81$$
+
+What does this tell us?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-2cm] at (current page.south east)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Spearman's rank test ($r_s$) - in practice
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+$$r_s = 0.81$$
+
+Two useful pieces of information:
+
+1. Sign of the correlation
+    - positive value means *positive* correlation
+    
+## Spearman's rank test ($r_s$) - in practice
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+$$r_s = 0.81$$
+
+Two useful pieces of information:
+
+1. Sign of the correlation
+    - positive value means *positive* correlation
+2. Strength of the correlation
+    - $r$ ranges from -1 to 1
+    - $r_s = 0.81$ is *strongly* positive
+    - but is this *significant*?
+    
+    
+## Spearman's rank test ($r_s$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+## Spearman's rank test ($r_s$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+If the test statistic is \underline{greater than} the critical value:
+
+- *reject* the null hypothesis
+- there *is* a statistically significant positive correlation
+
+## Spearman's rank test ($r_s$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+If the test statistic is \underline{greater than} the critical value:
+
+- *reject* the null hypothesis
+- there *is* a statistically significant positive correlation
+
+If the test statistic is \underline{less than} the critical value:
+
+- *fail to reject* the null hypothesis
+- there is no evidence of a statistically significant positive correlation
+
+## Spearman's rank test ($r_s$) - mayfly conclusions
+
+- *significance level* (typically 5%)
+- *sample size* (number of pairs = 8)
+- *critical value* (0.738)
+- *test stasistic* ($r_s = 0.81$)
+- the *test stasistic* is \textcolor{blue}{??} than the *critical value*
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{spearTab.jpg}};
+\end{tikzpicture}
+
+## Spearman's rank test ($r_s$) - mayfly conclusions
+
+So, $r_s > 0.738$:
+
+- \textcolor{blue}{reject} the null hypothesis
+- \textcolor{blue}{accept} the alternative hypothesis
+
+There *is* a statistically significant positive correlation between stream flow and mayfly abundance!
+
+
+## Pearson's product moment  ($r$)
+
+2. Pearson's product moment  ($r$)
+
+## Pearson's product moment  ($r$)
+
+2. Pearson's product moment  ($r$)
+
+    - determine the strength of the link between 2 samples 
+    - data *are* normally distributed
+    - relationship assumed to be linear
+    - use actual values
+
+## Pearson's product moment  ($r$)
+
+2. Pearson's product moment  ($r$)
+
+    - determine the strength of the link between 2 samples 
+    - data *are* normally distributed
+    - relationship assumed to be linear
+    - use actual values
+    - -1: perfect *negative* correlation
+    - 1: perfect *positive* correlation
+    - 0: no correlation
+
+## Pearson's product moment  ($r$)
+
+2. Pearson's product moment  ($r$)
+
+    - determine the strength of the link between 2 samples 
+    - data *are* normally distributed
+    - \textcolor{blue}{relationship assumed to be linear}
+    - use actual values
+    - -1: perfect *negative* correlation
+    - 1: perfect *positive* correlation
+    - 0: no correlation
+
+## Pearson's product moment  ($r$)
+
+The linear assumption:
+
+- relationship between two variables can be described by the equation of a straight line:
+
+$$y = mx + c$$
+
+- $y$: the dependent/response variable
+- $x$: the independent/explanatory variable
+- $m$: the *slope* of the relationship
+- $c$: the *intercept*
+
+## Pearson's product moment  ($r$) - an example
+
+Relationship between area \& species richness (by hand/eye):
+
+$$species = m \times area + c$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{specareaWith.pdf}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$) - an example
+
+Relationship between area \& species richness (by hand/eye):
+
+$$species = m \times area + c$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{specareaWithout.pdf}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$)
+
+2. Pearson's product moment  ($r$)
+
+- calculates the strength of the correlation
+    - similar to Spearman's coefficient
+- *also* the equation of the best fit line
+    - calculates the slope
+    - calculates the intercepts
+
+\begin{center}    
+Pearson's product moment calculates strength of correlation \& parameters of linear relationship between two variables.
+\end{center}    
+
+## Example: the Mayfly data
+
+```{r,echo=FALSE, results="hide"}
+mayfly <- data.frame(Speed = c(2,3,5,9,14,24,29,34),
+                     Abundance = c(6,3,5,23,16,12,48,43))
+pdf("Images//Corr//spearMayfly.pdf",height=3.5,width=3.5, bg="white")
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,3,1))
+with(mayfly,
+     plot(Speed, Abundance,pch=21,bg=adjustcolor(4,0.5),cex=1.5, las=1,ylim=c(0,50))
+)
+dev.off()
+```
+
+\vfill
+
+```{r}
+head(mayfly)
+```
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-4cm] at (current page.east)
+{\includegraphics[height=3in]{spearMayfly.pdf}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-2cm] at (current page.south east)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+## Pearson's product moment  ($r$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+- $H_1$ (the *alternative* hypothesis):
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2cm,xshift=-2cm] at (current page.south east)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+- $H_1$ (the *alternative* hypothesis):
+
+*There is a positive correlation between stream speed and mayfly abundance*
+
+## Pearson's product moment  ($r$) - the hypothesis
+
+Before conducting any statistical test, we need to state the hypotheses!
+
+- $H_0$ (the *null* hypothesis):
+
+*There is no correlation between stream speed and mayfly abundance*
+
+- $H_1$ (the *alternative* hypothesis):
+
+*There is a positive correlation between stream speed and mayfly abundance*
+
+\vspace{0.5cm}
+
+NOTE: the hypotheses remain the same, but the assumption about the data are different. The assumptions determine the appropriate model!
+
+## Pearson's product moment  ($r$) - the straight line
+
+Equation of a straight line: 
+
+$$y = mx + c$$
+
+## Pearson's product moment  ($r$) - the slope
+
+Equation of a straight line: 
+
+$$y = \textcolor{blue}{m}x + c$$
+
+Calculating the slope: 
+
+$$\textcolor{blue}{m} = \frac{\sum(x-\bar{x})(y-\bar{y})}{\sum(x-\bar{x})^2}$$
+
+## Pearson's product moment  ($r$) - the intercept
+
+Equation of a straight line: 
+
+$$y = mx + \textcolor{blue}{c}$$
+
+Calculating the slope: 
+
+$$m = \frac{\sum(x-\bar{x})(y-\bar{y})}{\sum(x-\bar{x})^2}$$
+
+Calculating the intercept: 
+
+$$\textcolor{blue}{c} = \bar{y} - m\bar{x}$$
+
+## Pearson's product moment  ($r$) - the linear equation
+
+Equation of a straight line: 
+
+$$y = mx + \textcolor{blue}{c}$$
+
+- programs (`Excel` and `R`) will do the math for us
+- \underline{BUT} we should be aware of what's going on!
+    - calculating the *slope* from the data
+    - calculating the *intercept* from the data
+    
+## Pearson's product moment  ($r$) - the statistical test
+
+Equation of a straight line: $y = mx + c$
+
+- but, is the linear relationship *significant*?
+- we can calculate Pearson's correlation coefficient
+
+$$r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$$
+
+## Pearson's product moment  ($r$) - the statistical test
+
+Equation of a straight line: $y = mx + c$
+
+- but, is the linear relationship *significant*?
+- we can calculate Pearson's correlation coefficient
+
+$$r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$$
+
+```{r,echo=FALSE}
+mayfly <- mayfly[,1:2]
+```
+
+```{r}
+mayfly
+```
+
+## Pearson's product moment  ($r$) - the statistical test
+
+Equation of a straight line: $y = mx + c$
+
+- but, is the linear relationship *significant*?
+- we can calculate Pearson's correlation coefficient
+
+$$r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$$
+
+$$r = 0.84$$
+
+
+## Pearson's product moment  ($r$) - in practice
+
+$$r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$$
+
+$$r = 0.84$$
+
+Again we have two useful pieces of information:
+
+1. Sign of the correlation
+    - positive value means *positive* correlation
+2. Strength of the correlation
+    - $r$ ranges from -1 to 1
+    - $r_s = 0.84$ is *strongly* positive
+    - but is this *significant*?
+
+## Pearson's product moment  ($r$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+## Pearson's product moment  ($r$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+If the test statistic is \underline{greater than} the critical value:
+
+- *reject* the null hypothesis
+- there *is* a statistically significant positive correlation
+
+## Pearson's product moment  ($r$) - conclusions
+
+As with many statistical tests, determine significance based on:
+
+- *significance level*
+- *sample size*
+- *critical value*
+
+If the test statistic is \underline{greater than} the critical value:
+
+- *reject* the null hypothesis
+- there *is* a statistically significant positive correlation
+
+If the test statistic is \underline{less than} the critical value:
+
+- *fail to reject* the null hypothesis
+- there is no evidence of a statistically significant positive correlation
+
+## Pearson's product moment  ($r$) - mayfly conclusions
+
+- *significance level* (typically 5%)
+- *sample size* (df = number of pairs - 2 = 8 - 2 = 6)
+- *critical value* (0.707)
+- *test stasistic* ($r = 0.84$)
+- the *test stasistic* is \textcolor{blue}{??} than the *critical value*
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{pearsTab.jpg}};
+\end{tikzpicture}
+
+## Pearson's product moment  ($r$) - mayfly conclusions
+
+So, $r > 0.707$:
+
+- \textcolor{blue}{reject} the null hypothesis
+- \textcolor{blue}{accept} the alternative hypothesis
+
+There *is* a statistically significant positive correlation between stream flow and mayfly abundance!
+
+## Mayfly conclusions
+
+Spearman's rank correlation coefficient:
+
+- $r_s > 0.738$:
+- \textcolor{blue}{reject} the null hypothesis
+- \textcolor{blue}{accept} the alternative hypothesis
+
+Pearson's correlation coefficient:
+
+- $r > 0.707$:
+- \textcolor{blue}{reject} the null hypothesis
+- \textcolor{blue}{accept} the alternative hypothesis
+
+Conclusion:
+
+- same regardless of assumptions!  
+- there *is* a statistically significant positive correlation between stream flow and mayfly abundance!
+
+## Correlations in practice
+
+- we *could* do it by hand (UGH!)
+- we *prefer* to use built in functions
+    - in `Excel`
+    - in `R`
+
+## Example: the Mayfly data
+
+```{r,echo=FALSE, results="hide"}
+mayfly <- data.frame(Speed = c(2,3,5,9,14,24,29,34),
+                     Abundance = c(6,3,5,23,16,12,48,43))
+pdf("Images//Corr//spearMayfly.pdf",height=3.5,width=3.5, bg="white")
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,3,1))
+with(mayfly,
+     plot(Speed, Abundance,pch=21,bg=adjustcolor(4,0.5),cex=1.5, las=1,ylim=c(0,50))
+)
+dev.off()
+```
+
+\vfill
+
+```{r}
+head(mayfly)
+```
+
+\normalsize
+
+Spearman: $r_s = 0.81$  
+Pearson: $r = 0.84$
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-4cm] at (current page.east)
+{\includegraphics[height=3in]{spearMayfly.pdf}};
+\end{tikzpicture}
+
+## Spearman's rank test in \texttt{Excel}
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+In \texttt{Excel} 
+
+- an automated routine doe snot exist
+- have to do it by hand
+- :(
+
+## Pearson's product moment in \texttt{Excel}
+
+Pearson's correlation coefficient:
+
+- $r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$
+
+- `CORREL(response, predictor)` 
+
+Slope of the best fit line:
+
+- $m = \frac{\sum(x-\bar{x})(y-\bar{y})}{\sum(x-\bar{x})^2}$
+
+- `SLOPE(response, predictor)`
+
+Intercept of the best fit line:
+
+- $c = \bar{y} - m\bar{x}$
+
+- `INTERCEPT(response, predictor)`
+
+## Pearson's product moment in \texttt{Excel}
+
+Pearson's correlation coefficient:
+
+- $r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$
+
+- Analysis toolpack - `Correlation`
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1.5cm,xshift=-2.6cm] at (current page)
+{\includegraphics[height=1.2in]{atpA.png}};
+\node[yshift=-1.5cm,xshift=3cm] at (current page)
+{\includegraphics[height=1.2in]{atpB.png}};
+\end{tikzpicture}
+
+## Spearman's rank test in \texttt{R}
+
+```{r}
+#make the mayfly 'data.frame' by hand:
+mayfly <- data.frame(Speed = c(2,3,5,9,14,24,29,34),
+                     Abundance = c(6,3,5,23,16,12,48,43))
+```
+
+## Spearman's rank test in \texttt{R}
+
+```{r}
+#make the mayfly 'data.frame' by hand:
+mayfly <- data.frame(Speed = c(2,3,5,9,14,24,29,34),
+                     Abundance = c(6,3,5,23,16,12,48,43))
+mayfly
+```
+
+## Spearman's rank test in \texttt{R}
+
+$$r_s = 1 - \frac{6 \times \sum D^2}{n(n^2 - 1)}$$
+
+- Spearman correlation coefficient ($r_s$)
+
+```{r,eval=FALSE}
+cor(var1, var2, method='spearman')
+```
+
+\normalsize
+
+- Spearman correlation coefficient *and* significance test
+
+```{r,eval=FALSE}
+cor.test(var1, var2, method='spearman')
+```
+
+## Spearman's rank test in \texttt{R}
+
+- Spearman correlation coefficient ($r_s$)
+
+```{r}
+cor(mayfly$Speed, mayfly$Abundance, method='spearman')
+```
+
+## Spearman's rank test in \texttt{R}
+
+- Spearman correlation coefficient ($r_s$)
+
+```{r}
+cor(mayfly$Speed, mayfly$Abundance, method='spearman')
+```
+
+\normalsize
+
+- Spearman correlation coefficient *and* significance test
+
+```{r}
+cor.test(mayfly$Speed, mayfly$Abundance, method='spearman')
+```
+
+## Pearson's product moment in \texttt{R}
+
+- $r=\frac{\sum (x-\bar{x})(y-\bar{y})}  {\sqrt{\sum (x-\bar{x})^2 \sum (y-\bar{y})^2}}$
+
+- Pearson's correlation coefficient ($r$)
+
+```{r,eval=FALSE}
+cor(var1, var2, method='pearson')
+```
+
+\normalsize
+
+- Pearson's correlation coefficient *and* significance test
+
+```{r,eval=FALSE}
+cor.test(var1, var2, method='pearson')
+```
+
+## Pearson's product moment in \texttt{R}
+
+- Pearson's correlation coefficient ($r$)
+
+```{r,eval=FALSE}
+cor(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+## Pearson's product moment in \texttt{R}
+
+- Pearson's correlation coefficient ($r$)
+
+```{r}
+cor(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+## Pearson's product moment in \texttt{R}
+
+- Pearson's correlation coefficient ($r$)
+
+```{r}
+cor(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+\normalsize
+
+- Pearson's correlation coefficient *and* significance test
+
+```{r,eval=FALSE}
+cor.test(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+## Pearson's product moment in \texttt{R}
+
+- Pearson's correlation coefficient ($r$)
+
+```{r}
+cor(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+\normalsize
+
+- Pearson's correlation coefficient *and* significance test
+
+```{r}
+cor.test(mayfly$Speed, mayfly$Abundance, method='pearson')
+```
+
+## Linear equation in \texttt{R}
+
+To calculate the slope and the intercept of the best fit line:
+
+- use a *linear model*
+- in `R` use the function `lm(respnse ~ predictor)`
+
+## Linear equation in \texttt{R}
+
+To calculate the slope and the intercept of the best fit line:
+
+- use a *linear model*
+- in `R` use the function `lm(respnse ~ predictor)`
+
+```{r}
+lm(mayfly$Abundance ~ mayfly$Speed)
+```
+
+## Linear equation in \texttt{R}
+
+To calculate the slope and the intercept of the best fit line:
+
+- use a *linear model*
+- in `R` use the function `lm(respnse ~ predictor)`
+
+```{r, my.size=TRUE, size="\\tiny"}
+summary(lm(mayfly$Abundance ~ mayfly$Speed))
+```
+
+## Its all related!
+
+```{r, my.size=TRUE, size="\\tiny"}
+cor.test(mayfly$Speed, mayfly$Abundance, method='pearson')
+summary(lm(mayfly$Abundance ~ mayfly$Speed))
+```
+
+## Its all related!
+
+```{r, my.size=TRUE, size="\\tiny"}
+cor.test(mayfly$Speed, mayfly$Abundance, method='spearman')
+summary(lm(mayfly$Abundance ~ mayfly$Speed))
+```
+
+## Group exercise: salamander length correlations
+
+Correlations in `R`: 
+
+1. Read in the data
+2. Make a plot of 'total length' in response to 'SVL' length
+3. Decide whether to use the Pearson or Spearman test
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2.75cm,xshift=4.2cm] at (current page)
+{\includegraphics[height=1.5in]{mander.png}};
+\end{tikzpicture}
+
+## Group exercise: salamander length correlations
+
+Correlations in `R`: 
+
+- Read in the data
+- Make a plot of 'total length' in response to 'SVL' length
+- Decide whether to use the Pearson or Spearman test
+- Conduct the analysis:
+    - what is the correlation coefficient?
+    - what is the intercept of the relationship?
+    - what is the slope of the relationship?
+    - is the relationship significant?
+    
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2.75cm,xshift=4.2cm] at (current page)
+{\includegraphics[height=1.5in]{mander.png}};
+\end{tikzpicture}
+
+## Group exercise: salamander length correlations
+
+Correlations in `Excel`: 
+
+- Create an Excel worksheet that show the same values you got in `R`:
+    - the correlation coefficient
+    - the intercept of the relationship
+    - the slope of the relationship
+    - the $p$-value
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2.75cm,xshift=4.2cm] at (current page)
+{\includegraphics[height=1.5in]{mander.png}};
+\end{tikzpicture}
+
+## Group exercise: salamander length correlations
+
+Correlations in `Excel`: 
+
+- Create an Excel worksheet that show the same values you got in `R`:
+    - the correlation coefficient
+    - the intercept of the relationship
+    - the slope of the relationship
+    - the $p$-value (see below)
+- **Submit the workbook**
+
+To compute the $p$-value, you need to use `T.DIST.2T()` in Excel. This needs $t$,  *test statistic*, which you can calculate that using $r$ (the correlation coefficient):
+
+$$t = \frac{r \times \sqrt{n-2}}{\sqrt{1-r^2}}$$

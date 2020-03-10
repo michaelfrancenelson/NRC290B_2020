@@ -1,0 +1,193 @@
+---
+title: "Graphical data exploration"
+author: "Michael France Nelson"
+date: "Spring, 2020"
+output: 
+  html_document:
+    css: !expr here::here("css", "styles.css")
+    number_sections: TRUE
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+require(here)
+knitr::opts_chunk$set(echo = TRUE)
+
+rarefaction_data = read.csv(here("data", "rarefaction_data_2020.csv"))
+
+```
+
+# Overview
+
+In this activity, you'll be building you skills with graphical exploration of data in R.
+
+You'll need to use several functions that we haven't talked about in class to complete this activity.
+
+You'll also need some new arguments to modify the look of scatterplots.
+
+
+# Subsetting data frames
+
+Often you want to use only a *subset* of observations contained in a dataframe.
+
+To accomplish this, you need to decide what criteria you want to use to select those observations you wish to keep.
+
+One way to do this is by using *logical subsetting*.
+
+You've read about logical tests in the swirl tutorials, and now you'll have a chance to practice with some real data.
+
+
+## Subsetting examples 
+
+In the following examples, I'll use one of R's built-in data sets: `mtcars`.
+
+To load the data into R's memory you need to type:
+`data(mtcars)`
+
+To familiarize yourself with the data, use `head()` to view the first six rows:
+
+```{r}
+data(mtcars)
+head(mtcars)
+```
+
+
+The column called "hp" shows the horsepower of each car in the data set:
+
+```{r}
+mtcars$hp
+```
+
+How can you retrieve the data for cars that have less than 75 horsepower?
+
+You can use a logical test to show which entries in the `hp` column are less than 75:
+
+```{r}
+mtcars$hp < 75
+```
+
+How can we use this info to pull out the low horsepower cars?
+
+Use the `subset()` function.  It allows us to keep only the rows of the data frame that match our criteria.
+
+Here's how I would retrieve the low horsepower cars:
+
+```{r}
+subset(mtcars, hp < 75)
+```
+
+How would you select the cars that have exactly 110 horsepower?
+
+```{r}
+subset(mtcars, hp == 110)
+```
+
+Note the double equals sign: `==`
+
+The main logical operators in R include:
+
+`==`
+
+`>`
+
+`<`
+
+`>=`
+
+`<=`
+
+
+
+# Rarefaction data plots
+
+For this activity, we're going to use the rarefaction data that we collected on the first day of class.
+
+You'll need to download the data file `rarefaction_data_2020.csv` from Moodle and load it into R.
+
+The data should look like this:
+
+```{r, echo=FALSE}
+head(rarefaction_data)
+```
+
+You'll need to create 5 scatterplots.  All of your scatterplots need to have the number of individuals on the x-axis and the number of distinct species on the y axis.
+
+* **Scatterplot 1**: A plot of all samples
+* **Scatterplot 2**: A plot of all samples from site 1
+* **Scatterplot 3**: A plot of all samples from site 2
+* **Scatterplot 4**: A plot of all samples from site 3
+* **Scatterplot 5**: A plot of all samples from site 4
+
+You'll need to use the `subset()` function to retrieve the data rows for individual study sites (sites 1 - 4).  Follow the example with `mtcars` above.
+
+
+## Scatterplot parameters
+
+When you plot the subsets of the rarefaction data, you might notice that the x-axis doesn't always start at 0.  You'll need to use the `xlim` argument within `plot()` to specify the minimum and maximum values shown in the plot window.
+
+For example, here are two plots of data from site #4.  The first plot uses the default x limits, the second plot specifies that the x-axis should range from 0 to 90
+
+```{r, echo=FALSE}
+d4 = subset(rarefaction_data, site == 4)
+
+plot(d4$n_individuals, d4$n_species, xlab = "count of individuals", ylab = "count of species", main = "site 4", pch = 18)
+
+plot(d4$n_individuals, d4$n_species, xlab = "count of individuals", ylab = "count of species", main = "site 4", pch = 18, xlim = c(0, 90))
+
+```
+<div class="red">
+Note:  The second plot omits two of the data points!
+</div>
+
+# Exercises
+
+You'll need to create the 5 scatterplots described above: 1 scatterplot that contains all of the data, and four scatterplots that show the data for the four individual sites.
+
+Each scatterplot must:
+
+* Have appropriate title, x-axis label, and y-axis label.
+* The x-axis range must include 0 in each plot.  You need to choose an appropriate upper limit that includes all of the data points.  You'll probably need to try multiple values.
+* The y-axis in every plot needs to range from 0 to 32
+
+Each scatterplot is worth 8 points, there are 40 total points available for this exercise.
+
+Your group will paste the 5 scatterplots into a document and upload it to Moodle.
+
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE, include = FALSE}
+
+head(rarefaction_data)
+plot(n_species ~ n_individuals, 
+     data = rarefaction_data, 
+     col = rarefaction_data$site,
+     type = "b", ylim = c(0, 35))
+
+
+with(subset(rarefaction_data, site == 4),
+       {
+         plot(n_species ~ n_individuals)
+       })
+
+
+
+
+
+curve(expr = 15 - 6 / x, add = T)
+rarefaction_data = unique(rarefaction_data)
+
+names(rarefaction_data)[1] = "site"
+# write.csv(rarefaction_data, here("data", "rarefaction_data_2020.csv"))
+
+```
+
+
+

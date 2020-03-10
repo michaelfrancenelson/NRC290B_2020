@@ -1,0 +1,617 @@
+---
+title: "Multiple regression"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2018
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \usepackage{arydshln}
+   - \graphicspath{{"G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/MultRegres/"}, {"C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/MultRegres/"}}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+#opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+
+options(width=120)
+options(width.cutoff=80)
+options(scipen = 999)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+## i-Clicker matching
+
+\vfill
+
+\centering \LARGE \href{https://tinyurl.com/ycl83wa5}{https://tinyurl.com/ycl83wa5}
+
+\vfill
+
+## Regression
+
+What do you remember?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=0cm] at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+```{r,echo=FALSE,results="hide"}
+par(oma=c(0,0,0,0),mar=c(4,4,1,1))
+set.seed(123)
+Explanatory <- round(runif(10,0,10),2)
+Response <- round(rnorm(10,10 + 3*Explanatory,5),2)
+mod <- lm(Response ~ Explanatory)
+clr <- adjustcolor(4,0.25)
+
+pdf("Images/MultRegres/scatter.pdf", height=3,width=3)
+plot(Response ~ Explanatory, pch=21, bg=clr, bty="l",las=1, cex=1.5, ylim=c(10,40),  xlim=c(0,10))
+dev.off()
+
+pdf("Images/MultRegres/scatterline.pdf", height=3,width=3)
+plot(Response ~ Explanatory, pch=21, bg=clr, bty="l",las=1, cex=1.5, ylim=c(10,40),  xlim=c(0,10))
+abline(lm(Response~Explanatory),lwd=2,col=4)
+dev.off()
+
+pdf("Images/MultRegres/scatterestline.pdf", height=3,width=3)
+plot(Response ~ Explanatory, pch=21, bg=clr, bty="l",las=1, cex=1.5, ylim=c(10,40),  xlim=c(0,10))
+abline(lm(Response~Explanatory),lwd=2,col=4)
+points(x=0,y=mod$coefficient[1],pch=16,cex=1.5,col=2)
+arrows(2,mod$coefficient[1] + mod$coefficient[2]*2,
+       4,mod$coefficient[1] + mod$coefficient[2]*2,lwd=2,col=2,length=0)
+arrows(4,mod$coefficient[1] + mod$coefficient[2]*2,
+       4,mod$coefficient[1] + mod$coefficient[2]*4,lwd=2,col=2,length=0)
+dev.off()
+
+pdf("Images/MultRegres/hyp.pdf", height=3.5,width=6.5)
+par(mfrow=c(1,2))
+plot(Response ~ Explanatory, pch=21, bg=clr, bty="l",las=1, cex=1.5, ylim=c(10,40),  xlim=c(0,10), main="Null")
+abline(h=mean(Response),lwd=2,col=1)
+plot(Response ~ Explanatory, pch=21, bg=clr, bty="l",las=1, cex=1.5, ylim=c(10,40),  xlim=c(0,10), main="Alternative")
+abline(h=mean(Response),lwd=1,col=1,lty=2)
+abline(lm(Response~Explanatory),lwd=2,col=4)
+dev.off()
+
+df <- data.frame(Response=Response, Explanatory=Explanatory)
+```
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatter.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+- estimate the correlation coefficient ($r$)
+    - how close are the values to the best fit line
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatterline.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+- estimate the correlation coefficient ($r$)
+    - how close are the values to the best fit line
+    - `r round(cor(Response,Explanatory),2)`
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatterline.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+- estimate the correlation coefficient ($r$)
+    - how close are the values to the best fit line
+- estimate the parameters of the best fit (straight) line
+    - $y = a + bX$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatterline.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+- estimate the correlation coefficient ($r$)
+    - how close are the values to the best fit line
+- estimate the parameters of the best fit (straight) line
+    - $y = a + bX$
+    - $y$: response variable
+    - $a$: intercept
+    - $b$: slope
+    - $X$: explanatory variable
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatterestline.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+What we *should* remember about regression:
+
+- to find the relationship between two continuous variables
+- estimate the correlation coefficient ($r$)
+    - how close are the values to the best fit line
+- estimate the parameters of the best fit (straight) line
+    - $y = a + bX$
+    - $y$: response variable
+    - $a$: `r round(coef(lm(Response~Explanatory))[1],2)`
+    - $b$: `r round(coef(lm(Response~Explanatory))[2],2)`
+    - $X$: explanatory variable
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=3cm] at (current page.south east)
+{\includegraphics[height=2.3in]{scatterestline.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+Regression analysis provides inference about the slope:
+
+- *null* hypothesis: slope *is not* different from 0
+- *alternative* hypothesis: slope *is* different from 0
+- how?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2cm] at (current page)
+{\includegraphics[height=2in]{hyp.pdf}};
+\end{tikzpicture}
+
+## Regression
+
+Regression analysis provides inference about the slope:
+
+- *null* hypothesis: slope *is not* different from 0
+- *alternative* hypothesis: slope *is* different from 0
+- *p* -value of the slope
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2cm] at (current page)
+{\includegraphics[height=2in]{hyp.pdf}};
+\end{tikzpicture}
+
+## Regression in p`R`actice
+
+- in algebra
+    - $y = a + bX$
+- in `R` (a linear model)
+    - `lm(y ~ X)`
+
+## Regression in p`R`actice
+
+- in algebra
+    - $Response = a + b \times Explanatory$
+- in `R` (a linear model)
+    - `lm(Response ~ Explanatory, data=df)`
+
+```{r}
+df
+```
+
+## Regression in p`R`actice
+
+```{r,eval=FALSE}
+mod <- lm(Response ~ Explanatory, data = df)
+summary(mod)
+```
+
+## Regression in p`R`actice
+
+```{r}
+mod <- lm(Response ~ Explanatory, data = df)
+summary(mod)
+```
+
+## Regression in p`R`actice
+
+```{r}
+mod <- lm(Response ~ Explanatory, data = df)
+summary(mod)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\draw[red, thick] (-0.1,2.1) -- (10.9,2.1) -- (10.9,4.4) -- (-0.1,4.4) -- (-0.1,2.1);
+\end{tikzpicture}
+
+## A more complex problem
+
+In typical biological studies:
+
+- rarely collect only a single explanatory variable
+- interested in *joint* effects
+- interested in *interactive* effects
+- we can use \textcolor{blue}{\textit{multiple regression}}
+    - $>1$ explanatory variable
+    - explanatory variables are continuous
+
+## An example - lakes in remote North East Russia
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.3cm] at (current page)
+{\includegraphics[height=3in]{Gmapwetlandcomplex.png}};
+\end{tikzpicture}
+
+## An example - lakes in remote North East Russia
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.3cm] at (current page)
+{\includegraphics[height=3in]{Gmapwetlandcomplexbasic.png}};
+\end{tikzpicture}
+
+## An example - lakes in remote North East Russia
+
+What might influence the number of a certain fish species (abundance) in each of these ponds?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## An example - lakes in remote North East Russia
+
+What might influence the number of a certain fish species (abundance) in each of these ponds?
+
+- lake size
+- pH
+- connectivity
+- depth
+- human activity (e.g., fishing)
+- agricultural run-off
+- etc$\ldots$
+
+## An example - lakes in remote North East Russia
+
+I am particularly interested in how:
+
+- the size of the lake (`Area`)
+- the amount of pesticides in the water (`Pest`)
+
+influence the the number of fish counted in a lake (`Abund`)
+
+```{r,echo=FALSE}
+set.seed(123456)
+Pest <- round(runif(10,0,10),2)
+Area <- round(runif(10,0,10),2)
+Abund <- round(rnorm(10,50 + 3*Area - 2*Pest,3),0)
+fish <- data.frame(Abund = Abund,
+                   Area = Area,
+                   Pest = Pest)
+```
+
+```{r}
+fish
+```
+
+## An example - lakes in remote North East Russia
+
+To visualize relationships for >1 covariate:
+
+- plot response against each variable independently
+
+```{r,echo=FALSE,results="hide"}
+pdf("Images/MultRegres/cov.pdf",height=3,width=7)
+par(mfrow=c(1,2),oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(Abund ~ Area, main="Abundance ~ Area", pch=21, bg=clr, bty="l",las=1, cex=1.5, data=fish, ylab="Abundance", xlab="Area")
+plot(fish$Abund ~ fish$Pest, main="Abundance ~ Pest",pch=21, bg=clr, bty="l",las=1, cex=1.5, data=fish, ylab="Abundance", xlab="Pest")
+dev.off()
+
+pdf("Images/MultRegres/cov1.pdf",height=3,width=7)
+par(mfrow=c(1,2),oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(fish$Abund ~ fish$Area, main="Abundance ~ Area", pch=21, bg=clr, bty="l",las=1, cex=1.5)
+plot(fish$Abund ~ fish$Pest, main="Abundance ~ Pest",pch=21, bg=clr, bty="l",las=1, cex=1.5)
+dev.off()
+pdf("Images/MultRegres/cov2.pdf",height=3,width=7)
+par(mfrow=c(1,2),oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(fish$Abund ~ fish$Area, main="Abundance ~ Area", pch=21, bg=clr, bty="l",las=1, cex=1.5)
+plot(fish$Abund ~ fish$Pest, main="Abundance ~ Pest",pch=21, bg=clr, bty="l",las=1, cex=1.5)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{cov.pdf}};
+\end{tikzpicture}
+
+## Simple regression
+
+Test for an effect of `Area` alone:
+
+```{r, eval = F}
+mod.area <- lm(Abund ~ Area, data = fish)
+summary(mod.area)
+```
+
+## Simple regression
+
+Test for an effect of `Area` alone:
+
+```{r}
+mod.area <- lm(Abund ~ Area, data = fish)
+summary(mod.area)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\draw[red, thick] (-0.1,2.7) -- (10.9,2.7) -- (10.9,3.1) -- (-0.1,3.1) -- (-0.1,2.7);
+\draw[red, thick] (-0.1,1.4) -- (10.9,1.4) -- (10.9,1) -- (-0.1,1) -- (-0.1,1.4);
+\end{tikzpicture}
+
+## Simple regression
+
+Test for an effect of `Area` alone:
+
+- significant positive effect
+    - $\beta_{\text{Area}}=$ `r round(mod.area$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.area)$coefficients[2,4],7)`
+    - $R^2 =$ `r round(summary(mod.area)$adj.r.squared,2)`
+    
+## Simple regression
+
+Test for an effect of `Pest` alone:
+
+```{r, eval=F}
+mod.pest <- lm(Abund ~ Pest, data = fish)
+summary(mod.pest)
+```
+
+## Simple regression
+
+Test for an effect of `Pest` alone:
+
+```{r}
+mod.pest <- lm(Abund ~ Pest, data = fish)
+summary(mod.pest)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\draw[red, thick] (-0.1,2.7) -- (10.9,2.7) -- (10.9,3.1) -- (-0.1,3.1) -- (-0.1,2.7);
+\draw[red, thick] (-0.1,1.4) -- (10.9,1.4) -- (10.9,1) -- (-0.1,1) -- (-0.1,1.4);
+\end{tikzpicture}
+
+## Simple regression
+
+Test for an effect of `Pest` alone:
+
+- significant negative effect
+    - $\beta_{\text{Pest}}=$ `r round(mod.pest$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.pest)$coefficients[2,4],7)`
+    - $R^2 =$ `r round(summary(mod.pest)$adj.r.squared,2)` 
+
+## Simple regression
+
+- significant positive effect of `Area` 
+    - $\beta_{\text{Area}}=$ `r round(mod.area$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.area)$coefficients[2,4],7)`
+    - $R^2 =$ `r round(summary(mod.area)$adj.r.squared,2)`
+
+- significant negative effect of `Pest`
+    - $\beta_{\text{Pest}}=$ `r round(mod.pest$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.pest)$coefficients[2,4],7)`
+    - $R^2 =$ `r round(summary(mod.pest)$adj.r.squared,2)`
+
+## Multiple regression
+
+*Multiple* regression extends the simple linear model:
+
+- to find the relationship between 1 continuous response variable and two or more explanatory variables
+
+## Multiple regression
+
+*Multiple* regression extends the simple linear model:
+
+- to find the relationship between 1 continuous response variable and two or more explanatory variables
+- estimate the overall correlation coefficient ($R^2$)
+    - how well the \underline{model} fits the data
+
+## Multiple regression
+
+*Multiple* regression extends the simple linear model:
+
+- to find the relationship between 1 continuous response variable and two or more explanatory variables
+- estimate the overall correlation coefficient ($R^2$)
+    - how well the \underline{model} fits the data
+- estimate the parameters of the best fit relationships
+    - $y = a + b_1 X_1 + b_2 X_2 + \ldots$
+
+## Multiple regression
+
+*Multiple* regression extends the simple linear model:
+
+- to find the relationship between 1 continuous response variable and two or more explanatory variables
+- estimate the overall correlation coefficient ($R^2$)
+    - how well the \underline{model} fits the data
+- estimate the parameters of the best fit (straight) line
+    - $y = a + b_1 X_1 + b_2 X_2 + \ldots$
+    - $y$: response variable
+    - $a$: intercept
+    - $b_1$ $b_2$: slopes (one for each explanatory variable)
+    - $X$'s: explanatory variables
+
+## Multiple regression
+
+*Multiple* regression extends the simple linear model:
+
+- to find the relationship between 1 continuous response variable and two or more explanatory variables
+- estimate the overall correlation coefficient ($R^2$)
+    - how well the \underline{model} fits the data
+- estimate the parameters of the best fit (straight) line
+    - $y = a + b_1 X_1 + b_2 X_2 + \ldots$
+    - $b_1$ $b_2$: slopes (one for each explanatory variable)
+- are the slopes *significant*?
+    - Null: no effect of $X_1$ on $y$ (i.e., $b_1 = 0$)
+    - Null: no effect of $X_2$ on $y$ (i.e., $b_2 = 0$)
+    - test using $p$ -values
+
+## Multiple regression in p`R`actice
+
+- in algebra
+    - $y = a + b_1 X_1 + b_2 X_2$
+- in `R`
+    - `lm(y ~ X1 + X2)`
+
+## Multiple regression in p`R`actice
+
+- in algebra
+    - $Abund = a + b_1 \times Area + b_2 \times Pest$
+- in `R`
+    - `lm(Abund ~ Area + Pest, data=fish)`
+
+```{r}
+fish
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=1.6cm,yshift=-1.6cm] at (current page)
+{\includegraphics[height=1.3in]{cov.pdf}};
+\end{tikzpicture}
+
+## Multiple Regression
+
+Conduct a multiple regression for each:
+
+```{r, eval = F}
+mod.joint <- lm(Abund ~ Area + Pest, data = fish)
+summary(mod.joint)
+```
+
+## Multiple Regression
+
+Conduct a multiple regression for each:
+
+```{r}
+mod.joint <- lm(Abund ~ Area + Pest, data = fish)
+summary(mod.joint)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\draw[red, thick] (-0.1,2.7) -- (10.9,2.7) -- (10.9,3.4) -- (-0.1,3.4) -- (-0.1,2.7);
+\draw[red, thick] (-0.1,1.45) -- (10.9,1.45) -- (10.9,1.05) -- (-0.1,1.05) -- (-0.1,1.45);
+\end{tikzpicture}
+
+## Regression results
+
+- significant positive effect of `Area` alone (simple regression)
+    - $\beta_{\text{Area}}=$ `r round(mod.area$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.area)$coefficients[2,4],5)`
+    - $R^2 =$ `r round(summary(mod.area)$adj.r.squared,2)`
+
+- significant negative effect of `Pest`  alone (simple regression)
+    - $\beta_{\text{Pest}}=$ `r round(mod.pest$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.pest)$coefficients[2,4],5)`
+    - $R^2 =$ `r round(summary(mod.pest)$adj.r.squared,2)`
+
+## Regression results
+
+- significant positive effect of `Area` alone (simple regression)
+    - $\beta_{\text{Area}}=$ `r round(mod.area$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.area)$coefficients[2,4],5)`
+    - $R^2 =$ `r round(summary(mod.area)$adj.r.squared,2)`
+
+- significant negative effect of `Pest`  alone (simple regression)
+    - $\beta_{\text{Pest}}=$ `r round(mod.pest$coefficient[2],2)`
+    - $p=$ `r round(summary(mod.pest)$coefficients[2,4],5)`
+    - $R^2 =$ `r round(summary(mod.pest)$adj.r.squared,2)`
+
+- significant *joint* effects of `Area` & `Pest` (multiple regression)
+    - $\beta_{\text{Area}}=$ `r round(mod.joint$coefficient[2],2)` ($p=$ `r round(summary(mod.joint)$coefficients[2,4],5)`)
+    - $\beta_{\text{Pest}}=$ `r round(mod.joint$coefficient[3],2)` ($p=$ `r round(summary(mod.joint)$coefficients[3,4],5)`)
+    - $R^2 =$ `r round(summary(mod.joint)$adj.r.squared,2)`
+
+
+## Group Exercise
+
+\footnotesize
+
+Conduct an analysis in `R` to investigate whether the number of voles captured (`Voles`) is influenced by:
+
+- the % vegetation in each habitat patch, `PercVeg`
+- the distance to the nearest road , `Dist2Road`
+- data: *vole trapping* 
+
+1. For each predictor variable (i.e., simple linear regression):
+    - Produce a figure to visualize the hypothesis you are testing
+    - Fit a linear model
+    - How each predictor influences the number of voles captured?
+    
+2. Now fit a multiple regression:
+    - Produce a 2-panel figure to visualize the hypotheses
+    - Fit a `multiple regression' model
+    - How each predictor influences the number of voles captured?
+    - Do these results differ to the `univariate' models
+
+3. (*optional*) Use AIC to pick the 'best' model
+    - See page 301 in the book
+    - Use the `add1()` function
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=4.5cm,yshift=1.8cm] at (current page)
+{\includegraphics[height=0.7in]{watervole.jpg}};
+\end{tikzpicture}

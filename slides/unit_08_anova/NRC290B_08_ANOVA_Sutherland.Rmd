@@ -1,0 +1,1847 @@
+---
+title: "Differences between more than two samples"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2018
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \usepackage{arydshln}
+   - \graphicspath{{"G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/ANOVA/"}, {"C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/ANOVA/"}}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+#opts_knit$set(root.dir = "G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+
+options(width=120)
+options(width.cutoff=80)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+## ANOVA group exercise
+
+```{r, echo = F}
+set.seed(123)
+group.A <- round(rnorm(10,45,10))
+group.B <- round(rnorm(10,85,10))
+group.C <- round(rnorm(10,65,10))
+
+vals <- c(group.A,group.B,group.C)
+groups <- factor(rep(1:3, each=10))
+
+mean.A <- mean(group.A)
+mean.B <- mean(group.B)
+mean.C <- mean(group.C)
+mean.All <- mean(c(group.A,group.B,group.C))
+
+#between-groups sums of squares (SS)
+bSS.A <- 10 * (mean.A - mean.All)^2
+bSS.B <- 10 * (mean.B - mean.All)^2
+bSS.C <- 10 * (mean.C - mean.All)^2
+bSS <- sum(bSS.A, bSS.B, bSS.C)
+bDF <- 3-1 #number of groups - 1
+bMS <- bSS / bDF
+#c(bSS, bDF, bMS)
+
+#within-groups sums of squares (SS)
+wSS.A <- sum((group.A - mean.A)^2)
+wSS.B <- sum((group.B - mean.B)^2)
+wSS.C <- sum((group.C - mean.C)^2)
+wSS <- wSS.A + wSS.B + wSS.C
+wDF <- 30-3 #number of observations - number of groups 
+wMS <- wSS / wDF
+#c(wSS, wDF, wMS)
+
+Fstat <- bMS / wMS
+sals <- read.csv("Data/salamANOVA.csv")
+```
+
+\normalsize
+
+Fill in the ANOVA table for the following data
+
+- group A: `r group.A`
+- group B: `r group.B`
+- group C: `r group.C`
+
+\vspace{1cm}
+
+| Variation    | $SS$    | $df$ | $MS$    | $F$   | significant? |
+|--------------|--------:|-----:|--------:|------:|-------------:|
+|Between-group | ?       | ?    | ?       | ?     | ?            |
+|Within-group  | ?       | ?    | ?       |       |              |
+
+## ANOVA group exercise
+
+Fill in the ANOVA table for the following data
+
+- group A: `r group.A`
+- group B: `r group.B`
+- group C: `r group.C`
+
+\vspace{1cm}
+
+| Variation    | $SS$    | $df$ | $MS$    | $F$   | significant? |
+|--------------|--------:|-----:|--------:|------:|--------------|
+|Between-group | 8688.87 | 2    | 4344.43 | 44.69 | YES!         |
+|Within-group  | 2624.50 | 27   | 97.20   |       |              |
+
+
+## ANOVA group exercise - answers
+
+```{r, echo = T}
+#calculate the means
+mean.A <- mean(group.A)
+mean.A
+mean.B <- mean(group.B)
+mean.B
+mean.C <- mean(group.C)
+mean.C
+mean.All <- mean(c(group.A,group.B,group.C))
+mean.All
+```
+
+## ANOVA group exercise - answers
+
+```{r, echo = T}
+#between-groups sums of squares (SS)
+bSS.A <- 10 * (mean.A - mean.All)^2
+bSS.B <- 10 * (mean.B - mean.All)^2
+bSS.C <- 10 * (mean.C - mean.All)^2
+bSS <- sum(bSS.A, bSS.B, bSS.C)
+
+#between-groups degrees of freedom (df)
+bDF <- 3-1 #number of groups - 1
+
+#between-groups mean squares (MS)
+bMS <- bSS / bDF
+
+c(bSS, bDF, bMS)
+```
+
+## ANOVA group exercise - answers
+
+```{r, echo = T}
+#within-groups sums of squares (SS)
+wSS.A <- sum((group.A - mean.A)^2)
+wSS.B <- sum((group.B - mean.B)^2)
+wSS.C <- sum((group.C - mean.C)^2)
+wSS <- wSS.A + wSS.B + wSS.C
+
+#within-groups degrees of freedom (df)
+wDF <- 30-3 #number of observations - number of groups 
+
+#bwithin-groups mean squares (MS)
+wMS <- wSS / wDF
+
+c(wSS, wDF, wMS)
+```
+
+## ANOVA group exercise - answers
+
+```{r, echo = T}
+#Calcualte the F statistic
+Fstat <- bMS / wMS
+Fstat
+```
+
+## ANOVA group exercise - answers
+
+```{r, echo = T}
+#check working against R's anova functions
+c(bSS, bDF, bMS)
+c(wSS, wDF, wMS)
+Fstat
+anova(aov(vals~groups))
+```
+
+## A question!
+
+Having just analyzed some fish counts data in 16 lakes in Massachusetts, Thorsten found a significant 'lake' effect using an ANOVA, i.e., the mean number of fish was not the same in all lakes. 
+
+1. What would Thorsten do to find out *which lakes were different from eachother*?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] A series of $t$-tests
+  \item[B)] A Tukey Honest Significant Difference test 
+  \item[C)] A Kruskal-Wallis test
+\end{enumerate}
+
+## A question!
+
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes: 
+
+1. Which statistical test should I use?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] A $t$-test
+  \item[B)] A One-Way ANOVA 
+  \item[C)] A Chi-square test
+  \item[D)] A Two-Way ANOVA
+\end{enumerate}
+
+## A question!
+
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes: 
+
+2. Which is the test statistic for the test?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] $t$
+  \item[B)] $F$ 
+  \item[C)] $r$
+  \item[D)] $\chi^2$
+\end{enumerate}
+
+## A question!
+
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes. In fact, I actually sampled 10 large, 10 medium, and 10 small lakes in each of the high and low salinity lakes. I want to explore whether there are differences in population size based on lake salinity and lake size. 
+
+3. Now which statistical test should I use?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] A $t$-test
+  \item[B)] A One-Way ANOVA 
+  \item[C)] A Chi-square test
+  \item[D)] A Two-Way ANOVA
+\end{enumerate}
+
+## A question!
+
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes. In fact, I actually sampled 10 large, 10 medium, and 10 small lakes in each of the high and low salinity lakes. I want to explore whether there are differences in population size based on lake salinity and lake size. 
+
+4. Now Which is the test statistic for the test?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] $t$
+  \item[B)] $F$ 
+  \item[C)] $r$
+  \item[D)] $\chi^2$
+\end{enumerate}
+
+## Comparing differences - two samples
+
+Two samples:
+
+- what test?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{QM.png}};
+\end{tikzpicture}
+
+```{r,echo=FALSE, message=FALSE, results='hide'}
+pdf("Images//ANOVA//boxXY.pdf",height=3,width=3)
+par(oma=c(0,0,0,0),mar=c(4,4,1,1))
+set.seed(123)
+Abundance <- rnorm(60,c(50,80),5)
+Site <- rep(c("A","B"),times=30)
+boxplot(Abundance ~ Site, col=adjustcolor(c(3,4),0.5),las=1)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=2cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2in]{boxXY.pdf}};
+\end{tikzpicture}
+
+
+## Comparing differences - two samples
+
+Two samples:
+
+- the t-test?
+- test whether group means differ significantly
+- $H_0$: there is no significant difference between the means
+- $H_1$: there is a significant difference between the means
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3cm,yshift=-2.2cm] at (current page)
+{\includegraphics[height=1.75in]{boxXY.pdf}};
+\end{tikzpicture}
+
+## Comparing differences - two smaples
+
+Two samples:
+
+- the t-test?
+- test whether group means differ significantly
+- $H_0$: there is no significant difference between the means
+- $H_1$: there is a significant difference between the means
+
+\vspace{0.5cm}
+
+Significance based on:
+
+- t-statistic: $t = \frac{|\bar{x}_a - \bar{x}_b |}{\sqrt{\frac{s^2_a}{n_a}+\frac{s^2_b}{n_b}}}$
+- degrees of freedom
+- *p*-value
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3cm,yshift=-2.2cm] at (current page)
+{\includegraphics[height=1.75in]{boxXY.pdf}};
+\end{tikzpicture}
+
+
+## Comparing differences - more than two samples
+
+What about if there are more than 2 samples?
+
+- can you think of any examples?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.6cm] at (current page)
+{\includegraphics[height=1.75in]{QM.png}};
+\end{tikzpicture}
+
+## Comparing multiple groups - examples
+
+Regional differences in salamander abundance:
+
+- comparing multiple populations
+- quantify the differences between populations
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2cm] (one) at (current page) {\includegraphics[height=2in]{multipop.jpg}};
+\end{tikzpicture}
+
+## Comparing multiple groups - examples
+
+Plant growth related to available resources (pot size):
+
+- comparing multiple treatments
+- quantify the effects of resource availability
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5,-2) {\includegraphics[height=1.5in]{pot.jpg}};
+\end{tikzpicture}
+
+## Comparing multiple groups - examples
+
+Plants productivity (dry mass in grams) related to fertilizer treatment
+
+- do our treatments influence biomass production?
+- is there a positive effect relative to a control?
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5.5,-2.5) {\includegraphics[height=1.25in]{pots.png}};
+\end{tikzpicture}
+
+## Comparing multiple groups - examples
+
+When there are more than 2 groups
+
+- t-test doesn't help 
+   - need to do all possible pairs
+   - time consuming
+   - get spurious differences just by chance
+
+\begin{tikzpicture}[overlay]
+\node[xshift=-0.79cm,yshift=-3.8cm] (one) at (current page.south) {\includegraphics[height=0.62in]{pots.png}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-1.2cm] (one) at (current page) {\includegraphics[height=2in]{plant.pdf}};
+\end{tikzpicture}
+
+## Comparing multiple groups - ANOVA
+
+Analysis of Variance (ANOVA):
+
+- statistical test for testing for differences among >2 groups
+- ANOVA and t-test are identical when there are 2 groups
+- one factor/group/category (*One-way ANOVA*)
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2.4cm] (one) at (current page) {\includegraphics[height=2in]{plant.pdf}};
+\end{tikzpicture}
+
+## Comparing multiple groups - ANOVA
+
+Analysis of Variance (ANOVA):
+
+- statistical test for testing for differences among >2 groups
+- ANOVA and t-test are identical when there are 2 groups
+- one factor/group/category (*One-way ANOVA*)
+
+Assumption:
+
+- data are normally distributed
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=-2.4cm] (one) at (current page) {\includegraphics[height=2in]{plant.pdf}};
+\end{tikzpicture}
+
+## Comparing multiple groups - ANOVA
+
+Analysis of Variance (ANOVA):
+
+- statistical test for testing for differences among >2 groups
+- ANOVA and t-test are identical when there are 2 groups
+- one factor/group/category (*One-way ANOVA*)
+
+Assumption:
+
+- data are normally distributed
+
+Hypotheses:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=2cm] at (current page.south)
+{\includegraphics[height=1in]{QM.png}};
+\end{tikzpicture}
+
+## Comparing multiple groups - ANOVA
+
+Analysis of Variance (ANOVA):
+
+- statistical test for testing for differences among >2 groups
+- ANOVA and t-test are identical when there are 2 groups
+- one factor/group/category (*One-way ANOVA*)
+
+Assumption:
+
+- data are normally distributed
+
+Hypotheses:
+
+- $H_0$: there are no significant differences between the means
+    - all means are equal
+- $H_1$: there are significant differences between the means
+    - all means are not equal
+
+
+## ANOVA explained
+
+The ANOVA partitions the *total* variation into *within* sample variation with *between* sample variation to determine whether samples come from a single distribution or not.
+
+```{r,echo=FALSE, message=FALSE, results='hide'}
+pdf("Images//ANOVA//varbox.pdf",height=3,width=6)
+par(mfrow=c(1,2), oma=c(0,0,0,0),mar=c(4,4,2,2))
+y2 <- rnorm(60,rep(c(50,100,70),each=20),10)
+y3 <- rnorm(60,c(70),10)
+
+y2df <- data.frame(Total = y2,
+                   A = c(y2[1:20],rep(NA,40)),
+                   B = c(y2[21:40],rep(NA,40)),
+                   C = c(y2[41:60],rep(NA,40)))
+y3df <- data.frame(Total = y3,
+                   A = c(y3[1:20],rep(NA,40)),
+                   B = c(y3[21:40],rep(NA,40)),
+                   C = c(y3[41:60],rep(NA,40)))
+
+boxplot(y2df,las=1,ylim=c(20,130),col=adjustcolor(c(1,2,3,4),0.4), pch="", whisklty = 1)
+abline(v=1.5, lty=2)
+boxplot(y3df,las=1,ylim=c(20,130),col=adjustcolor(c(1,2,3,4),0.4), pch="", whisklty = 1)
+abline(v=1.5, lty=2)
+dev.off()
+
+pdf("Images//ANOVA//sst.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:length(y2),mean(y2),1:length(y2),y2,length = 0,col="grey")
+abline(h=mean(y2),lwd=2)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//ssw.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y2[1:20]), 1:20,y2[1:20], length = 0,col="grey")
+arrows(21:40,mean(y2[21:40]),21:40,y2[21:40],length = 0,col="grey")
+arrows(41:60,mean(y2[41:60]),41:60,y2[41:60],length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       c(20,40,60),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y2),lwd=1)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//ssb.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y2[1:20]), 1:20,mean(y2), length = 0,col="grey")
+arrows(21:40,mean(y2[21:40]),21:40,mean(y2),length = 0,col="grey")
+arrows(41:60,mean(y2[41:60]),41:60,mean(y2),length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       c(20,40,60),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y2),lwd=1)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+
+pdf("Images//ANOVA//sstA.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y3,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:length(y3),mean(y3),1:length(y3),y3,length = 0,col="grey")
+abline(h=mean(y3),lwd=2)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//sswA.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y3,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y3[1:20]), 1:20,y3[1:20], length = 0,col="grey")
+arrows(21:40,mean(y3[21:40]),21:40,y3[21:40],length = 0,col="grey")
+arrows(41:60,mean(y3[41:60]),41:60,y3[41:60],length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       c(20,40,60),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y3),lwd=1)
+points(y3,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//ssbA.pdf",height=3,width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y3,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130))
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y3[1:20]), 1:20,mean(y3), length = 0,col="grey")
+arrows(21:40,mean(y3[21:40]),21:40,mean(y3),length = 0,col="grey")
+arrows(41:60,mean(y3[41:60]),41:60,mean(y3),length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       c(20,40,60),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y3),lwd=1)
+points(y3,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.25in]{varbox.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+- *Total* sums of squares ($SS_T$)
+
+$$SS_T = \sum(x - \bar{x})^2$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=2.75in]{sst.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+- *Within-sample* sums of squares ($SS_T$)
+- add up the within sample SS 
+
+$$SS_W = \sum(x_1 - \bar{x}_1)^2 + \sum(x_2 - \bar{x}_2)^2 + \sum(x_3 - \bar{x}_3)^2$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=2.75in]{ssw.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+- *Within-sample* sums of squares ($SS_T$)
+- more generally ($g$ is the number of groups)
+
+$$SS_W = \sum_g \sum_i (x_{ig} - \bar{x}_g)^2$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=2.75in]{ssw.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+- *Between-sample* sums of squares ($SS_T$)
+- add up the differences in the means
+
+$$SS_B = n_1 (\bar{x}_1 - \bar{x})^2 + n_2 (\bar{x}_2 - \bar{x})^2 + n_3 (\bar{x}_3 - \bar{x})^2$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=2.75in]{ssb.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+- *Between-sample* sum of squares ($SS_T$)
+- more generally ($g$ is the number of groups)
+
+$$SS_B = \sum_g n_g (\bar{x}_g - \bar{x})^2$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=2.75in]{ssb.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+Total:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=3in]{sst.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+Within group:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=3in]{ssw.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+Between group:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=3in]{ssb.pdf}};
+\end{tikzpicture}
+
+
+## ANOVA and the Sums of Squares
+
+\vspace{1cm}
+
+$SS_T = \sum(x - \bar{x})^2$
+
+\vspace{2cm}
+
+$SS_W = \sum_g \sum_i (x_{ig} - \bar{x}_g)^2$
+
+\vspace{2cm}
+
+$SS_B = \sum_g n_g (\bar{x}_g - \bar{x})^2$
+
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=2cm] at (current page.east)
+{\includegraphics[height=1.4in]{sst.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-0.5cm] at (current page.east)
+{\includegraphics[height=1.4in]{ssw.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-3cm] at (current page.east)
+{\includegraphics[height=1.4in]{ssb.pdf}};
+\end{tikzpicture}
+
+## ANOVA degrees of freedom
+
+If we define the following:
+
+- $n$ is the total sample size (number of observations)
+- $g$ is the number of groups/samples
+
+## ANOVA degrees of freedom
+
+If we define the following:
+
+- $n$ is the total sample size (number of observations)
+- $g$ is the number of groups/samples
+
+Then the degrees of freedom ($df$) are:
+
+- Total: $df_T = n-1$
+- Within: $df_W = g-1$
+- Between: $df_B = n-g$
+
+## ANOVA the *mean square*
+
+The mean square ($MS$) is the sum of squares divided by the degrees of freedom:
+
+$$MS = SS/df$$
+
+So:
+
+- Total: $MS_T = SS_T/df_T$
+- Within: $MS_W = SS_W/df_W$
+- Between: $MS_B = SS_B/df_B$
+
+## ANOVA all the ingredients
+
+\vfill
+
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{|llll|}
+\hline
+        & $SS$ & $df$ & $MS$ \\
+\hline
+Total   & $\sum(x - \bar{x})^2$                  & $n-1$ & $SS_T/df_T$ \\
+Within  & $\sum_g \sum_i (x_{ig} - \bar{x}_j)^2$ & $n-g$ & $SS_W/df_W$ \\
+Between & $\sum_g n_g (\bar{x}_g - \bar{x})^2$   & $g-1$ & $SS_B/df_B$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\vfill
+
+## ANOVA the statistical test
+
+ANOVA results are usually presented in an ANOVA table
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lccccc}
+\toprule
+Source of variation & $SS$   & $df$   & $MS$   & $F$ & $p$ \\
+\hline
+Between             & $SS_B$ & $df_B$ & $MS_B$ &           \\
+Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
+Total               & $SS_T$ & $df_T$ &   --   &           \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+## ANOVA the statistical test
+
+ANOVA results are usually presented in an ANOVA table
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lccccc}
+\toprule
+Source of variation & $SS$   & $df$   & $MS$   & $F$ & $p$ \\
+\hline
+Between             & $SS_B$ & $df_B$ & $MS_B$ &           \\
+Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
+Total               & $SS_T$ & $df_T$ &   --   &           \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+- $F$ is the test statistic for the ANOVA
+
+$$F = \frac{MS_B}{MS_W}$$
+
+## ANOVA the statistical test
+
+ANOVA results are usually presented in an ANOVA table
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lccccc}
+\toprule
+Source of variation & $SS$   & $df$   & $MS$   & $F$ & $p$ \\
+\hline
+Between             & $SS_B$ & $df_B$ & $MS_B$ &           \\
+Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
+Total               & $SS_T$ & $df_T$ &   --   &           \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+- $p$ is the probability of observing the $F$ statistic with a given degrees of freedom if the null hypothesis is true:
+    - null hypothesis is 'no difference between the means'
+    - based on the $F$-distribution
+
+## ANOVA the $F$ distribution
+
+```{r,echo=FALSE,results="hide"}
+pdf("Images//ANOVA//F.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+ff <- seq(0,10,0.1)
+mat <- matrix(NA,nrow=length(ff),ncol=5)
+mat[,1] <- df(ff,2,8)
+mat[,2] <- df(ff,2,29)
+mat[,3] <- df(ff,2,89)
+mat[,4] <- df(ff,2,299)
+mat[,5] <- df(ff,2,749)
+
+plot(mat[,3]~ff, main="F-distribution (df = 2,89)", xlab="F statistic",
+     ylab="Probability",lwd=2,col=4,bty="l",las=1,type="l")
+abline(h=0.05,lty=2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=3in]{F.pdf}};
+\end{tikzpicture}
+
+## ANOVA the $F$ distribution
+
+```{r,echo=FALSE,results="hide"}
+pdf("Images//ANOVA//F.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+ff <- seq(0,10,0.1)
+mat <- matrix(NA,nrow=length(ff),ncol=5)
+mat[,1] <- df(ff,2,8)
+mat[,2] <- df(ff,2,29)
+mat[,3] <- df(ff,2,89)
+mat[,4] <- df(ff,2,299)
+mat[,5] <- df(ff,2,749)
+
+plot(mat[,3]~ff, main="F-distribution (df = 2,89)", xlab="F statistic",
+     ylab="Probability",lwd=2,col=4,bty="l",las=1,type="l")
+abline(h=0.05,lty=2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=3in]{F.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=1cm,yshift=1cm,minimum size = 3pt] at (current page)
+{\LARGE $F = \frac{MS_B}{MS_W}$};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=1.5cm] at (current page)
+{\includegraphics[height=1.5in]{ssb.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.2cm,minimum size = 3pt] at (current page)
+{\LARGE $F = \frac{MS_B}{MS_W}$};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=1.5in]{ssw.pdf}};
+\end{tikzpicture}
+
+## ANOVA and the Sums of Squares
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=1.5cm] at (current page)
+{\includegraphics[height=1.5in]{ssbA.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.2cm,minimum size = 3pt] at (current page)
+{\LARGE $F = \frac{MS_B}{MS_W}$};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=1.5in]{sswA.pdf}};
+\end{tikzpicture}
+
+## ANOVA the $p$ value
+
+Hypotheses:
+
+- $H_0$: there are no significant differences between the means
+    - all means are equal
+- $H_1$: there are significant differences between the means
+    - all means are not equal
+
+When do we reject or fail to reject the null hypothesis?
+
+## ANOVA the $p$ value
+
+Hypotheses:
+
+- $H_0$: there are no significant differences between the means
+    - all means are equal
+- $H_1$: there are significant differences between the means
+    - all means are not equal
+
+When do we reject or fail to reject the null hypothesis?
+
+- if $F$ is large, then $p$ is small
+- if $p<0.05$ we reject the null hypothesis
+- if $p>0.05$ we *fail to* reject the null hypothesis
+
+## Pairwise comparisons with ANOVA
+
+The $F$ statistic tells us whether there are differences, but *not* what the differences are:
+
+- *Cannot* use *t*-tests to make pairwise comparisons
+    - multiple *t*-tests will lead to significant results by chance
+
+## Pairwise comparisons with ANOVA
+
+The $F$ statistic tells us whether there are differences, but *not* what the differences are:
+
+- Instead we conduct *Post-hoc* testing
+    - Tukey Honest Significant Difference test (Tukey HSD)
+    - accounts for multiple tests being conducted
+    - calculation of a *t*-statistic
+    - a pair, so degrees of freedom is 1
+    - 5% critical value for $df=1$ is 4.303
+        - if $t>4.303$ then $p<0.05$
+        
+## Pairwise comparisons with ANOVA
+
+The $F$ statistic tells us whether there are differences, but *not* what the differences are:
+
+- Instead we conduct *Post-hoc* testing
+    - Tukey Honest Significant Difference test (Tukey HSD)
+    - accounts for multiple tests being conducted
+    - calculation of a *t*-statistic
+    - a pair, so degrees of freedom is 1
+    - 5% critical value for $df=1$ is 4.303
+        - if $t>4.303$ then $p<0.05$
+
+$$t_{a,b} = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{MS_W \bigg(\frac{1}{n_a}+\frac{1}{n_b}\bigg)}{2}}}$$
+
+
+## Pairwise comparisons with ANOVA
+
+The $F$ statistic tells us whether there are differences, but *not* what the differences are:
+
+- Instead we conduct *Post-hoc* testing
+    - Tukey Honest Significant Difference test (Tukey HSD)
+    - accounts for multiple tests being conducted
+    - calculation of a *t*-statistic
+    - a pair, so degrees of freedom is 1
+    - 5% critical value for $df=1$ is 4.303
+        - if $t>4.303$ then $p<0.05$
+
+|    |  A  |  B  |  C  |
+|----|:---:|:---:|:---:|
+| A  |  -  | $t_{A,B}$ | $t_{A,C}$ |  
+| B  |  -  | -   | $t_{B,C}$ | 
+| C  |  -  | - | - |
+
+
+
+## ANOVA Recap
+
+Comparing differences between >2 samples (groups) using ANOVA
+
+- null hypothesis: 
+    - no difference between the samples
+    - data are from the same population
+- alternative hypothesis:
+    - sample means are different
+    - data from the different populations
+
+```{r, echo=FALSE, results='hide'}
+pdf("Images//ANOVA//anovaNULL.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130), main = "NULL")
+axis(2,las=1)
+box(bty="l")
+arrows(1:length(y2),mean(y2),1:length(y2),y2,length = 0,col="grey")
+abline(h=mean(y2),lwd=2)
+points(y2,pch=16,col=rep(adjustcolor(1,0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//anovaALT.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130), main = "Alternative")
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y2[1:20]), 1:20,y2[1:20], length = 0,col="grey")
+arrows(21:40,mean(y2[21:40]),21:40,y2[21:40],length = 0,col="grey")
+arrows(41:60,mean(y2[41:60]),41:60,y2[41:60],length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       c(20,40,60),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{anovaNULL.pdf}};
+\node[xshift=3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{anovaALT.pdf}};
+\end{tikzpicture}
+
+## ANOVA Recap
+
+Comparing differences between >2 groups using ANOVA
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lccccc}
+\toprule
+Source of variation & $SS$   & $df$   & $MS$   & $F$                 & $p$ \\
+\hline
+Between             & $SS_B$ & $df_B$ & $MS_B$ & $\frac{MS_B}{MS_W}$ &     \\
+Within              & $SS_W$ & $df_W$ & $MS_W$ &                     &     \\
+Total               & $SS_T$ & $df_T$ &   --   &                     &     \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{anovaNULL.pdf}};
+\node[xshift=3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{anovaALT.pdf}};
+\end{tikzpicture}
+
+## ANOVA Recap
+
+Comparing differences between >2 groups using ANOVA
+
+- Essentially comes down to:
+    - a model with one mean *or* a model with a mean per group
+    - which model best explains the data
+    - which model \underline{significantly} reduces the sums of squares
+
+```{r, results="hide", echo=FALSE}
+pdf("Images//ANOVA//sswC.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y2,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130), main="Significant")
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y2[1:20]), 1:20,y2[1:20], length = 0,col="grey")
+arrows(21:40,mean(y2[21:40]),21:40,y2[21:40],length = 0,col="grey")
+arrows(41:60,mean(y2[41:60]),41:60,y2[41:60],length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       c(20,40,60),c(mean(y2[1:20]),mean(y2[21:40]),mean(y2[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y2),lwd=1)
+points(y2,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+pdf("Images//ANOVA//sswD.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(y3,type="n",bty="l",xlab="", ylab="Response",axes=F,ylim=c(20,130), main="Not significant")
+axis(2,las=1)
+box(bty="l")
+arrows(1:20,mean(y3[1:20]), 1:20,y3[1:20], length = 0,col="grey")
+arrows(21:40,mean(y3[21:40]),21:40,y3[21:40],length = 0,col="grey")
+arrows(41:60,mean(y3[41:60]),41:60,y3[41:60],length = 0,col="grey")
+arrows(c(1,21,41),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       c(20,40,60),c(mean(y3[1:20]),mean(y3[21:40]),mean(y3[41:60])),
+       lwd=2,col=c(2,3,4),length=0)
+abline(h=mean(y3),lwd=1)
+points(y3,pch=16,col=rep(adjustcolor(c(2,3,4),0.5),each=20),cex=1.5)
+dev.off()
+
+
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{sswC.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3cm,yshift=-3cm] at (current page)
+{\includegraphics[height=1.8in]{sswD.pdf}};
+\end{tikzpicture}
+
+
+## More than on factor with ANOVA
+
+So far we have looked at multiple levels within a single factor
+
+- factor: a single categorical predictor variable
+- level: the categories within a factor
+
+In some cases, we may be interested in >1 factor
+
+- 2 factors: *two-way* ANOVA
+- 3 factors: *three-way* ANOVA
+- $\cdots$ multi-way ANOVA
+
+## Two-way ANOVA
+
+Let's use a grazing example:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcc}
+\hline
+           & \multicolumn{2}{c}{Site}  \\
+\cline{2-3}
+Grazing Treatment & Top     & Lower    \\
+\hline
+Lo                &  9      &  7       \\
+Lo                & 11      &  6       \\
+Lo                &  6      &  5       \\
+Mid               & 14      &  14      \\
+Mid               & 17      &  17      \\
+Mid               & 19      &  15      \\
+Hi                & 28      &  44      \\
+Hi                & 31      &  38      \\
+Hi                & 32      &  37      \\
+\hline
+\end{tabular}
+\end{center}
+
+```{r,echo=FALSE, results="hide"}
+graze <- data.frame(graze= factor(rep(rep(c("Lo","Mid","Hi"),each=3),2),
+                                  levels=c("Lo","Mid","Hi")),
+                    Site = factor(rep(c("Top","Lower"),each=9), 
+                                  levels=c("Lower","Top")),
+                    Abundance = c(9,11,6,14,17,19,28,31,32,
+                                  7,6,5,14,17,15,44,38,37))
+
+pdf("Images//ANOVA//twoway.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+boxplot(graze$Abundance~graze$Site+graze$graze, axes=F, col=adjustcolor(c(2,4),0.3),ylab="Abundance")
+legend("topleft",levels(graze$Site), pch=22,pt.bg=adjustcolor(c(2,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+abline(v=c(2.5,4.5),col="grey",lty=2)
+dev.off()
+
+pdf("Images//ANOVA//twowaypt.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+xxx <- (rep(c(1,2,3,4,5,6),each=3) + c(-0.2,0,0.2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(rep(rep(c(2,4),each=3),3),0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+abline(v=c(2.5,4.5),col="grey",lty=2)
+dev.off()
+
+```
+
+## Two-way ANOVA
+
+Lets use the example from the book (in `R` looks like this):
+
+```{r}
+graze
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=20cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twoway.pdf}};
+\end{tikzpicture}
+
+## Two-way ANOVA
+
+Lets use the example from the book (in `R` looks like this):
+
+```{r}
+graze
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twoway.pdf}};
+\end{tikzpicture}
+
+## Two-way ANOVA
+
+Lets use the example from the book (in `R` looks like this):
+
+```{r}
+graze
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twowaypt.pdf}};
+\end{tikzpicture}
+
+## Conducting the ANOVA
+
+\vfill
+
+Step one: 
+
+- SS for each factor
+    - graze
+    - site
+- $SS_{graze} = \sum(x_{i,graze} - \bar{x}_{graze})^2$
+- Ignore site grouping
+
+\vfill
+
+```{r,echo=FALSE, results="hide"}
+pdf("Images//ANOVA//twowayptA.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(rep(c(2,3,4),each=6),0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+#legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,3,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+arrows(xxx[1:6],graze$Abundance[c(10:12,1:3)],
+       xxx[1:6], mean(graze$Abundance[c(10:12,1:3)]),length=0,col=2)
+arrows(xxx[7:12],graze$Abundance[c(13:15,4:6)],
+       xxx[7:12], mean(graze$Abundance[c(13:15,4:6)]),length=0,col=3)
+arrows(xxx[13:18],graze$Abundance[c(16:18,7:9)],
+       xxx[13:18], mean(graze$Abundance[c(16:18,7:9)]),length=0,col=4)
+arrows(c(xxx[c(1,7,13)]), 
+       c(mean(graze$Abundance[c(10:12,1:3)]),
+         mean(graze$Abundance[c(13:15,4:6)]),
+         mean(graze$Abundance[c(16:18,7:9)])),
+       c(xxx[c(6,12,18)]),
+       c(mean(graze$Abundance[c(10:12,1:3)]),
+         mean(graze$Abundance[c(13:15,4:6)]),
+         mean(graze$Abundance[c(16:18,7:9)])),
+       length=0,col=c(2,3,4))
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twowayptA.pdf}};
+\end{tikzpicture}
+
+## Conducting the ANOVA
+
+\vfill
+
+Step one: 
+
+- SS for each factor
+    - graze
+    - site
+- $SS_{site} = \sum(x_{i,site} - \bar{x}_{site})^2$
+- Ignore graze grouping
+
+\vfill
+
+```{r,echo=FALSE, results="hide"}
+pdf("Images//ANOVA//twowayptB.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(rep(rep(c(2,4),each=3),3),0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+#legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,3,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+abline(h=c(mean(graze$Abundance[c(1:9)]),mean(graze$Abundance[c(10:18)])),col="grey90")
+
+arrows(xxx[c(1:3,7:9,13:15)],   graze$Abundance[10:18],
+       xxx[c(1:3,7:9,13:15)],   mean(graze$Abundance[10:18]),length=0,col=2)
+arrows(xxx[c(4:6,10:12,16:18)], graze$Abundance[1:9],
+       xxx[c(4:6,10:12,16:18)], mean(graze$Abundance[1:9]),length=0,col=4)
+
+
+arrows(c(xxx[c(1,4,7,10,13,16)]), 
+       c(mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)]),
+         mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)]),
+         mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)])),
+       c(xxx[c(3,6,9,12,15,18)]),
+       c(mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)]),
+         mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)]),
+         mean(graze$Abundance[c(10:18)]),
+         mean(graze$Abundance[c(1:9)])),
+       length=0,col=c(2,4,2,4,2,4),lwd=2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twowayptB.pdf}};
+\end{tikzpicture}
+
+## Conducting the ANOVA
+
+\vfill
+
+Step two: 
+
+- SS for each combinations of factors
+- Treat all groupings as unique
+- $SS_{within} = (x_{i,g} - \bar{x}_{g})^2$
+
+\vfill
+
+```{r,echo=FALSE, results="hide"}
+pdf("Images//ANOVA//twowayptC.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(rep(rep(c(2,4),each=3),3),0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+#legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,3,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+
+arrows(xxx,   
+       graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)],
+       xxx,   
+       rep(c(mean(graze$Abundance[10:12]),
+             mean(graze$Abundance[1:3]),
+             mean(graze$Abundance[13:15]),
+             mean(graze$Abundance[4:6]),
+             mean(graze$Abundance[16:18]),
+             mean(graze$Abundance[7:9])),each=3),
+       length=0,col=rep(c(2,4),each=3))
+
+arrows(c(xxx[c(1,4,7,10,13,16)]), 
+       c(mean(graze$Abundance[10:12]),
+             mean(graze$Abundance[1:3]),
+             mean(graze$Abundance[13:15]),
+             mean(graze$Abundance[4:6]),
+             mean(graze$Abundance[16:18]),
+             mean(graze$Abundance[7:9])),
+       c(xxx[c(3,6,9,12,15,18)]),
+       c(mean(graze$Abundance[10:12]),
+             mean(graze$Abundance[1:3]),
+             mean(graze$Abundance[13:15]),
+             mean(graze$Abundance[4:6]),
+             mean(graze$Abundance[16:18]),
+             mean(graze$Abundance[7:9])),
+       length=0,col=c(2,4,2,4,2,4),lwd=2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twowayptC.pdf}};
+\end{tikzpicture}
+
+## Conducting the ANOVA
+
+\vfill
+
+Step three: 
+
+- Sums of squares of both factors
+- $SS_{both} = SS_{total} - SS_{graze} - SS{site} - SS_{within}$
+
+\vfill
+
+```{r,echo=FALSE, results="hide"}
+pdf("Images//ANOVA//twowayptD.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(1,0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+#legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+arrows(xxx,graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)],
+       xxx, mean(graze$Abundance),length=0,col="grey")
+abline(h=mean(graze$Abundance))
+dev.off()
+```
+
+## Conducting the ANOVA
+
+\vfill
+
+Step four: 
+
+- Total sums of squares
+- $SS_{total} = \sum(x_{i} - \bar{x})^2$
+- the *null* model
+- Ignore all group structure
+
+\vfill
+
+```{r,echo=FALSE, results="hide"}
+pdf("Images//ANOVA//twowayptD.pdf",height=4.5,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+plot(graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)] ~ xxx, 
+     axes=F, col=adjustcolor(1,0.3),pch=16,cex=2,xlim=c(0.5,6.5),ylab="Abundance",xlab="")
+#legend("topleft",levels(graze$Site), pch=16,col=adjustcolor(c(2,4),0.3),bty="n", cex=1.2)
+axis(1,at=c(1.5,3.5,5.5),labels=levels(graze$graze))
+axis(2,las=1)
+box(bty="l")
+arrows(xxx,graze$Abundance[c(10:12,1:3,13:15,4:6,16:18,7:9)],
+       xxx, mean(graze$Abundance),length=0,col="grey")
+abline(h=mean(graze$Abundance))
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=3.5cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twowayptD.pdf}};
+\end{tikzpicture}
+
+## Conducting the ANOVA - sums of squares
+
+\vfill
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\scalebox{0.8}{
+\begin{tabular}{llllll}
+\toprule
+                            & $SS$           & $df$ & $MS$ & $F$ & $p$ \\ \hline
+Graze                       & $SS_{graze}$   &      &      &     &     \\
+Site                        & $SS_{site}$    &      &      &     &     \\
+Both factors(interaction)   & $SS_{both}$    &      &      &     &     \\
+Within group                & $SS_{within}$  &      &      &     &     \\
+Total                       & $SS_{total}$   &      &      &     &     \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\vfill
+
+## Degrees of freedom
+
+In general:
+
+- Factor 1 (F1): number of levels - 1 
+- Factor 2 (F2): number of levels - 1
+- Within: $n$ - (levels in F1 $\times$ levels in F2)
+- Total: $n$ - 1
+
+## Degrees of freedom
+
+In general:
+
+- Factor 1 (F1): number of levels - 1 
+- Factor 2 (F2): number of levels - 1
+- Within: $n$ - (levels in F1 $\times$ levels in F2)
+- Total: $n$ - 1
+
+\vspace{0.5cm}
+
+Grazing example:
+
+- Graze: $3-1=2$ 
+- Site: $2-1=1$
+- Within: $18 - (3 \times 2) = 12$
+- Total: $18 - 1 = 17$
+
+## Degrees of freedom
+
+In general:
+
+- Factor 1 (F1): number of levels - 1 
+- Factor 2 (F2): number of levels - 1
+- Within: $n$ - (levels in F1 $\times$ levels in F2)
+- Total: $n$ - 1
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\scalebox{0.8}{
+\begin{tabular}{llllll}
+\toprule
+         & $SS$           & $df$          & $MS$   & $F$                 & $p$ \\
+\hline
+Graze            & $SS_{graze}$   & $df_{graze}$  &        &                     &     \\
+Site                    & $SS_{site}$    & $df_{site}$   &        &                     &     \\
+Both factors(interaction)   & $SS_{both}$    & $df_{both}$   &        &                     &     \\
+Within group                & $SS_{within}$  & $df_{within}$ &        &                     &     \\
+Total                       & $SS_{total}$   & $df_{total}$  &        &                     &     \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+## Mean squares
+
+- the mean squares are calculated by dividing the sums of squares by the degrees of freedom for each element 
+
+\vspace{1.2cm}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\scalebox{0.8}{
+\begin{tabular}{llllll}
+\toprule
+         & $SS$           & $df$          & $MS$                                          & $F$                              & $p$ \\
+\hline
+Graze                    & $SS_{graze}$   & $df_{graze}$  & $MS_{graze}=\frac{SS_{graze}}{df_{graze}}$    &   &     \\
+Site                    & $SS_{site}$    & $df_{site}$   & $MS_{site}=\frac{SS_{site}}{df_{site}}$       &    &     \\
+Both factors                & $SS_{both}$    & $df_{both}$   & $MS_{both}=\frac{SS_{both}}{df_{both}}$       &    &     \\
+Within group                & $SS_{within}$  & $df_{within}$ & $MS_{within}=\frac{SS_{within}}{df_{within}}$ &                                  &     \\
+Total                       & $SS_{total}$   & $df_{total}$  &                                               &                                  &     \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+## F statistic
+
+- the $F$-statistic is calculated by taking the element of interest divided by the within group MS (the *error* term) 
+
+\vspace{1.2cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\scalebox{0.8}{
+\begin{tabular}{llllll}
+\toprule
+        & $SS$           & $df$          & $MS$                                          & $F$                              & $p$ \\
+\hline
+Graze            & $SS_{graze}$   & $df_{graze}$  & $MS_{graze}=\frac{SS_{graze}}{df_{graze}}$    & $\frac{MS_{graze}}{MS_{within}}$ &     \\
+Site                    & $SS_{site}$    & $df_{site}$   & $MS_{site}=\frac{SS_{site}}{df_{site}}$       & $\frac{MS_{site}}{MS_{within}}$  &     \\
+Both factors                & $SS_{both}$    & $df_{both}$   & $MS_{both}=\frac{SS_{both}}{df_{both}}$       & $\frac{MS_{both}}{MS_{within}}$  &     \\
+Within group                & $SS_{within}$  & $df_{within}$ & $MS_{within}=\frac{SS_{within}}{df_{within}}$ &                                  &     \\
+Total                       & $SS_{total}$   & $df_{total}$  &                                               &                                  &     \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+## ANOVA the $F$ distribution
+
+```{r,echo=FALSE,results="hide"}
+pdf("Images//ANOVA//FFF.pdf",height=3,width=4)
+par(mfrow=c(1,1), oma=c(0,0,0,0),mar=c(4,4,2,2))
+ff <- seq(0,10,0.1)
+mat <- matrix(NA,nrow=length(ff),ncol=5)
+mat[,1] <- df(ff,2,8)
+mat[,2] <- df(ff,2,29)
+mat[,3] <- df(ff,2,89)
+mat[,4] <- df(ff,2,299)
+mat[,5] <- df(ff,2,749)
+
+plot(mat[,3]~ff, main="F-distribution", xlab="F statistic",
+     ylab="Probability",lwd=2,col=4,bty="l",las=1,type="l")
+abline(h=0.05,lty=2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=3in]{FFF.pdf}};
+\end{tikzpicture}
+
+## ANOVA in practice - Excel
+
+```{r}
+graze
+```
+
+## One-way ANOVA in practice - Excel
+
+- Format data for specific test
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{SiteExcel1.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Choose test from the *Analysis Toolpack*
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{SiteExcel2.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Select appropriate settings
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{SiteExcel3.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Interpret the output
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{SiteExcel4.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Format data for specific test
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{GrazeExcel1.png}};
+\end{tikzpicture}
+
+## One-wayANOVA in practice - Excel
+
+- Choose test from the *Analysis Toolpack*
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{GrazeExcel2.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Select appropriate settings
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{GrazeExcel3.png}};
+\end{tikzpicture}
+
+## One-way ANOVA in practice - Excel
+
+- Interpret the output
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{GrazeExcel4.png}};
+\end{tikzpicture}
+
+## Two-way ANOVA in practice - Excel
+
+- Format data for specific test
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{SiteExcel1.png}};
+\end{tikzpicture}
+
+## Two-wayANOVA in practice - Excel
+
+- Choose test from the *Analysis Toolpack*
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{TWExcel2.png}};
+\end{tikzpicture}
+
+## Two-way ANOVA in practice - Excel
+
+- Select appropriate settings
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-0.5cm] at (current page)
+{\includegraphics[height=1.75in]{TWExcel3.png}};
+\end{tikzpicture}
+
+## Two-way ANOVA in practice - Excel
+
+- Interpret the output
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2.5cm,yshift=-0.8cm] at (current page)
+{\includegraphics[height=2.5in]{TWExcel4.png}};
+\node[xshift=3cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.2in]{twoway.pdf}};
+\end{tikzpicture}
+
+## ANOVA in practice - R
+
+- Read in the data as a data frame
+
+```{r}
+graze
+```
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+oneway.site <- aov(Abundance ~ Site, data = graze)
+summary(oneway.site)
+```
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+oneway.site <- aov(Abundance ~ Site, data = graze)
+summary(oneway.site)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=1.2in]{SiteExcel4.png}};
+\end{tikzpicture}
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+oneway.graze <- aov(Abundance ~ graze, data = graze)
+summary(oneway.graze)
+```
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+oneway.graze <- aov(Abundance ~ graze, data = graze)
+summary(oneway.graze)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=1.2in]{GrazeExcel4.png}};
+\end{tikzpicture}
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+twoway.additive <- aov(Abundance ~ Site + graze, data = graze)
+summary(twoway.additive)
+```
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+twoway.additive <- aov(Abundance ~ Site + graze, data = graze)
+summary(twoway.additive)
+```
+
+\normalsize
+
+- Excel only *fits* the interaction model
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+twoway.interaction <- aov(Abundance ~ Site * graze, data = graze)
+summary(twoway.interaction)
+```
+
+## Any ANOVA in practice - R
+
+- Conduct *any* test using formula syntax 
+
+```{r}
+twoway.interaction <- aov(Abundance ~ Site * graze, data = graze)
+summary(twoway.interaction)
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.5cm] at (current page)
+{\includegraphics[height=1.2in]{TWExcel5.png}};
+\end{tikzpicture}
+
+## Group Exercise - *salamANOVA*
+
+We will conduct three analyses using the *salamANOVA*. We are interested in whether salamander snout-to-vent length (SVL) varies by sex and/or site. The data look like this:
+
+```{r}
+str(sals)
+```
+
+\normalsize
+
+- `Site`: there are four sites (`P1A`, `P1B`, `P2A`, `P2B`)
+- `Sex`: `M` (male) and `F` (female)
+- `SVL`: the snout-to-vent length in mm
+
+## Group Exercise - *salamANOVA*
+
+Analysis 1: Does SVL vary by sex?
+
+- What is the null hypothesis?
+- Make a plot to visualize the hypothesis.
+- What statistical test will you use to test $H_0$?
+- What is the:
+    - test statistic for this particulat test (e.g., $t$, $F$, etc)
+    - degrees of freedom (calculate this)
+    - significance level
+- Conduct the analysis:
+    - what is the value of the test statistic
+    - what the $p$-value
+- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
+
+## Group Exercise - *salamANOVA*
+
+Analysis 2: Does SVL vary by site?
+
+- What is the null hypothesis?
+- Make a plot to visualize the hypothesis.
+- What statistical test will you use to test $H_0$?
+- What is the:
+    - test statistic for this particulat test (e.g., $t$, $F$, etc)
+    - degrees of freedom (calculate this)
+    - significance level
+- Conduct the analysis:
+    - what is the value of the test statistic
+    - what the $p$-value
+- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
+
+## Group Exercise - *salamANOVA*
+
+Analysis 3: Does SVL vary by sex and/or site?
+
+- What is the null hypothesis?
+- Make a plot to visualize the hypothesis.
+- What statistical test will you use to test $H_0$?
+- What is the:
+    - test statistic for this particulat test (e.g., $t$, $F$, etc)
+    - degrees of freedom (calculate this)
+    - significance level
+- Conduct the analysis:
+    - what is the value of the test statistic
+    - what the $p$-value
+- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
+
+
+## Group Exercise - *salamANOVA*
+
+Assignment: Statistical analysis of variation in salamnder SVL.
+
+- Write a report with four sections:
+    1. Analysis 1
+    2. Analysis 2
+    3. Analysis 3
+    4. Reflection: how does analysis 3 compare to analyses 1 and 2?
+- Sections 1 to 3 sould report on each of the prompts in the previous slides.
+- Section 4 is an opportunity to demonstrate your undertanding of the material covered over the previous weeks.
+- Assignment due: 11.55pm Tuesday November 20$^th$

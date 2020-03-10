@@ -1,0 +1,134 @@
+---
+title: "Whale Group Activity"
+author: "Michael France Nelson"
+date: "March 5, 2020"
+output: 
+  html_document:
+    css: !expr here::here("css", "styles.css")
+    number_sections: TRUE
+    toc: true
+    toc_float: true
+---
+
+
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+require(knitr)
+require(here)
+source(here("data", "environment_vars.R"))
+knitr::opts_chunk$set(root.dir = here(), error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
+i = 1
+```
+
+
+```{r answers walkthrough, eval = FALSE, include = FALSE, echo = FALSE}
+# dir.exists(here("data"))
+# file.exists(here("data", "whale.data.csv"))
+# dat$post = dat$post + rpois(n = nrow(dat), lambda = 0.8)
+# write.csv(dat, here("data", "whale_data_MCA.csv"))
+dat1 = read.csv(here("data", "whale_census.csv"))
+dat2 = read.csv(here("data", "whale_census_MCA.csv"))
+
+summary(dat1)
+summary(dat2)
+head(dat)
+dim(dat)
+
+
+dat = dat1
+t.test(dat$pre, dat$post)
+t.test(dat$pre, dat$post, paired = TRUE)
+t.test(dat$pre, dat$post, alternative = "less", paired = TRUE)
+
+wilcox.test(dat$pre, dat$post)
+wilcox.test(dat$pre, dat$post, paired = TRUE)
+wilcox.test(dat$pre, dat$post, alternative = "less", paired = TRUE)
+
+
+
+par(mfrow = c(1, 2));hist(dat$pre);hist(dat$post)
+
+
+```
+
+
+
+# Overview
+
+We are going to work with a dataset containing information on whale census data collected by volunteers.  The goal of the project was to obtain an accurate census of whales in a Marine Protected Area (MPA) in the Gulf of Maine.
+
+Because the team wanted to have the most accurate census possible, the volunteers received training in whale observation.  They also wanted to measure whether the training was effective so the had the volunteers first perform a census with no training, and a follow-up census after training.  Each volunteer performed two censuses: one pre- and the other post-training.
+
+The result was a dataset including the names of volunteers and their pre- and post- training whale counts.
+
+
+# Instructions
+
+Self-select teams of 5 to 7 students.
+
+Find the data file in the *Course Data Files* folder at the top of the course Moodle.
+
+
+## To complete the questions below you need to perform the following analyses.  You need to write all of your R code in a script file as you work.
+- Read the data file using the `read.csv()` function.  NOTE: do not use `read_csv()` with an underscore.  To receive full credit you must use `read.csv()`.
+- Perform a numerical exploration of the data using `summary`.
+- Perform a graphical exploration of the data using whatever plots you think are necessary.
+- In your graphical analysis, be sure to assess whether or not the assumption of normal data may be appropriate to the whale counts.
+- Formally check for normality using `shapiro.test()`.
+- Perform tests for differences.
+    - Perform a parametric test, the t-test, using `t.test()`
+        - For the t-test output, determine the difference in mean counts before and after the training.
+    - Perform a non parametric test using `wilcox.test()`
+- From R's output of all the difference tests you perform, determine the significance level.
+
+
+
+# Deliverables
+
+## Your group will submit 2 documents:
+- An R-script containing the code you used to perform the analyses.
+- A document containing the answers to the questions below:
+
+
+## R Script
+
+You need to perform all of your work in an R-script.  You will probably try lots of different things in your code as you work through the exercises.  You should do your initial work in a draft script and paste your final code into a final draft script.  Your final draft should include only the code you need to answer the questions below.
+
+
+Your R-script must nicely formatted, easy to read, and all of your code must run without errors on my computer.
+
+You must include comments in your code (using the # symbol) describing each step you performed in your script.
+
+
+## Questions
+
+- Q1: Create following three histograms and paste them into your answer document:
+    - H1: A histogram showing all of the data.
+    - H2: A histogram showing the pre-training census counts.
+    - H3: A histogram showing the post-training census counts.
+- Q2 Based on your histograms, and the results of the Shapiro normality test, do you think that a parametric t-test or a non parametric Mann-Whitney test is more appropriate? Be sure to explain your reasoning.
+- Q3: What is the overall mean census count? 
+- Q4: What is the pre-training mean census count? 
+- Q5: What is the post-training mean census count? 
+- Q6: Did you choose to use a paired or unpaired test?  Be sure to explain your reasoning.
+- Q7: List the significance levels the parametric and non parametric tests you performed.
+- Q8: Would you conclude that the training was effective?  Make sure you explain your reasoning and justify your answer with the results of the statistical tests you performed.
+
+Your R-script must nicely formatted, easy to read, and all of your code must run without errors.  You need to include comments in your code (using the # symbol) describing each step you performed in your script. Once you have completed 
+
+## Peer assessment
+You will complete a peer assessment after you group has submitted the documents.
+
+
+## Rubric - 78 points total
+- R script: 10 pts
+- Q1: 15 pts
+- Q2: 5 pts
+- Q3: 2 pt
+- Q4: 2 pt
+- Q5: 2 pt
+- Q6: 4 pts
+- Q7: 2 pt
+- Q8: 20 pts.
+
+

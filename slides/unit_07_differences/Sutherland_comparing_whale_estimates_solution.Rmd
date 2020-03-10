@@ -1,0 +1,142 @@
+---
+title: "Comparing whale guesstimates"
+header-includes:
+  - \usepackage{hyperref}
+  - \usepackage[onehalfspacing]{setspace}
+  - \usepackage{graphicx}
+  - \DeclareGraphicsExtensions{.pdf,.png,.jpg}
+  - \usepackage{comment}
+  - \usepackage[x11names]{xcolor}
+  - \usepackage{sectsty}
+  - \definecolor{brn}{rgb}{.6,0,0}
+  - \sectionfont{\color{brn}}
+  - \subsectionfont{\color{brn}\slshape}
+  - \DeclareUnicodeCharacter{00A0}{ }
+  - \usepackage{booktabs}
+  - \usepackage{multicol}
+  - \usepackage{tikz}
+  - \usepackage{tabto}
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: no
+    number_sections: no
+    toc: no
+documentclass: article
+fontsize: 12pt
+font: serif
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Group assignment
+
+Using the whale count data, compare the differences between first and second abundance guesstimates using R and excel and report the the following
+
+1. state the null and alternative hypotheses being tested
+2. the reason for choosing the statistical test you used
+3. a summary of the results:
+    - degrees of freedom, test statistic, p-values (at 5% level)?
+    - did you accept or reject the null hypothesis?
+    - is there a difference?
+4. conduct the analysis in `R` and `excel` and submit:
+    - a written report of points 1, 2 and 3 as PDF
+    - an excel workbook showing your results
+    - a saved R file showing results
+
+So, the objective is to compare two samples. These samples actually represent *pairs* of values: each person provided an initial and an updated guesstimate of whale abundance. First we need to read in the data. While we are at it, let's look at the first 6 rows using the `head()` function:
+
+```{r}
+whales <- read.csv("whales.csv")
+head(whales)
+```
+
+# 1. Hypothesis
+
+- Hypotheses:
+
+    - the null hypothesis is that there is *no difference* between the initial and updated guesstimates
+    - the alternative hypothesis is that there *is a difference* between the initial and updated guesstimates
+
+# 2. Which test and why
+
+Next, we need to know the nature of the data in order to pick the correct statistical model. Here our interest is in comparing two samples so we need to look at two things:
+
+1. are the samples independent?
+2. are the data normally distributed?
+
+## Independence
+
+- data are pairs of values from the same individual
+- data are not independent
+- need a *paired* test
+
+## Normality
+
+There are a couple of tools we can use to assess normality. First, symmetrical histograms are a good indicator of normality:
+
+```{r, echo=TRUE, eval=FALSE}
+par(mfrow=c(1,3),oma=c(0,0,0,0),mar=c(4,4,2,2))
+hist(whales$estimate)                  # first sample
+hist(whales$estimate2)                 # second sample
+hist(whales$estimate-whales$estimate2) # differences
+```
+
+```{r, echo=FALSE, eval=TRUE, fig.align='center',fig.height=2.4,fig.width=7.2}
+par(mfrow=c(1,3),oma=c(0,0,0,0),mar=c(4,4,2,2))
+hist(whales$estimate, col=adjustcolor(2,0.3), main="Guesstimate 1")
+hist(whales$estimate2, col=adjustcolor(3,0.3), main="Guesstimate 2")
+hist(whales$estimate-whales$estimate2, col=adjustcolor(4,0.3), main="Difference (1-2)")
+```
+
+We can also formally evaluate using the `shapiro.test()`. We are looking for a *p*-value > 0.05, i.e., not significantly different from normally distributed: 
+    
+```{r}
+shapiro.test(whales$estimate)                  # first sample
+shapiro.test(whales$estimate2)                 # second sample
+shapiro.test(whales$estimate-whales$estimate2) # differences
+```
+
+It is important to consider the data we are analyzing
+
+- `estimate` is normally distributed
+- `estimate2` is normally distributed
+- \underline{but} the *differnce* is not
+
+So, the data (the *differences*) are paired and *not* normally distributed which means we would choose the *Wilcoxon matched-pairs for skewed data*. For this assessment, however, I am willing to accept the *paired t-test*.
+
+# 3. Summary of results
+
+## 3a. Vital statistics
+
+### Wilcoxon matched-pairs test
+
+```{r, warning=FALSE}
+wilcox <- wilcox.test(whales$estimate,whales$estimate2,paired=TRUE)
+wilcox
+```
+    
+- Degrees of freedom: not required (but using df = number of pairs - 1 we get: df = `r length(whales$estimate)-1`)
+- Test statistic: V = `r wilcox$statistic`
+- *p*-value: *p* = `r wilcox$p.value` 
+
+### Paired t-test
+
+```{r}
+ttest <- t.test(whales$estimate,whales$estimate2,paired=TRUE)
+ttest
+```
+
+- Degrees of freedom: df = `r ttest$parameter`)
+- Test statistic: t = `r ttest$statistic`
+- *p*-value: *p* = `r ttest$p.value` 
+
+## 3b. Hypothesis testing and differences
+
+Both tests have a *p*-value \underline{below} the 5% significance value value which mean that we are able to reject the null hypothesis that there is no differences between the first and second estimates. Based on our statistical test, we can concluse that the estimates are in fact differnt. 
+
+# 4. Documentation
+
+You should have provided an `Excel` spreadsheet showing your working out, specifically using the appropriate test functions and/or the functions in the Analysis Toolpack. You should have also submitted an `R` script similar to the code outlined above, showing how you implemented the various analytical steps, and how you got the answers you presented.

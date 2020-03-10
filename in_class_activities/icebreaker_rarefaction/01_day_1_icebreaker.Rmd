@@ -1,0 +1,30 @@
+---
+title: "First day activity"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include = F}
+require(data.table)
+require(ggplot2)
+
+
+```
+
+
+```{r experiment setup}
+
+
+```
+
+
+
+```{r salamander counts}
+
+
+
+
+```
+
+

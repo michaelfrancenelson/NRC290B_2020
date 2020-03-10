@@ -1,0 +1,51 @@
+---
+title: "testing"
+subtitle:  "Session 1"
+date: "`r format (Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+output:
+ beamer_presentation:
+  pandoc_args: !expr paste0(here::here('css', 'beamer.yaml'))
+header-includes: 
+ \input{`r here::here("css", "headers_tikz.yaml")`}
+---
+
+
+\newcommand\iClick{
+\vfill
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{../slides/slide_images/iClicker_logo.png}};
+\end{tikzpicture}
+}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(rmarkdown)
+```
+
+
+## as
+\iClick
+
+## iClicker logo
+
+```{r cars}
+summary(cars)
+```
+
+\vfill
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{../slides/slide_images/iClicker_logo.png}};
+\end{tikzpicture}
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

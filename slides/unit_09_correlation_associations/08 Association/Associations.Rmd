@@ -1,0 +1,649 @@
+---
+title: "Associations"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2018
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \usepackage{arydshln}
+   - \graphicspath{"C:/Users/megha/Box/Courses/NRC_290b_2019_Fall/Images/Assoc/"}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "C:/Users/megha/Box/Courses/NRC_290b_2019_Fall/")
+#opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+
+options(width=120)
+options(width.cutoff=80)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+## Group evaluations
+
+\vfill
+
+1. Specifically for the assignment due tomorrow, how would you describe your comfort levels with R and Excel? 
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] Uncomfortable with both
+  \item[B)] Comfortable with Excel, but not R
+  \item[C)] Comfortable with R, but not Excel
+  \item[D)] Comfortable with both
+\end{enumerate}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+\vfill
+
+## One Question
+
+\vfill
+
+1. If you were using Pearson's residuals to see which specific associations in a contingency table were likely to be significant, which of the following values would be the critical value to use?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] 3.84
+  \item[B)] -2 and 2
+  \item[C)] 0.05
+  \item[D)] 10/25/1980
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+
+## Group evaluations
+
+Is there a significant association between salamander \emph{sex} and \emph{habitat type}?
+
+$$\chi^2 = \sum \frac{(\text{Obs} - \text{Exp})^2}{\text{Exp}}$$
+
+1. Calculate $\chi^2$.  
+2. Calculate $DF$  
+3. Is there a significant association?
+
+\vspace{1cm}
+
+\begin{tabular}{lcccc}
+\hline     
+           & Dry & Moist & Wet & $\sum$ Row \\ 
+\hline
+Female     & \emph{370} & \emph{198} & \emph{187} &      \\   
+Male       & \emph{359} & \emph{110} & \emph{160} &      \\ 
+$\sum$ Col &       &         &       &      \\ 
+\hline
+\end{tabular}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=-1.5cm] at (current page.east)
+{\includegraphics[height=1.75in]{chiTab.jpg}};
+\end{tikzpicture}
+
+## Associations
+
+What are associations?
+
+- dealing with two categorical variables
+- known as a *contingency table*
+    - data are *cross tabulated* frequencies
+    - each cell represents a count
+
+## Associations
+
+- dealing with two categorical variables
+- known as a *contingency table*
+    - data are *cross tabulated* frequencies
+    - each cell represents a count
+
+\vspace{0.5cm}
+
+\centering
+
+\begin{tabular}{lccc}
+\hline     
+Salamander & Upland & Wetland & Floodplain \\ \hline
+Present    & \emph{38}    & \emph{30} & \emph{24} \\   
+Absent   & \emph{12}    & \emph{20} & \emph{26} \\ 
+\hline
+\end{tabular}
+
+\vspace{1cm}
+
+## Associations
+
+- dealing with two categorical variables
+- known as a *contingency table*
+    - data are *cross tabulated* frequencies
+    - each cell represents a count
+- visualize using a *bar chart* 
+
+```{r, echo=FALSE, message=FALSE, results="hide"}
+mm <- matrix(c(38,30,24,12,20,26),2,3,byrow=T)
+pdf("Images//Assoc//manderContTab.pdf",height=4,width=6)
+par(oma=c(0,0,0,0),mar=c(4,4,2,2))
+barplot(mm, names=c("Upland","Wetland","Floodplain"),
+        beside=T, col=adjustcolor(c(2,3),0.2), las=1,ylab="Count", ylim=c(0,45))
+legend("topright",c("Present", "absent"),pch=22,bg=adjustcolor(c(2,3),0.2),bty="n")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=2.5cm] at (current page.south)
+{\includegraphics[height=2in]{manderContTab.pdf}};
+\end{tikzpicture}
+
+## Associations
+
+The key question with contingency tables:
+
+- is there a significant association between the categorical variable A and categorical variable B?
+- are these numbers different to what we would expect to see by chance?
+
+## Associations
+
+The key question with contingency tables:
+
+- is there a significant association between the categorical variable A and categorical variable B?
+- are these number different to what we would expect to see by chance?
+- answer using the *Chi-squared test*
+
+$$ \chi^2 = \sum \frac{(O-E)^2}{E}$$
+
+- O: the observed data
+- E: the expected value if there was *no association*
+- $\chi^2$: the test statistic
+
+## Associations
+
+In a Chi-squared test from the following contingency table, I get a test statistic of $\chi^2 =  8.32$. Is there a significant association between spotted salamander presence and vernal pool type at the 5% level?
+
+\vspace{0.5cm}
+
+\centering
+
+\begin{tabular}{lccc}
+\hline     
+Salamander & Upland & Wetland & Floodplain \\ \hline
+Present    & \emph{38}    & \emph{30} & \emph{24} \\   
+Absent   & \emph{12}    & \emph{20} & \emph{26} \\ 
+\hline
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] Yes, its significant!
+  \item[B)] No, it's not significant!
+\end{enumerate}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=2cm] at (current page.south east)
+{\includegraphics[height=1.4in]{chiTab.jpg}};
+\end{tikzpicture}
+
+## Associations
+
+In a Chi-squared test from the following contingency table, I get a test statistic of $\chi^2 =  8.32$. Is there a significant association between spotted salamander presence and vernal pool type at the 5% level?
+
+\vspace{0.5cm}
+
+\centering
+
+\begin{tabular}{lccc}
+\hline     
+Salamander & Upland & Wetland & Floodplain \\ \hline
+Present    & \emph{38}    & \emph{30} & \emph{24} \\   
+Absent   & \emph{12}    & \emph{20} & \emph{26} \\ 
+\hline
+\end{tabular}
+
+\vspace{1cm}
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] \textbf{Yes, its significant!}
+  \item[B)] \textcolor{gray}{No, it's not significant!}
+\end{enumerate}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=2cm] at (current page.south east)
+{\includegraphics[height=1.4in]{chiTab.jpg}};
+\end{tikzpicture}
+
+## Associations - observed
+
+$$ \chi^2 = \sum \frac{(O-E)^2}{E}$$
+
+The observed values ($O$):
+
+- the data we observe (obviously!)
+- cross tabulated counts
+
+## Associations - expected
+
+$$ \chi^2 = \sum \frac{(O-E)^2}{E}$$
+
+The expected values ($E$):
+
+- the data we would expect by change
+- the data we would expect if there was no association
+
+$$E = \frac{\text{row total} \cdot \text{col total}}{\text{grand total}}$$
+
+## Associations - expected
+
+$$ \chi^2 = \sum \frac{(O-E)^2}{E}$$
+
+Degrees of freedom:
+
+$$ DF = (no. columns -1) \times (no. rows -1)$$
+
+## Associations - expected
+
+$$ \chi^2 = \sum \frac{(O-E)^2}{E}$$
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=3.5cm] at (current page.south)
+{\includegraphics[height=2in]{chi5.png}};
+\end{tikzpicture}
+
+## Associations - invertebrate example
+
+Invertebrate group habitat selection:
+
+\vfill
+
+\centering
+
+\begin{tabular}{lccc|c}
+\toprule     
+           & Ant & Bug  & Beetle & Total \\ \hline
+Upper leaf & 15  &  13  & 68     &  96   \\   
+Lower leaf & 12  &  11  & 15     &  38   \\   
+Stem       & 65  &  78  &  5     & 148   \\   
+Bud        &  3  &  21  &  3     &  27   \\ \hline    
+Total      & 95  & 123  & 91     & 309   \\ \bottomrule    
+
+\hline
+\end{tabular}
+
+\vfill
+
+## Associations - invertebrate example
+
+First we need to state the hypotheses!
+
+- Null hypothesis:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=5cm] at (current page.south)
+{\includegraphics[height=1.5in]{QM.png}};
+\end{tikzpicture}
+
+## Associations - invertebrate example
+
+First we need to state the hypotheses!
+
+- Null hypothesis:
+- the *no habitat preference* hypothesis
+- random!
+
+"There is no association between invertebrate group and habitat"
+
+## Associations - invertebrate example
+
+First we need to state the hypotheses!
+
+- Null hypothesis:
+- the *no habitat preference* hypothesis
+- random!
+
+"There is no association between invertebrate group and habitat"
+
+\vspace{0.5cm}
+
+- Alternative hypothesis:
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=2cm] at (current page.south)
+{\includegraphics[height=1.5in]{QM.png}};
+\end{tikzpicture}
+
+## Associations - invertebrate example
+
+First we need to state the hypotheses!
+
+- Null hypothesis:
+- the *no habitat preference* hypothesis
+- random!
+
+"There is no association between invertebrate group and habitat"
+
+\vspace{0.25cm}
+
+- Alternative hypothesis:
+- the *habitat preference* hypothesis
+    - direction not explicitly stated
+    - can be positive or negative
+- not random!
+
+"There *is* an association between invertebrate group and habitat"
+
+## Associations - invertebrate example
+
+\vfill
+\centering
+\Large
+
+Demo in \texttt{Excel}
+
+\vfill
+
+## Associations - invertebrate example
+
+- The test statistic is $\chi^2 = 146.98$. 
+- What do we conclude?
+
+## Associations - invertebrate example
+
+- The test statistic is $\chi^2 = 146.98$. 
+- What do we conclude?
+    - $p < 0.05$
+    - reject the null hypothesis
+    - accept the alternative hypothesis
+    - there *is* a significant association between inverts and habitat!
+    
+## Associations - invertebrate example
+
+- The test statistic is $\chi^2 = 146.98$. 
+- What do we conclude?
+    - $p < 0.05$
+    - reject the null hypothesis
+    - accept the alternative hypothesis
+    - there *is* a significant association between inverts and habitat!
+- BUT! which associations are significant? 
+
+\centering
+
+\begin{tabular}{lcccc}
+\toprule     
+           & Ant & Bug  & Beetle & Total \\ \hline
+Upper leaf & 15  &  13  & 68     &  96   \\   
+Lower leaf & 12  &  11  & 15     &  38   \\   
+Stem       & 65  &  78  &  5     & 148   \\   
+Bud        &  3  &  21  &  3     &  27   \\ \hline    
+Total      & 95  & 123  & 91     & 309   \\ \bottomrule    
+
+\hline
+\end{tabular}
+
+## Associations - significant associations
+
+Two ways we can evaluate which associations are likely to be significant:
+
+1. Cell-specific $\chi^2$ values
+    - greater than 3.8 is likely to be significant
+    - 3.8 is significant test statistic with 1 degree of freedom
+
+## Associations - significant associations
+
+Two ways we can evaluate which associations are likely to be significant:
+
+1. Cell-specific $\chi^2$ values
+    - greater than 3.8 is likely to be significant
+    - 3.8 is significant test statistic with 1 degree of freedom
+    
+2. Pearson residuals
+    - provides sign of association
+    - provides relative size of the association
+    - if residual is >2 or < -2 then likely to be significant 
+
+$$ Residual = \frac{\text{Observed}-\text{Expected}}{\sqrt{\text{Expected}}}$$
+
+## Associations - invertebrate example
+
+\vfill
+\centering
+\Large
+
+Back to \texttt{Excel}
+
+\vfill
+
+
+## Analyzing contingency table data in \texttt{Excel}
+
+Two `Excel` functions for doing Chi-squared or Goodness of fit tests but no method in *Analysis Tool Pack*:
+
+## Analyzing contingency table data in \texttt{Excel}
+
+Two `Excel` functions for doing Chi-squared or Goodness of fit tests but no method in *Analysis Tool Pack*:
+
+- `CHITEST(`*observed*,*expected*`)`
+    - must calculate the *expected* values
+    - must be in the same table format
+
+## Analyzing contingency table data in \texttt{Excel}
+
+Two `Excel` functions for doing Chi-squared or Goodness of fit tests but no method in *Analysis Tool Pack*:
+
+- `CHITEST(`*observed*,*expected*`)`
+    - must calculate the *expected* values
+    - must be in the same table format
+
+- `CHIDIST(`*Chi value*,*derees of freedom*`)`
+    - must calculate $\chi^2$ and DF
+    - just calculates a *p*-value
+
+\vfill
+\centering
+
+Demo in \texttt{Excel}
+
+\vfill
+
+## Analyzing contingency table data in \texttt{R}
+
+- Chi-square test in `R`
+    - `chisq.test(`*contingency table*`)`
+    - data must be formatted like a contingency table
+    - can make a `data.frame` 
+    
+```{r}
+# a dataframe
+tab.df <- data.frame(Ant = c(15,12,65,3),
+                     Bug = c(13,11,78,21),
+                     Beetle = c(68,15,5,3))
+rownames(tab.df) <- c("Upper", "Lower", "Stem", "Bud")
+tab.df
+```
+
+## Analyzing contingency table data in \texttt{R}
+
+- Chi-square test in `R`
+    - `chisq.test(`*contingency table*`)`
+    - data must be formatted like a contingency table
+    - can make a `matrix` 
+    
+```{r}
+# a dataframe
+tab.mat <- matrix(c(15,12,65,3,
+                    13,11,78,21,
+                    68,15,5,3), nrow=4, ncol=3, byrow=FALSE)
+rownames(tab.mat) <- c("Upper", "Lower", "Stem", "Bud")
+colnames(tab.mat) <- c("Ant", "Bug", "Beetle")
+tab.mat
+```
+
+## Analyzing contingency table data in \texttt{Excel}
+
+- Chi-square test in `R`
+    - `chisq.test(`*contingency table*`)`
+    - data must be formatted like a contingency table
+    - can make a `data.frame` or a `matrix` 
+    
+```{r}
+# conduct the Chi-square test
+chisq.test(tab.df)
+```
+
+## Analyzing contingency table data in \texttt{Excel}
+
+- Chi-square test in `R`
+    - `chisq.test(`*contingency table*`)`
+    - data must be formatted like a contingency table
+    - can make a `data.frame` or a `matrix` 
+    
+```{r}
+# extract the expected values
+chisq.test(tab.df)$expected
+```
+
+## Analyzing contingency table data in \texttt{Excel}
+
+- Chi-square test in `R`
+    - `chisq.test(`*contingency table*`)`
+    - data must be formatted like a contingency table
+    - can make a `data.frame` or a `matrix` 
+    
+```{r}
+# calculate the Pearson residuals
+obs <- tab.df
+exp <- chisq.test(tab.df)$expected
+(obs-exp) / sqrt(exp)
+```
+
+## Analyzing contingency table data in \texttt{Excel}
+
+What can we conclude from our analysis of the invertebrate data using the Chi-square test for association?     
+```{r}
+# conduct the Chi-square test
+chisq.test(tab.df)
+
+# Pearson residuals
+(obs-exp) / sqrt(exp)
+```
+
+
+## 'Pioneer Valley Camera Trapping Data'
+
+The data:
+
+- 142 camera traps placed throughout the valley
+- each camera has 2 categorical covariates:
+    - land use: 'altered' (A), 'natural' (N) and 'urban' (U)
+    - scent lure: 'Badlands Bob' (BB) and 'Powder River' (PR)
+- we will focus on four species:
+    - bobcat *lynx rufus*
+    - domestic cat *felis catus*
+    - coyote *canis latrans*
+    - domestic dog *canis familiaris*
+
+## Group exercise
+
+Using the `Pioneer Valley Camera Trapping Data' investigate whether there is a statistically significant association between the four species and:
+
+1. habitat type
+2. scent lure
+
+(i.e., conduct two analyses)
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=2.5cm] at (current page.south)
+{\includegraphics[height=0.8in]{camtraps.png}};
+\end{tikzpicture}
+    
+<!---
+## Group exercise
+
+Write a mini-report that includes the following for both tests:
+
+- the biological question
+- a table and a graph of the data
+- the null and alternative hypothesis
+- details of the statistical test:
+    - which test
+    - test statistic
+    - degrees of freedom
+    - *p*-value
+- whether there a statistical association and if so which were likely to be significant
+- a biological interpretation of the results
+
+Submit as a **PDF** by midnight Wednesday 16$^{th}$ November
+
+
+## Question time!
+
+\vfill
+
+1. If you were using Pearson's residuals to see which specific associations in a contingency table were likely to be significant, which of the following values would be the critical value to use?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] 3.84
+  \item[B)] -2 and 2
+  \item[C)] 0.05
+  \item[D)] 10/25/1980
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+--->
+

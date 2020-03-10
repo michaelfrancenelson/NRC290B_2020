@@ -1,0 +1,196 @@
+---
+title: "Beamer Slide Element Templates"
+output: 
+  beamer_presentation:
+header-includes: \usepackage{multicol}
+---
+
+
+
+```{r  setup, echo = FALSE, include = FALSE, results='hide', message = FALSE, warning = FALSE}
+require(knitr)
+require(ggplot2)
+require(here)
+
+knitr::opts_chunk$set(root.dir = here(), error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
+
+source(here("data", "environment_vars.R"))
+img_dir = file.path("slides", "slide_images")
+
+dat = read.csv(here("data/cedar_creek_survey.csv"))
+gg = ggplot(dat, aes(x = Total.Individuals, y = Distinct.Species.Count))
+
+
+express2 = "{`r here(img_dir, \"iClicker_logo.png\")`}"
+express3 = "`r here(img_dir, \"question_mark_green.png\")`"
+
+```
+
+
+# iClicker Answer List Code
+```
+\begin{enumerate}[A]
+  \item Q1
+  \item Q2
+  \item Q3
+  \item Q4
+  \item Q5
+\end{enumerate}
+```
+
+# iClicker Answer List
+
+\begin{enumerate}[A]
+\item Q1
+\item Q2
+\item Q3
+\item Q4
+\item Q5
+\end{enumerate}
+
+
+# iClicker Logo Code
+```
+\begin{multicols}{2}
+\null \vfill
+\vfill \null
+\columnbreak
+\includegraphics[width = 0.35\textwidth]{`r express2`}
+\end{multicols}
+```
+
+# iClicker Logo
+
+\begin{multicols}{2}
+\null \vfill
+\vfill \null
+\columnbreak
+\includegraphics[width = 0.35\textwidth]{`r here(img_dir, "iClicker_logo.png")`}
+\end{multicols}
+
+
+# Image File Code
+```
+\begin{center}
+    \includegraphics[width = 0.88\textwidth]
+        {`r express3`}
+\end{center}
+```
+
+# Image File
+\begin{center}
+    \includegraphics[width = 0.88\textwidth]
+        {`r here(img_dir, "question_mark_green.png")`}
+\end{center}
+
+
+# R Figure I
+
+```{r r figure fixed aspect, echo = FALSE, fig.asp = 0.6, warning = FALSE}
+gg +
+  geom_point() +
+  xlab("Count of Individuals") +
+  ylab("Count of Distinct Species") +
+  ggtitle("Cedar Creek Rarefaction: Preliminary Data Exploration") +
+  theme(text = element_text(size = 22))
+```
+
+# R Figure II
+
+```{r r figure set height and width, echo = FALSE, fig.width = 8, fig.height = 7, warning = FALSE}
+gg +
+  geom_point() +
+  xlab("Count of Individuals") +
+  ylab("Count of Distinct Species") +
+  ggtitle("Cedar Creek Rarefaction: Preliminary Data Exploration") +
+  theme(text = element_text(size = 22))
+```
+
+
+# Nested List
+
+The data (i.e. the variables):
+
+\begin{enumerate}
+  \item Response Variable
+  \begin{enumerate}
+    \item the variable of interest
+  \end{enumerate}
+  \item Explanatory Variables
+  \begin{enumerate}
+    \item predictor
+  \end{enumerate}
+\end{enumerate}
+
+
+# Nested List Code
+```
+\begin{enumerate}
+  \item Response Variable
+  \begin{enumerate}
+    \item the variable of interest
+  \end{enumerate}
+  \item Explanatory Variables
+  \begin{enumerate}
+    \item predictor
+  \end{enumerate}
+\end{enumerate}
+
+```
+
+
+
+# Equations Code
+
+```
+\begin{equation}
+   \label{eq:example-equation}
+   y = mx + b
+\end{equation}
+
+\begin{equation}
+   \label{eq:example-equation}
+   y_{i} = 
+   \alpha + 
+   \beta_{1} \times 
+   x_{i1} + 
+   \beta_{2} \times 
+   x_{i2} + 
+   \epsilon
+\end{equation}
+```
+
+# Equations
+
+\begin{equation}
+   \label{eq:example-equation}
+   y = mx + b
+\end{equation}
+
+\begin{equation}
+   \label{eq:example-equation}
+   y_{i} = \alpha + \beta_{1} \times x_{i1} + \beta_{2} \times x_{i2} + \epsilon
+\end{equation}
+
+
+
+# Figure and Footnote Code
+
+```
+\begin{center}
+    \includegraphics[width = 0.35\textwidth]
+       `r express2`
+\end{center}
+
+\footnotetext[1]
+   {Figure 4.3 in Fletcher and Fortin, 2018}
+```
+
+# Figure and Footnote
+
+\begin{center}
+\includegraphics[width = 0.35\textwidth]{`r here(img_dir, "iClicker_logo.png")`}
+\end{center}
+
+\footnotetext[1]{Figure 4.3 in Fletcher and Fortin, 2018}

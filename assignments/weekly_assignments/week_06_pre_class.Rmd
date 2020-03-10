@@ -1,0 +1,154 @@
+---
+title: "Graphical Data Exploration: pre-class assignment"
+subtitle: "NRC290B Introduction to Quantitative Ecology"
+author: "Michael France Nelson"
+date: "Spring 2020"
+output: 
+  html_document:
+    css: !expr here::here("css", "styles.css")
+    number_sections: TRUE
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = here(), error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
+require(here)
+source(here("data", "environment_vars.R"))
+
+due_date = ISOdatetime(2020, 3, 1, 23, 55, 0)
+format(due_date, due_date_format)
+
+
+```
+
+
+
+
+# Overview
+
+This assignment covers material and concepts from Chapters 5 and 6 Gardener's "Statistics for Ecologists Using R and Excel".
+
+This week’s new reading material consists of portions of “Chapter 6. Exploring data – using graphs”.
+
+<div class="red">
+
+IMPORTANT NOTES
+
+<ol>
+<li> The data file for this exercise is in the **Course Data Files** folder at the top of the course Moodle page. </li>
+<li> Because we are not using Excel for plotting or analysis you can skip the sections pertaining to Excel.  Pay attention to the section titles if you don't want to read more material than necessary.</li>
+<li> The due date for this assignment is **`r format(due_date, due_date_format)`**. </li>
+</ol> 
+
+</div>
+
+
+
+# Instructions
+
+Read sections 6.1 to 6.5.  Remember you can skip the Excel sections.
+
+Read 6.1 in detail. 
+
+Sections 6.2 - 6.4 are reference guides for plotting techniques in R.  You can refer to them for help with coding specific plot types.
+
+You should focus on tables 6.1, 6.2, 6.4 - 6.6
+
+
+
+
+# What to submit
+
+## You will submit a document that contains the following:
+* Two different types of plots with the butterfly data.  Label these **figure 1** and **figure 2**
+    - Check out sections 6.2 to 6.4 for guidance on making different plot types in R.
+    - Make sure to add informative titles and axis labels.
+* Answers to the following questions:
+    - **Q1**:  Briefly explain what component(s) of the data are highlighted, and how, in the plot type you chose for figure 1.
+    - **Q2**:  Briefly explain what component(s) of the data are highlighted, and how, in the plot type you chose for figure 2.
+
+Complete before `r format(due_date, due_date_format)`.
+
+
+
+# Rubric
+
+A total of 60 points are available:
+
+Each figure is worth 15 points, allocated as follows:
+
+* 2 pts: Plot of the data
+* 5 pts: appropriate title
+* 8 pts: appropriate axis labels
+
+* Q1 and Q2 are each worth 15 points.
+
+
+
+
+```{r possible answers, eval=FALSE, include = FALSE}
+
+dir.exists("data")
+file.exists("data/butterfly-table.csv")
+dat = read.csv("data/butterfly-table.csv", row.names = 1)
+
+head(dat)
+
+barplot(as.matrix(dat), beside = T)
+barplot(as.matrix(dat), beside = F)
+
+# Alphonsus's question
+
+survey_years = c("1996", "2000")
+
+barplot(
+  as.matrix(dat[, paste0("X", survey_years)]),
+  legend.text = rownames(dat),
+  ylim = c(0, 590),
+  xlab = "survey year",
+  ylab = "count",
+  main = "Butterfly Survey",
+  names.arg = survey_years,,
+  col = terrain.colors(nrow(dat)),
+  beside = F, 
+  args.legend = list(ncol = 3, title = "species"))
+
+# This reads the first row as a character vector, so as.matrix doesn't work as expected.
+dat2 = read.csv("data/butterfly-table.csv")
+````
+
+
+```{r possible answers2, eval=FALSE, include = FALSE}
+# A barplot - inspired by Molly's plot
+
+butterfly_colors = rainbow(nrow(dat))
+png("butterfly_barplot.png", width = 1200, height = 800, res = 200)
+par(mar = c(4.2, 4.1, 2.7, 1))
+barplot(
+  as.matrix(dat),
+  beside = T, 
+  names.arg = 1996:2000, 
+  col = butterfly_colors,
+  ylim = c(0, 280),
+  main = "Butterfly Count: 1996 - 2000",
+  xlab = "survey year",
+  ylab = "count")
+legend(
+  "top", 
+  legend = row.names(dat), 
+  ncol = 3, 
+  fill = butterfly_colors, bty = "n")
+dev.off()
+
+# A line plot 
+
+
+
+
+
+
+```
+

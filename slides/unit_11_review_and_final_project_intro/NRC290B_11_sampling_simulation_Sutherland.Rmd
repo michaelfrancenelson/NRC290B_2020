@@ -1,0 +1,99 @@
+---
+title: "Simulating t-test"
+author: Meg MacLean
+date: 2019-11-11
+---
+```{r setup}
+library(ggplot2)
+library(ggrepel)
+options(scipen = 999)
+```
+
+Create data of 10,000 observations for SINGLE population
+```{r Pop creation, message=FALSE, warning=FALSE}
+pop <- as.data.frame(rnorm(10000, mean = 10, sd = 2)); colnames(pop) <- "pop"
+x <- seq(min(pop), max(pop), length=100); hx <- dnorm(x)
+ggplot(pop, aes(x = pop)) +
+  geom_histogram(colour = "black", fill = "lightblue") +
+  xlab("value") +
+  theme_classic()
+ggplot(pop, aes(x = pop)) +
+  geom_histogram(aes(y=..density..), colour = "black", fill = "lightblue") +
+  geom_density(aes(y=..density..)) +
+  xlab("value") +
+  theme_classic()
+ggplot(pop, aes(x = pop)) +
+  geom_histogram(aes(y=..density..), colour = "black", fill = "lightblue") +
+  geom_density(aes(y=..density..)) +
+  stat_function(fun = dnorm, args = list(10, 2), colour = "red", linetype = "dashed") +
+  xlab("value") +
+  theme_classic()
+remove(x, hx)
+```
+
+Create two samples from the population
+```{r Single samples, message=FALSE, warning=FALSE}
+sample1 <- as.data.frame(sample(pop$pop, 10, replace = TRUE, prob = NULL)); colnames(sample1) <- "value"; sample1$sample <- "sample 1"
+sample2 <- as.data.frame(sample(pop$pop, 10, replace = TRUE, prob = NULL)); colnames(sample2) <- "value"; sample2$sample <- "sample 2"
+samples <- rbind(sample1, sample2)
+sample1_mean <- mean(sample1$value); sample2_mean <- mean(sample2$value)
+sample.ttest <- t.test(sample1$value, sample2$value, var.equal = TRUE)
+t <- sample.ttest$statistic; p <- sample.ttest$p.value; df <- sample.ttest$parameter
+
+ggplot(samples, aes(value, fill = sample)) + 
+  geom_histogram(alpha = 0.5, aes(y = ..density..), position = 'identity', colour = "black") +
+  xlim(0, max(pop)) + 
+  geom_text(x=3, y=0.2, label=paste0("Sample 1 mean = ", round(sample1_mean, 2), "\nSample 2 mean = ", round(sample2_mean, 2), 
+                                     "\nt = ", round(t,3), "\ndf = ", df, "\np-value = ", round(p, 3))) +
+  theme_classic()
+
+remove(sample1, sample2, sample1_mean, sample2_mean, sample.ttest, t, p, samples, df)
+```
+
+Run the t-test sampling 5000 times
+```{r Repeat t-tests, message=FALSE, warning=FALSE}
+sample.ts <- data.frame(sample = integer(),
+                        t = double())
+for(n in 1:5000){
+  sample1 <- sample(pop$pop, 10, replace = TRUE, prob = NULL)
+  sample2 <- sample(pop$pop, 10, replace = TRUE, prob = NULL)
+  sample.ttest <- t.test(sample1, sample2, var.equal = TRUE); t <- sample.ttest$statistic
+  sample.ts[n,] <- c(n, t)
+}
+
+ggplot(sample.ts, aes(x = t)) +
+  geom_histogram(aes(y=..density..), colour = "black", fill = "mediumspringgreen") +
+  geom_density(aes(y=..density..)) +
+  theme_classic()
+
+ttest.plot <- ggplot(sample.ts, aes(x = t)) +
+  geom_histogram(aes(y=..density..), colour = "black", fill = "mediumspringgreen") +
+  geom_density(aes(y=..density..)) +
+  stat_function(fun = dt, args = list(18), colour = "red", linetype = "dashed") +
+  theme_classic(); ttest.plot
+
+ggplot(sample.ts, aes(x = t)) +
+  geom_histogram(aes(y=..density..), colour = "black", fill = "mediumspringgreen") +
+  geom_density(aes(y=..density..)) +
+  stat_function(fun = dt, args = list(18), colour = "red", linetype = "dashed") +
+  stat_function(fun = dnorm, args = list(0,1), colour = "purple", linetype = "dashed") +
+  theme_classic()
+```
+
+```{r Critical values, message=FALSE, warning=FALSE}
+x <- as.data.frame(seq(-4, 4, length=1000)); colnames(x) <- "x"; x$hx <- dt(x$x,18)
+shade.pos <- rbind(c(2.101,0), subset(x, x > 2.101))
+shade.neg <- rbind(c(-2.101,0), subset(x, x < -2.101))
+
+n.pos <- (length(sample.ts[sample.ts$t>2.101,2])/length(sample.ts$t))*100; n.neg <- (length(sample.ts[sample.ts$t< -2.101,2])/length(sample.ts$t))*100
+
+ttest.plot + geom_polygon(data = shade.pos, aes(x = x, y = hx), fill = "red") +
+  geom_polygon(data = shade.neg, aes(x = x, y = hx), fill = "red") +
+  geom_text(x=-2.5, y=0.35, label=paste0("Critical value for 18 df = 2.101"))
+
+ttest.plot + geom_polygon(data = shade.pos, aes(x = x, y = hx), fill = "red") +
+  geom_polygon(data = shade.neg, aes(x = x, y = hx), fill = "red") +
+  geom_text(x=-2.5, y=0.35, label=paste0("% of t values above \nthe critical value = ", n.pos, 
+                                       "\n% of t values below \nthe critical value = ", n.neg))
+```
+

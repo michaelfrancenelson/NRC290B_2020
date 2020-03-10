@@ -1,0 +1,209 @@
+---
+title: "NRC290B - Intro to Quantitative Ecology"
+subtitle: "Random Numbers In-Class Group Activity"
+output: 
+  html_document:
+    css: ../css/styles.css
+    number_sections: TRUE
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+mander = read.csv("../data/mander.csv")
+require(ggplot2)
+require(here)
+
+```
+
+
+# Introduction
+
+One of the best ways to improve your R skills and comfort level is to experiment with lots of variations on code you already know.
+
+One of the best ways to learn about probability distributions and their relationship to real data is to experiment with random number generation.
+
+
+
+# Random Numbers in R
+
+Because R is a programming language specialized for statistical analysis, it has some sophisticated random number generators built in.
+
+<div class="red">
+
+Note: The proper term for random numbers generated via computer is **pseudorandom**.
+
+We hope our CPU always produces the same results when we give them the same instructions.  Current computers cannot produce truly *random* numbers (but quantum computers may be able to one day).
+
+We do have very good algorithms for producing sequences of numbers that have the statistical properties of sequences of truly random numbers.
+
+One desirable property of *pseudorandom numbers* is that we can choose what number we want R to use as a starting key, called the **random seed** to the generator.  
+
+When we specify a seed, R will always create the same sequence.  This is useful when we want to test different code on the same data.
+</div>
+
+## Random Number Functions
+
+R's random number functions are all based on **probability distributions**.
+
+Some of the most famous distributions are the Normal, Uniform, Binomial, and Poisson distributions.  The corresponding R random number generating functions are:
+
+* `rnorm()`
+* `runif()`
+* `rbinom()`
+* `rpois()`
+
+Here is a demo using the Normal distribution:
+
+```{r}
+# generate a sequence of 20 normally distributed numbers:
+rnorm(n = 20)
+
+# generate two sequences that you can use as coordinates to make a plot
+n_pts = 50
+x = rnorm(n_pts)
+y = rnorm(n_pts)
+plot(
+  x, y, 
+  xlab = "x-coordinate", ylab = "y-coordinate",
+  main = "Normally Distributed Pseudorandom Numbers",
+  pch = 17, col = rgb(0.4, 0.2, 0.9, 1))
+```
+
+We can also plot a histogram:
+```{r}
+hist(x)
+```
+
+
+
+# Exercises
+
+## Uniform random numbers
+
+Experiment with the `runif` function.  Check out the help entry.  Try to create sequences of different lengths: 5, 50, 500.
+
+What are the default upper and lower bounds of the random numbers?  How can you change these?
+
+Create the following data and plots:
+
+### Histograms
+Plot histograms with the following uniform random number sequences:
+
+**Question 1**: Before you create any plots, discuss your predictions about how the histograms should appear.
+
+* **Unif hist 1**: 5 numbers between 0 and 1.
+* **Unif hist 2**: 20 numbers between 10 and 100.
+* **Unif hist 3**: 200 numbers between -10 and 10.
+* **Unif hist 4**: 5000 numbers between 5 and 37.
+
+
+* **Question 2**: What are the quantitative and qualitative differences you see in your histograms?
+* **Question 3**: Did the shapes of the histograms conform to your expectations?
+
+
+### Scatterplots
+
+Generate scatterplots with with x- and y-coordinates using the following parameters:
+
+
+* **Question 4**: Before you create the plots, try to predict the qualitative appearance of the scatterplots.
+
+
+* **Unif scatter 1**: 15 numbers: x coordinates between 0 and 1, y coordinates between 0 and 20.
+* **Unif scatter 2**: 5000 numbers: x-coordinates and y-coordinates between 10 and 100.
+
+Compare the plots to your expectations.
+
+
+## Normal Distribution
+
+You will use the `rnorm()` function for these exercises.  Check the help entry and the internets to learn how to specify the mean and standard deviations.
+
+### Histograms
+
+Plot histograms using normally-distributed numbers with the following parameters:
+
+* **Norm hist 1**: 5 numbers (any values you want for standard deviation and mean)
+* **Norm hist 2**: 12 numbers (any values you want for standard deviation and mean)
+* **Norm hist 3**: 500 numbers with standard deviation of 3 and mean of 15
+* **Norm hist 4**: 500 numbers with standard deviation of 0.5 and mean of 15
+
+
+For **Norm hist 3** and **Norm hist 4**, use the `xlim` argument to plot both using the same range of x values for both plots.
+
+
+I suggest you try an x range from 5 to 25 as a starting point.
+
+
+
+* **Question 5**: Assume that you didn't know the numbers were Normally-distributed.  Describe your thought process if you had to make a guess about what distribution would best fit the data.
+* **Question 6**: Qualitatively describe the differences you see between **Norm hist 3** and **Norm hist 4**
+
+### Extra Credit
+
+* **Norm scatter 1**:  Create a scatterplot with **5000** normally-distributed x and y coordinates.
+
+* **Extra credit question**:  Use your knowledge about the uniform and Normal distributions to explain the differences in patterns between **Norm scatter 1** and **Unif scatter 2**.
+
+```{r, include = F}
+n = 5000
+plot(rnorm(n), rnorm(n))
+plot(runif(n), runif(n))
+
+```
+
+
+# Report
+
+Submit a report with short answers (1 to 3 sentences) to questions 1 - 6.  
+Include plots of **Unif hist 3** and **Unif hist 4**.
+Include plots of **Norm hist 3** and **Norm hist 4**.
+
+```{r, include = FALSE}
+6 * 8 + 4 * 5
+```
+
+
+The questions are worth 8 points each.  The plots are worth 5 points each.  The extra credit is worth a total of 7 points.
+
+If you complete the extra credit section, include both a short answer to the question and a plot of **Norm scatter 1**
+
+
+
+```{r include = FALSE}
+
+n = 500
+mn = 15
+sd1 = 3
+sd2 = 0.5
+
+
+hist(rnorm(n, sd = sd1, mean = mn), xlim = c(0, 30))
+hist(rnorm(n, sd = sd2, mean = mn), xlim = c(0, 30))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

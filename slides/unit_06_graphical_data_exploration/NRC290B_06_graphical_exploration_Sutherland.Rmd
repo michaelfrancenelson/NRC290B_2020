@@ -1,0 +1,694 @@
+---
+title: "Exploring data - graphical summaries"
+author: |
+  | Introduction to Quantitative Ecology
+  | Fall 2018
+  | Chris Sutherland
+  | csutherland@umass.edu
+
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \setbeamercolor{itemize item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate item}{fg=white!0!LG}
+   - \setbeamercolor{enumerate subitem}{fg=white!70!LG}
+   - \setbeamercolor{itemize subitem}{fg=white!70!LG}   
+   - \setbeamercolor{itemize subsubitem}{fg=white!70!LG}   
+   - \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \usepackage{arydshln}
+   - \graphicspath{{"G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/Explore graph/"}, {"C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/Images/Explore graph/"}}
+
+output:
+  beamer_presentation:
+    highlight: tango
+    theme: "default"
+    colortheme: "spruce"
+    fonttheme: "serif"
+    slide_level: 2
+    incremental: false
+urlcolor: blue
+classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+#opts_knit$set(root.dir = "G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+
+options(width=120)
+options(width.cutoff=80)
+opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+
+## Group evaluations
+
+\vfill
+
+1. Which of the following lines of code is the correct way to read a csv file?
+
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] \texttt{read.csv("mydata.csv")}
+  \item[B)] \texttt{my.data <- read.csv("mydata.csv")}
+  \item[C)] \texttt{r my.data <- read.csv(mydata.csv)}
+  \item[D)] \texttt{read.csv(mydata.csv, row.names = 1)}
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+```{r, echo=F, warning=FALSE, results='hide', message=FALSE}
+classData <- read.csv(file="Data/classData16.csv",h=T)
+mander <- read.csv(file="Data/mander.csv",h=T)
+bp <- read.table(file="Data/bearpoop.txt",h=T)
+```
+
+## Group evaluations
+
+\vfill
+
+2. Which of the following symbols is used to represent the *mean of a variable*?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] $\sigma$
+  \item[B)] $\bar{x}$
+  \item[C)] $s^2$
+  \item[D)] $x$
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+
+## Group evaluations
+
+\vfill
+
+3. Which plot would be most appropriate for visualizing the *running mean*?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] box-whisker plot
+  \item[B)] line graph
+  \item[C)] histogram
+  \item[D)] bar chart
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group evaluations
+
+\vfill
+
+4. Which plot would be most appropriate for visualizing the relationship between *two continuous variables*?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] histogram
+  \item[B)] line graph
+  \item[C)] box-whisker plot
+  \item[D)] scatter plot
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group evaluations
+
+\vfill
+
+5. Which of the following plots would I use to graphically represent the *distribution* of a variable?
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] histogram
+  \item[B)] line graph
+  \item[C)] box-whisker plot
+  \item[D)] scatter plot
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Graphical exploration
+
+Why use graphs?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=0cm] at (current page)
+{\includegraphics[height=2in]{QM.png}};
+\end{tikzpicture}
+
+## Graphical exploration
+
+Two main reasons to use graphs:
+
+\begin{itemize}
+\item[1.]<1-> Inform how to analyze the data
+  \begin{itemize}
+  \item<2-> visualization
+  \item<2-> identify patterns
+  \item<2-> choose appropriate statistical test
+  \end{itemize}
+\item[2.]<1-> Presentation of the data
+  \begin{itemize}
+  \item<3-> summarize results
+  \item<3-> communicate results
+  \item<3-> publish results
+  \end{itemize}
+\end{itemize}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-2.8cm] at (current page)
+{\includegraphics[height=1in]{graffs.png}};
+\end{tikzpicture}
+
+##Types of graphs - \emph{Exploratory}
+
+Exploratory graphs help understand the distribution of the data:
+
+- are the data normally distributed
+    - important assumption in statistics
+    - determines how data are analyzed
+- what is the central tendency
+- what is the spread
+- general summaries of the data
+
+
+## Exploratory: \emph{Histogram}
+
+- width of bars are defined data bins or intervals
+- height of bars represent bin-specific frequencies
+
+```{r, eval=F}
+hist(values)
+```
+
+```{r,echo=F, eval=T, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/randhist.pdf", height=3, width=7)
+par(mfrow=c(1,2), oma=c(0,0,0,0), mar=c(4,4,1,1))
+set.seed(123)
+hist(rnorm(300,50,10), col="orange", xlab="Values", main="", las=1, ylim=c(0,70),xlim=c(10,90))
+box(bty="l")
+plot(0,0,type="n",axes=F,xlab="",ylab="")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=1.5in]{randhist.pdf}};
+\end{tikzpicture}
+
+## Exploratory: \emph{Histogram}
+
+- width of bars are defined data bins or intervals
+- height of bars represent bin-specific frequencies
+
+```{r, eval = FALSE}
+hist(values)
+hist(values, breaks=seq(10,90,2))
+```
+
+```{r,echo=F, eval=T, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/randhist2.pdf", height=3, width=7)
+par(mfrow=c(1,2), oma=c(0,0,0,0), mar=c(4,4,1,1))
+set.seed(123)
+hist(rnorm(300,50,10), col="orange", xlab="Values", main="", las=1, ylim=c(0,70),xlim=c(10,90))
+box(bty="l")
+set.seed(123)
+hist(rnorm(300,50,10), col="orange", xlab="Values", main="", las=1, ylim=c(0,70),xlim=c(10,90),breaks=seq(10,90,2))
+box(bty="l")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=1.5in]{randhist2.pdf}};
+\end{tikzpicture}
+
+## Exploratory: \emph{Histogram + Density Plot}
+
+A *density plot* provides a smooth representation of the histogram:
+
+- can overlay the density plot
+- requires that a *probability* version of the histogram is plotted
+
+```{r, eval = FALSE}
+hist(values, probability=TRUE)
+lines(density(values))
+```
+
+```{r,echo=F, eval=T, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/randhist3.pdf", height=3, width=5)
+par(mfrow=c(1,1), oma=c(0,0,0,0), mar=c(4,4,1,1))
+set.seed(123)
+rnd <- rnorm(300,50,10)
+hist(rnd, col="orange", xlab="Values", main="", las=1, ylim=c(0,0.05), xlim=c(10,90), probability = TRUE)
+box(bty="l")
+lines(density(rnd),lwd=2,col=4)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=2.5cm] at (current page.south)
+{\includegraphics[height=1.5in]{randhist3.pdf}};
+\end{tikzpicture}
+
+
+## Exploratory: \emph{Box-whisker/Box plot}
+
+- distribution 
+- outliers
+- symmetry or skewness
+```{r, eval = FALSE}
+boxplot(values)
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/bw.pdf",height=3.5, width=3)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,2,2))
+boxplot(rnd,las=1, pch="")
+dev.off()
+```
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5,-2.2) {\includegraphics[scale=0.75]{bw.pdf}};
+\end{tikzpicture}
+
+## Exploratory: \emph{Box-whisker/Box plot}
+
+- `R`: \texttt{boxplot(x)}  \texttt{\textcolor{gray}{\# x is data}} 
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/four.pdf",height=3.5, width=3)
+par(mfrow=c(1,1),oma=c(0,0,0,0),mar=c(4,4,2,2))
+boxplot(rnd,las=1, axes=FALSE, pch="")
+dev.off()
+```
+
+\begin{tikzpicture}[overlay]
+\node[inner sep=0pt] (one) at (5,-2.7) {\includegraphics{four.pdf}};
+\draw[thick,blue,<-] (6.5,-2.7) -- (7.5,-2.7) node[right, black] {Median ($Q_{2}$)};
+\draw[thick,blue,<-] (6.5,-2.1) -- (7.5,-2.1) node[right, black] {Upper quartile ($Q_{3}$)};
+\draw[thick,blue,<-] (6.5,-3.25) -- (7.5,-3.25) node[right, black] {Lower quartile ($Q_{1}$)};
+\draw[thick,blue,<->] (4.5,-3.25) -- (4.5,-2.1) node[midway, left, black, text width = 2.5cm] {Inter quartile range (IQR)};
+\draw[thick,blue,<-] (5,-0.38) -- (4,-0.38) node[left, black] {Maximum};
+\draw[thick,blue,<-] (5,-4.9) -- (4,-4.9) node[left, black] {Minimum};
+\end{tikzpicture}
+
+## Exploratory: \emph{Line graph}
+
+Line graph is a useful plot for running average or time series data
+
+```{r echo=T, eval=F}
+plot(bear.run, type="l") #"l": line, "p": points, "b": both
+lines(poop.run)
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/runavg.pdf",height=4, width=5)
+plot(bp$Poop, lwd=2,col=4,bty="l",las=1,ylab="Running Average", xlab="no. of samples", ylim=c(0,2), type="l")
+lines(bp$Bear, lwd=2,col=2,bty="l",las=1,ylab="Running Average", xlab="no. of samples")
+abline(h=mean(bp$Bear), lty=2, col=2)
+abline(h=mean(bp$Poop), lty=2, col=4)
+legend("bottomright", lwd=2,col=c(4,2),legend=c("Poop","bear"), bty="n")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=3in]{runavg.pdf}};
+\end{tikzpicture}
+
+##Differences
+
+To visualize differences between groups
+
+- box-whisker plots
+    - compares averages
+    - compares distribution
+- bar charts
+    - compares averages
+
+##Differences: \emph{Box-whisker plot}
+
+Compare salamander snout-vent lengths be three sexes:
+
+```{r eval=F}
+boxplot(mander$SVL ~ mander$Sex) #formula notation
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/salbox.pdf",height=4, width=5)
+boxplot(mander$SVL~mander$Sex, col=adjustcolor(c(2,3,4),0.2),ylab="SV length", las=1)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=3in]{salbox.pdf}};
+\end{tikzpicture}
+
+##Differences: \emph{Bar chart}
+
+Compare salamander snout-vent lengths be three sexes:
+
+```{r eval=F}
+bars <- tapply(mander$SVL,mander$Sex,mean) #create matrix (like pivot table)
+barplot(bars)                              # plot it
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/salbar.pdf",height=4, width=5)
+bars <- tapply(mander$SVL,mander$Sex,mean)
+barplot(bars, col=adjustcolor(c(2,3,4),0.2),ylab="SV length", las=1, ylim=c(0,50))
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=3in]{salbar.pdf}};
+\end{tikzpicture}
+
+##Differences: \emph{Bar chart} with associated error
+
+Compare salamander snout-vent lengths be three sexes:
+
+```{r eval=F}
+bars <- tapply(mander$SVL,mander$Sex,mean)
+barplot(bars)
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+tmp <- c(0.7,1.9,3.1)
+pdf("Images/Explore graph/salbarse.pdf",height=4, width=5)
+bars <- tapply(mander$SVL,mander$Sex,mean)
+ss <- c(tapply(mander$SVL,mander$Sex,sd))/c(sqrt(table(mander$Sex)))
+barplot(bars, col=adjustcolor(c(2,3,4),0.2),ylab="SV length", las=1, ylim=c(0,50))
+arrows(c(tmp),bars-4.96*ss,c(tmp),bars+4.96*ss,lwd=2,length=0)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=3in]{salbarse.pdf}};
+\end{tikzpicture}
+
+##Links
+
+Two main approaches for relationships between data:
+
+\begin{itemize}
+\item[1.]<1-> Correlations
+\item[2.]<1-> Associations
+\end{itemize}
+
+##Links
+
+Two main approaches for graphing relationships between data:
+
+\vspace{0.06cm}
+
+\begin{itemize}
+\item[1.]<1-> Correlations
+  \begin{itemize}
+  \item<1-> two numeric variables
+    \begin{itemize}
+    \item<1-> \emph{de}pendent variable (of primary interest: y-axis)
+    \item<1-> \emph{inde}pendent variable (explanatory variable: x-axis)
+    \end{itemize}
+  \item<1-> how one variable is related to another
+  \item<1-> \emph{scatter plots}
+  \end{itemize}
+\end{itemize}
+
+##Links: \emph{Scatter plot}
+
+```{r eval=F}
+plot(x,y) # x and y are numeric vectors
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/salscatter.pdf",height=4, width=7)
+par(mfrow=c(1,2))
+plot(mander$SVL ~ mander$Total_length, bg=adjustcolor(3,0.3), ylab="SV length (mm)", xlab="Total length (mm)", las=1, ylim=c(10,55), bty="l",pch=21, cex=1.2)
+plot(mander$SVL ~ jitter(as.numeric(mander$Date)+5,3), bg=adjustcolor(4,0.3), ylab="SV length (mm)", xlab="Temperature (C)", las=1,ylim=c(10,55), bty="l", pch=21,cex=1.2)
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=2.5in]{salscatter.pdf}};
+\end{tikzpicture}
+
+##Links
+
+Two main approaches for graphing relationships between data:
+
+\begin{itemize}
+\item[2.]<1-> Associations
+  \begin{itemize}
+  \item<1-> categorical data
+  \item<1-> summarize categories
+    \begin{itemize}
+    \item<1-> counts
+    \item<1-> proportions
+    \item<1-> by rows and/or columns of a table
+  \end{itemize}
+  \item<1-> \emph{pie charts} for single categories 
+  \item<1-> \emph{bar graphs} for several categories
+  \end{itemize}
+\end{itemize}
+
+##Links: \emph{Pie chart}
+
+```{r eval=F}
+pietab <- table(classData$Eyes)
+pie(pietab) #(number of people with each eye color)
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/classpie.pdf",height=4, width=4)
+par(mar=c(1,1,1,1),oma=c(0,0,0,0))
+pietab <- table(classData$Eyes)
+pie(pietab, labels = paste(names(pietab),"\n (",pietab,")",sep=""), col = adjustcolor(c(4,"turquoise","brown",3),0.6), main="Eye color")
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=4cm] at (current page.south)
+{\includegraphics[height=2in]{classpie.pdf}};
+\end{tikzpicture}
+
+##Links: \emph{Bar chart}
+
+```{r eval=F}
+bartab <- table(classData$Gender,classData$Eyes)
+barplot(pietab, beside=TRUE) #(number of each gender with each eye color)
+```
+
+```{r echo=F, warning=FALSE, results='hide'}
+pdf("Images/Explore graph/classbar.pdf",height=4, width=7)
+bartab <- table(classData$Gender,classData$Eyes)
+barplot(bartab, col = adjustcolor(c(2,4),0.4), main="Eye color by Gender", las=1, ylab="Count", beside=TRUE, ylim=c(0,10),legend=rownames(bartab))
+dev.off()
+```
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3.5cm] at (current page.south)
+{\includegraphics[height=2.5in]{classbar.pdf}};
+\end{tikzpicture}
+
+
+##Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+##Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+**BUT** we must label the well or they are useless!
+
+- label both axes
+- provide a main title for your graph
+- avoid clutter
+- make it readable
+- *I expect graphs to be propery labeled from now on*!
+
+##Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+\vspace{1cm}
+
+|Purpose | Graph Type|
+|--------|-----------|
+| Illustrating *distribution* | Histogram, Density plot | 
+|                             | Box(-whisker) plot      |
+| Illustrating *differences*  | Bar chart, Box plot     |
+| Illustrating *correlations* | Scatter plot            |
+| Illustrating *associations* | Pie chart, Bar chart    |
+| Illustrating *sample size*  | Line plot of running avg|
+
+##Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Don't give us the answer though:
+    - are differences *significant*?
+    - are associations *significatnt*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{salbox.pdf}};
+\end{tikzpicture}
+
+##Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Don't give us the answer though:
+    - are differences *significant*?
+    - are associations *significatnt*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift=3cm] at (current page.south)
+{\includegraphics[height=2in]{salscatter.pdf}};
+\end{tikzpicture}
+
+##Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Don't give us the answer though:
+    - are differences *significant*?
+    - are associations *significatnt*?
+   
+- Statistics is the tool we use to formally answer these questions!
+    - the differences *are*/*are not* significant!
+    - are associations *are*/*are not* significant!
+    
+## Group evaluations
+
+\vfill
+
+1. Are you sitting with your group?
+
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] Yes
+  \item[B)] No
+\end{enumerate}
+
+\vfill
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=1cm] at (current page.south east)
+{\includegraphics[height=0.25in]{iclicker.png}};
+\end{tikzpicture}
+
+## Group practical: water vole weights
+
+Ultimately we are interested in comparing sex-specific water vole weights across multiple populations (networks). The data include weight measurements of: 
+
+- 100's voles
+- from 4 water vole sub-populations
+- from males and females
+
+\vspace{0.5cm}
+
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=4cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.8in]{voleMap.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=2.8cm,yshift=-1cm] at (current page)
+{\includegraphics[height=0.8in]{vole.png}};
+\end{tikzpicture}
+
+
+
+## Group practical: water vole weights
+
+Ultimately we are interested in comparing sex-specific water vole weights across multiple populations (networks). The data include weight measurements of: 
+
+- 100's voles
+- from 4 water vole sub-populations
+- from males and females
+
+\vspace{0.5cm}
+
+The assignment:
+
+- download data & empty script
+- complete the script (in groups)
+- submit to moodle (1 per group)
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=4cm,yshift=-1cm] at (current page)
+{\includegraphics[height=2.8in]{voleMap.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=2.8cm,yshift=-1cm] at (current page)
+{\includegraphics[height=0.8in]{vole.png}};
+\end{tikzpicture}
+

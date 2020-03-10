@@ -1,0 +1,61 @@
+---
+title: "Reporting results group evaluation"
+author: "Introduction to Quantitative Ecology"
+date: "December 6, 2016"
+output: pdf_document
+fontsize: 12pt
+header-includes:
+   - \usepackage{tabto}
+   - \usepackage{verbatim}
+   - \usepackage{amsmath}
+   - \usepackage{mathtools}
+   - \usepackage{graphicx}
+   - \usepackage{tikz}
+   - \usepackage{tikzpagenodes}
+   - \definecolor{OG}{RGB}{0,64,8}
+   - \definecolor{LG}{RGB}{0,102,51}
+   - \definecolor{myRed}{RGB}{228,26,28}
+   - \definecolor{myBlue}{RGB}{55,126,184}
+   - \definecolor{myGreen}{RGB}{77,175,74}
+   - \definecolor{myPurple}{RGB}{152,78,163}
+   - \usepackage{inputenc}
+   - \usepackage{booktabs}
+   - \usepackage{caption}
+   - \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
+   - \usepackage{setspace}
+   - \DeclareGraphicsExtensions{.pdf,.png,.jpg,.gif}
+   - \usepackage{fixmath}
+   - \usepackage{tabto}
+   - \graphicspath{{"G:/Dropbox/Courses class/NRC290b/Figures/"},{"C:/Users/csutherland/Dropbox/Courses class/NRC290b/Figures/"}}
+---
+
+```{r,echo=FALSE}
+set.seed(123)
+Area <- runif(100, 0, 10)
+Richness <- runif(100,0,1)
+Abundance <- rnorm(100, 35 + 2.5 * Area + -2*Richness,10)
+butterfly.model <- lm(Abundance ~ Area + Richness)
+```
+
+Group Members:
+
+\vspace{2cm}
+
+1. What three pieces of inforamtion are required when summarizing raw numerical data?
+
+\vspace{4cm}
+
+2. Name three items that should provided when reporting results from a statistical test.
+
+\vspace{4cm}
+
+3. What are three ways an *insignificant* result can be reported?
+
+\newpage
+
+4. Describe four attributes that all good graphs should have.
+
+\vspace{10cm}
+
+5. See the slide for question 5.
+

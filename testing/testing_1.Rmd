@@ -1,0 +1,139 @@
+---
+title: "testing"
+subtitle:  "Session 1"
+date: "`r format (Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+output:
+  beamer_presentation:
+    pandoc_args: !expr paste0(here::here('css', 'beamer.yaml'))
+header-includes: 
+  \input{`r here::here("css", "headers_tikz.yaml")`}
+---
+
+<!-- \newcommand\{\iclick}{% -->
+<!-- \vfill -->
+<!-- \begin{tikzpicture}[remember picture,overlay] -->
+<!-- \node[xshift=-2cm,yshift=1cm] at (current page.south east) -->
+<!-- {\includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}}; -->
+<!-- \end{tikzpicture}} -->
+
+<!-- \newcommand\{iClick}{ -->
+<!-- \vfill -->
+<!-- \begin{tikzpicture}[remember picture,overlay] -->
+<!-- \node[xshift=-2cm,yshift=1cm] at (current page.south east) -->
+<!-- {\includegraphics[height=0.25in]{../slides/slide_images/iClicker_logo.png}}; -->
+<!-- \end{tikzpicture} -->
+<!-- } -->
+
+
+# newest test slide
+<!-- \vfill -->
+\newcommand{\atest}{
+ \begin{tikzpicture}[remember picture,overlay]
+  \node[xshift=-2cm,yshift=1cm] at (current page.south east){
+   \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}
+  };
+\end{tikzpicture}
+}
+
+\atest
+
+# newest test slide
+
+
+<!-- https://tex.stackexchange.com/questions/32661/how-to-locate-figures-with-x-y-specified-location-in-a-presentation/330626 -->
+
+<!-- \begin{tikzpicture}[remember picture,overlay] -->
+<!--  \node[anchor=south west,inner sep=0pt] at ((current page.south west) + (2cm,5cm)) { -->
+<!--    \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`} -->
+<!--  }; -->
+<!-- \end{tikzpicture} -->
+
+
+
+# Chris's way
+
+\vfill
+\begin{tikzpicture}[remember picture,overlay]
+ \node[xshift=-2cm,yshift=1cm] at (current page.south east){
+  \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}
+ };
+\end{tikzpicture}
+
+
+# newest test slide
+
+\begin{tikzpicture}
+\includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+\end{tikzpicture}
+
+
+
+# break
+
+
+\newcommand{\latest}
+{
+ and seven years ago
+}
+
+abc \latest
+
+
+\newcommand{\atest}
+{
+\includegraphics[height=0.25in]{../slides/slide_images/iClicker_logo.png}
+}
+
+
+
+\atest
+
+<!-- ## new slide -->
+
+<!-- \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`} -->
+
+
+<!-- \newcommand{\atest} -->
+<!-- { -->
+<!-- \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`} -->
+<!-- } -->
+<!-- \atest -->
+
+
+
+
+
+
+
+<!-- \newcommand{\atest} -->
+<!-- { -->
+<!-- \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`} -->
+<!-- \includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`} -->
+<!-- } -->
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# require(rmarkdown)
+```
+
+
+## as
+<!-- \iClick -->
+
+## iClicker logo
+
+```{r cars}
+# summary(cars)
+```
+
+<!-- \vfill -->
+<!-- \begin{tikzpicture}[remember picture,overlay] -->
+<!-- \node[xshift=-2cm,yshift=1cm] at (current page.south east) -->
+<!-- {\includegraphics[height=0.25in]{`r here::here("slides", "slide_images", "iClicker_logo.png")`"}}; -->
+<!-- \end{tikzpicture} -->
+
+
+
+<!-- {\includegraphics[height=0.25in]{../slides/slide_images/iClicker_logo.png}}; -->
+

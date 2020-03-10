@@ -1,0 +1,220 @@
+---
+title: "Week 6: Graphical Data Exploriation"
+subtitle:  "Session 2"
+date: Spring 2020
+output:
+  beamer_presentation:
+    pandoc_args: !expr paste0(here::here('css', 'beamer.yaml'))
+header-includes:
+  \input{`r here::here("css", "headers_tikz.tex")`}
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+require(knitr)
+require(here)
+source(here("data", "environment_vars.R"))
+
+i = 1;
+set.seed(12345)
+nrow = 10
+dat = data.frame(length = runif(n = nrow), width = rexp(nrow), mass = rpois(nrow, 34))
+```
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which of the following should I use to read the file `mydata.csv` into a data frame called `dat` in R?
+
+\begin{enumerate}[A]
+\item \texttt{dat = read.csv(mydata.csv)}
+\item \texttt{read.csv(mydata.csv)}
+\item \texttt{dat = read.csv("mydata.csv")}
+\item \texttt{read.csv(mydata.csv, row.names = 1)}
+\item \texttt{read.csv("mydata.csv")}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which of the following lines of code will make a scatterplot with a custom **title**?
+
+```{r, echo = FALSE}
+head(dat, 3)
+```
+
+\begin{enumerate}[A]
+\item \texttt{plot(dat\$mass, dat\$length, col = 3)}
+\item \texttt{plot(dat\$mass, dat\$length, type = "l")}
+\item \texttt{plot(dat\$length, dat\$mass, type = "p")}
+\item \texttt{plot(dat\$mass, dat\$length, main = "data plot")}
+\item \texttt{plot(dat\$length, dat\$mass)}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+Which is the best location for me to type my R code for in-class and individual activities?
+
+\begin{enumerate}[A]
+\item A text file in Word or another word processor
+\item The RStudio console pane
+\item The RStudio code editor pane
+\item The RStudio Environment pane
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## Announcements
+
+- Error in Tuesday's title slide is now fixed.  You can re-download the correct version on Moodle.
+
+
+
+
+## Follow-up questions from the Chapter 5 homework
+
+Question 1: What is the difference between parametric and a non-parametric distribution?
+
+- The book's explanation of *parametric distribution* is slightly misleading.  The reading characterizes the Normal distribution as a parametric distribution, however there are many *parametric distributions*. 
+- I prefer to use the term *theoretical distributions* when I'm describing *parametric distributions* to emphasize that they are precisely mathematically defined.
+- The behavior of *parametric distributions* is governed by 1 or more *parameters* in the probability functions.
+
+- What is a **non-parametric distribution**?
+
+
+
+
+## Follow-up questions from the Chapter 5 homework
+
+Question 3: In R, what would be returned if you compute the mean value of a vector containing the following values: 4, 9, 2, 13, NA, 9? Please describe your methods.
+
+- Question from me:  Is there a benefit to having `mean()` fail when you pass an NA?
+
+
+
+
+## For Today
+
+- Are there any general questions about data exploration, numeric or graphical?
+- Short lecture
+- Group activity: graphical data exploration: rarefaction data.
+- We'll start to use *inference* in the coming weeks!
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+- summarizing
+- understanding
+- describing
+- presenting/communicating
+
+**BUT** we must label them well or they are useless.
+
+- label both axes
+- provide a main title for your graph
+- avoid clutter
+- make it readable
+- *I expect graphs to be properly labeled from now on*!
+
+
+
+
+## Some graphics pointers
+
+In summary, graphs are a useful data visualization tool
+
+\vspace{1cm}
+
+|Purpose | Graph Type|
+|--------|-----------|
+| Illustrating *distribution* | Histogram, Density plot |
+|                             | Box(-whisker) plot      |
+| Illustrating *differences*  | Bar chart, Box plot     |
+| Illustrating *correlations* | Scatter plot            |
+| Illustrating *associations* | Pie chart, Bar chart    |
+| Illustrating *sample size*  | Line plot of running avg|
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Graphs alone don't give us the complete answer.  We need to **quantify** the relationships we see in our plots.
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- How can we **quantify** our evidence for relationships?
+    - Are differences between groups *significant*?
+    - Are differences between groups *meaningful*?
+    
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 4cm] at (current page.south)
+{\includegraphics[height = 7cm]{`r here("slides", "slide_images", "salbox.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- How can we **quantify** our evidence for relationships?
+    - Are associations between two variables *significant*?
+    - Are associations between two variables *meaningful*?
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 4cm] at (current page.south)
+{\includegraphics[height = 7cm]{`r here("slides", "slide_images", "salscatter.pdf")`}};
+\end{tikzpicture}
+
+
+
+
+## Beyond graphs, Towards statistics
+
+- Graphs are powerful tools that provide insight and understanding of the patterns and relationships in the data.
+
+- Graphs alone don't give us the complete answer.  We need to **quantify** the relationships we see in our plots.
+
+- Statistics is the tool we use to formally answer these questions:
+    - Are differences *significant*?
+    - Are associations *significant*?
+    
+
+
+
+## Group graphical activity
+
+- Plotting the rarefaction data
+- See the instructions on Moodle
+

@@ -1,0 +1,228 @@
+---
+title: "Week 4: Data Management"
+subtitle:  "Session 2"
+
+header-includes:
+  \usepackage{multicol}
+  
+output:
+  beamer_presentation:
+    
+    # highlight: tango
+#     theme: "default"
+#     colortheme: "spruce"
+#     fonttheme: "serif"
+#     slide_level: 2
+#     incremental: false
+# urlcolor: blue
+# classoption: t
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+require(ggplot2)
+require(data.table)
+
+
+iris_dt = data.table(iris)
+
+iris_dt[, sep_wid_jit := jitter(Sepal.Width, factor = 2)]
+iris_dt[, sep_len_jit := jitter(Sepal.Length, factor = 2)]
+iris_dt[, x_jit := jitter(rep(0, nrow(iris_dt), factor = 2))]
+iris_dt
+
+# # opts_knit$set(root.dir = "G:/Dropbox/C/Courses class/NRC290b/NRC_290b_2018/")
+# #opts_knit$set(root.dir = "C:/Users/csutherland/Dropbox/C/Courses class/NRC290b/NRC_290b_2018")
+# 
+# opts_chunk$set(prompt = FALSE, comment = NA, mysize=TRUE, size="\\scriptsize")
+# hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+# hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+# knit_hooks$set(document = hook2)
+# knitr::knit_hooks$set(mysize = function(before, options, envir) {
+#   if (before) 
+#     return(options$size)
+# })
+```
+
+
+# iClicker questions
+
+
+Which of the following are *not* one of the statistical concepts we have discussed in the last few lectures?
+
+\begin{enumerate}[A]
+\item statistics and parameters
+\item populations
+\item samples
+\item variance and standard deviation
+\item center and spread
+\end{enumerate}
+
+
+
+
+\begin{multicols}{2}
+\null \vfill
+\vfill \null
+\columnbreak
+\includegraphics[width = 0.35\textwidth]{../slide_images/iClicker_logo.png}
+\end{multicols}
+
+
+
+# Announcements
+
+No class on Tuesday!
+
+Chapter 4 has a lot of material.  I'm moving the due date for the pre-class reading assignments to Wednesday of next week (by midnight).
+
+
+
+# Distributions
+
+Your Gardener book mentions the Normal distribution in chapter 4, but there is no prior discussion about what *distribution* means!
+
+What is a distribution?
+
+We're going to build an intuitive concept of a distribution from the ground up.
+
+
+
+
+# Distributions
+
+<!-- \null \vfill -->
+<!-- \vfill \null -->
+
+<!-- \textit{} -->
+\begin{multicols}{2}
+
+\vspace*{\fill}
+How variable are the sepals of in a wild population of \textit{Iris setosa}?
+\vspace*{\fill}
+
+\columnbreak
+\includegraphics[width = 0.45\textwidth]{../slide_images/Mature_flower_diagram.png}
+\end{multicols}
+
+
+
+```{r, fig.width = 6, fig.height = 2.4, echo = FALSE}
+ggplot(iris_dt, aes(x = sep_wid_jit, y = x_jit)) + geom_point() + ylim(-0.04, 0.04) +
+  ylab("") + xlab("Sepal width (cm)") +
+  theme(axis.ticks.y = element_blank(), axis.text.y = element_blank()) +
+  ggtitle("Iris setosa sepal widths")
+
+```
+
+
+
+# Distributions
+
+What is the \textbf{center} of the \textit{Iris setosa} sepal width data?
+
+What is the \textbf{dispersion} or \textbf{spread} of the \textit{Iris setosa} sepal width data?
+
+A *histogram* plot displays the relative frequencies of size *bins*.
+
+
+
+```{r, fig.width = 8, fig.height = 4, echo = FALSE}
+hist(
+  iris_dt$sep_wid_jit,
+  freq = TRUE,
+  main = "Histogram of Iris setosa sepal width", 
+  xlab = "Sepal width (cm)")
+```
+
+
+
+# Distributions
+
+A **distribution** describes **variability** in a collection of data points.
+
+There are many kinds of distributions.
+
+
+
+
+# The Normal Distribution
+
+You've probably heard of the **Normal** distribution.
+
+It describes a collection of data that are centered around a most likely value, the *mean*.  The likelihood of values away from the center decreases *symmetrically* with the magnitude of the distance from the mean.
+
+It has a familiar bell shape:
+
+```{r, echo = FALSE, fig.asp = 1 / 3}
+
+x = seq(-5, 5, length.out = 1000)
+ggplot(data.frame(x = x, y = dnorm(x)), aes(x, y)) + geom_line(size = 2)
+
+```
+
+
+# Distributions
+
+Different distributions describe different kinds of variability.
+
+We'll encounter many types throughout the course.
+
+Here are 3 of the most famous:
+
+
+
+```{r, echo = FALSE, fig.asp = 1/2.5}
+x1 = seq(0.01, 2, length.out = 1000)
+x2 = 0:10
+x3 = seq(0.01, 0.99, length.out = 1000)
+h = hist(x2, breaks = x2, plot = FALSE)
+h$counts = dpois(x2, 2.3)
+
+
+par(mfrow = c(1, 3))
+plot(x1, dexp(x1), type = "l", main = "Exponential", ylab = "Pr")
+plot(x1, dbeta(x3, 9, 5), type = "l", main = "Beta", ylab = "Pr")
+plot(h, main = "Poisson", ylab = "probability mass")
+```
+
+
+
+# Center and Spread
+
+What are some statistics we use to measure center?
+
+How could we describe spread?
+
+
+# Center and Spread in R
+
+These functions can help:
+```{r, eval=FALSE}
+mean()
+range()
+median()
+min()
+max()
+sd()
+summary()
+```
+
+
+
+
+# Group Activity: Salamanders
+
+We have data for salamanders collected at 4 locations in the Pioneer Valley.
+
+The data include information about:
+
+* Snout to vent length
+* Total length
+* Sex
+* Observation season
+
+You can find the data file and detailed instructions on Moodle.
+
+Today you'll do some exploratory data analysis.  Load the data into R and use some of the functions you know to examine the data.
+

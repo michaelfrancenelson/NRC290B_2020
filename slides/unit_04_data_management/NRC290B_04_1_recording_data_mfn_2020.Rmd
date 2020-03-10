@@ -1,0 +1,249 @@
+---
+title: "Week 4: Data Management"
+subtitle:  "Session 1"
+date: Spring 2020
+output: beamer_presentation
+header-includes: \usepackage{multicol}
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+require(knitr)
+tmp = rprojroot::find_rstudio_root_file()
+knitr::opts_chunk$set(root.dir = tmp, error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = tmp)
+source(paste0(tmp, "/data/environment_vars.R"))
+rm(tmp)
+```
+
+
+# iClicker quiz: Question 1
+
+Your book mentioned several good reasons to collect information on who, what, where, when with your observations.
+
+Which of the following is NOT a reason to collect all of the Ws?
+
+\begin{enumerate}[A]
+\item It means you sampled correctly and without bias
+\item It allows the data to be used for multiple purposes
+\item It ensures that the data you collect can be checked for accuracy
+\item It means that you won’t forget some important aspect of the data
+\item It allows someone else to repeat the exercise exactly
+\end{enumerate}
+
+
+\begin{multicols}{2}
+\null \vfill
+\vfill \null
+\columnbreak
+\includegraphics[width = 0.35\textwidth]{../slide_images/iClicker_logo.png}
+
+\end{multicols}
+
+
+
+# iClicker Quiz: Question 2
+
+Which of the following R concepts has been the most challenging or frustrating for you?
+
+\begin{enumerate}[A]
+\item Loading data files into R
+\item Strings literals vs. variables
+\item Sequences and series
+\item Navigating swirl
+\end{enumerate}
+
+\begin{multicols}{2}
+\null \vfill
+\vfill \null
+\columnbreak
+\includegraphics[width = 0.35\textwidth]{../slide_images/iClicker_logo.png}
+\end{multicols}
+
+
+
+
+# Announcements
+
+* I'm experimenting with some alternative ways to build lecture slides.
+ * Slides may have different looks and feels over the next several weeks.
+ * I will ask for your feedback on the slide styles and content later in the course.
+
+* Notetaker
+
+* Do NOT install the Excel Analysis Pack.  We will not be using Excel for data analysis.  I will provide updated information and instructions for passages in the book the refer to analyses in Excel.
+
+
+ 
+
+# For today
+
+* What did we do last week?
+* Data concepts
+* Recording data
+* Variables
+* Group activity time
+
+
+
+
+# Data: some key concepts
+
+Data and *metadata*
+"Data without metadata is meaningless."
+
+But.... what is metadata?
+
+
+When we design data sheets, we should think like R:
+
+##Row format
+* Each row is an *observation*.
+* Each row contains columns for:
+ * Metadata (who, where, etc.)
+ * Explanatory variables
+ * Response variables
+
+
+Sampling Units: This is a subtle concept, we'll keep returning to it throughout the course.
+
+
+
+
+# Important concepts in data entry
+
+What are some important questions your data sheets should answer?
+
+* Who, what, where, when
+* Variables (there may be multiple variables in each category)
+* Notes: unusual conditions, etc.
+ 
+Which of these could be considered *metadata*?
+
+It's better to record all of the data and other observations that could be relevant later, even
+if you don't end up using all of the information for your analyses.
+
+
+
+
+
+# Bears/poops group time
+
+I sincerely apologize for the technical issues last class.  Thank you all for bearing with me.
+
+General questions?
+
+Remember the peer evaluations.  They will be available on Moodle starting Thursday.
+
+
+
+
+# Why do we need to sample?
+
+\begin{center}
+\includegraphics[width = 0.88\textwidth]{../slide_images/question_mark_green.png}
+\end{center}
+
+
+
+
+
+# Variables: key concepts
+
+Several pairs of terms are often used to describe different types of variables:
+
+* Independent/dependent
+* Predictor/response
+* Explanatory/response
+
+What do they mean?
+
+What are some important data types?
+
+
+
+
+# Variables example: Can you identify the predictor and response?
+
+```{r, echo = FALSE, include = FALSE}
+dat = read.csv("data/cedar_creek_survey.csv")
+require(ggplot2)
+gg = ggplot(dat, aes(x = Total.Individuals, y = Distinct.Species.Count))
+
+```
+```{r, echo = FALSE, fig.asp = 0.6, warning=FALSE}
+# plot(
+#   Distinct.Species.Count ~ Total.Individuals, 
+#   data = dat,
+#   xlab = "Total Number of Individuals",
+#   ylab = "Number of Distinct Species",
+#   main = "Cedar Creek Rarefaction: Preliminary Data Exploration",
+#   pch = 16,
+#   cex = 1
+#   )
+
+
+gg +
+  geom_point() +
+  xlab("Count of Individuals") +
+  ylab("Count of Distinct Species") +
+  ggtitle("Cedar Creek Rarefaction: Preliminary Data Exploration") +
+  theme(text = element_text(size = 22))
+
+```
+
+
+
+# What to record?
+
+The metadata:
+
+\begin{enumerate}
+\item Who recorded the data
+\item What is the *sampling unit*
+\item Where was the data recorded
+\item When was the data recorded
+\end{enumerate}
+
+
+
+
+
+# What to record?
+
+The data (i.e. the variables):
+
+\begin{enumerate}
+  \item Response Variable 
+  \begin{enumerate}
+    \item the variable of interest you are trying to estimate 
+    \item similar to/or sometimes called the “dependent variable”
+  \end{enumerate}
+  \item Explanatory Variables
+  \begin{enumerate}
+    \item Variables that influence the response variable
+    \item similar to/or sometimes called the “independent variables” or “predictor variable”
+  \end{enumerate}
+\end{enumerate}
+
+
+
+
+# Some examples of variables
+
+Can you identify the predictor and response variables in these *models*?
+
+From high school math, you might remember the equation for a line:
+\begin{equation}
+   \label{eq:example-equation}
+   y = mx + b
+\end{equation}
+
+
+We'll learn all about statistical models of the form:
+\begin{equation}
+   \label{eq:example-equation}
+   y_{i} = \alpha + \beta_{1} \times x_{i1} + \beta_{2} \times x_{i2} + \epsilon
+\end{equation}
+
+
+Why did I call these equations models?
