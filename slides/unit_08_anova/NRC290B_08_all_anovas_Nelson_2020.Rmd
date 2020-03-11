@@ -27,11 +27,33 @@ graze <- data.frame(graze= factor(rep(rep(c("Lo","Mid","Hi"),each=3),2),
 
 ## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
 
+I want to compare fish weights in three lakes.  I've sampled 32 fishes from each lake.
+
+What statistical analysis should I perform?
+
 \begin{enumerate}[A]
-\item \texttt{}
-\item \texttt{}
-\item \texttt{}
-\item \texttt{}
+\item \texttt{Multiple linear regression}
+\item \texttt{t-test}
+\item \texttt{one-way ANOVA}
+\item \texttt{Chi-square test}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+I want to compare fish weights in two lakes.  I've sampled 32 fishes from each lake.
+
+What statistical analysis should I perform?
+
+\begin{enumerate}[A]
+\item \texttt{Multiple linear regression}
+\item \texttt{t-test}
+\item \texttt{one-way ANOVA}
+\item \texttt{Chi-square test}
 \end{enumerate}
 
 \logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}

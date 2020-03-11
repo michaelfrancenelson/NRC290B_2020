@@ -1,0 +1,486 @@
+---
+title: "Graphical Data Exploration: pre-class assignment"
+subtitle: "NRC290B Introduction to Quantitative Ecology"
+author: "Michael France Nelson"
+date: "Spring 2020"
+output: 
+  html_document:
+    css: !expr here::here("css", "styles.css")
+    number_sections: TRUE
+    toc: true
+    toc_float: true
+---
+
+
+
+
+
+
+```{r setup, include=FALSE}
+require(here)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = here(), error = TRUE)
+knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
+source(here("data", "environment_vars.R"))
+
+due_date = ISOdatetime(2020, 3, 1, 23, 55, 0)
+format(due_date, due_date_format)
+
+
+```
+
+
+```{r anova answer key, echo = FALSE, include=FALSE}
+
+
+
+# sample format
+upper  = c(23, 25, 27, 28, 19, 26, 27)
+middle = c(32, 37, 31, 28, 26, 29    )
+lower  = c(24, 26, 27, 28, 25        )
+
+# recording format
+sward_heights = 
+  rbind(
+    data.frame(site = "upper",  height = upper),
+    data.frame(site = "middle", height = middle),
+    data.frame(site = "lower",  height = lower)
+  )
+
+
+all    = c(upper, middle, lower)
+
+n_upper  = length(upper)   # B9
+n_middle = length(middle)  # C9
+n_lower  = length(lower)   # D9
+
+df_upper  = n_upper - 1
+df_middle = n_middle - 1
+df_lower  = n_lower - 1
+
+df_within = df_upper + df_middle + df_lower
+
+n_between = 3
+df_between = n_between - 1
+
+n_total = sum(n_upper, n_middle, n_lower) # A9
+df_total = n_total - 1
+
+df = c(between = df_between,  within = df_within, total = df_total)
+
+mean_upper  = mean(upper)  # B10
+mean_middle = mean(middle) # C10
+mean_lower  = mean(lower)  # D10
+
+ss_upper  = var(upper)  * (n_upper  - 1) # B11
+ss_middle = var(middle) * (n_middle - 1) # C11
+ss_lower  = var(lower)  * (n_lower  - 1) # D11
+
+grand_mean = mean(c(upper, middle, lower)) # C12
+
+ss_within  = sum(ss_upper, ss_middle, ss_lower) # A13
+
+ss_between_upper  = ((mean_upper  - grand_mean) ^ 2) * n_upper  # B14
+ss_between_middle = ((mean_middle - grand_mean) ^ 2) * n_middle # C14
+ss_between_lower  = ((mean_lower  - grand_mean) ^ 2) * n_lower  # D14
+
+ss_between = sum(ss_between_upper, ss_between_middle, ss_between_lower)
+
+ss_total = var(all) * (n_total - 1)
+
+ss_total == (ss_between + ss_within)
+
+source = c(between = ss_between, within = ss_within, total = ss_total)
+df     = c(between = df_between,  within = df_within, total = df_total)
+ms     = c(source / df)[1:2]
+
+f_val = ms[1] / ms[2]
+p_crit = 0.05
+
+p_obs = pf(f_val, df_between, df_within, lower.tail = FALSE)
+f_crit = qf(p_crit, df_between, df_within, lower.tail = FALSE)
+
+
+# post hoc analysis
+fit1 = aov(height ~ site, data = sward_heights)
+summary(fit1)
+TukeyHSD(fit1, "site", ordered = TRUE)
+```
+
+# Overview
+
+This is an adaptation of the Excel exercise on pages 267 - 268 from Gardner: Statistics for Ecologists using R and Excel
+
+
+
+
+# The data
+
+This dataset includes measurements of grass height in three sites (swards).
+
+Normally you would record data in the *recording format* listed below.
+
+For the sake of this exercise, you will need both the sample and recording formats.
+
+```{r build data}
+
+# sample format
+upper  = c(23, 25, 27, 28, 19, 26, 27)
+middle = c(32, 37, 31, 28, 26, 29    )
+lower  = c(24, 26, 27, 28, 25        )
+
+# recording format
+sward_heights = 
+  rbind(
+    data.frame(site = "upper",  height = upper),
+    data.frame(site = "middle", height = middle),
+    data.frame(site = "lower",  height = lower)
+  )
+
+# view a sample of the recording format:
+head(sward_heights)
+```
+
+
+
+# Performing an Analysis of Variance by hand
+
+Typically, you would have software do the ANOVA calculations for you, but it is helpful to do an ANOVA by hand learn how the analysis works.
+
+Here are some code templates for performing the ANOVA and building the table.
+
+
+You will need to calculate some intermediate quantities to do the analysis:
+
+* The total number of observations
+* The number of groups
+* The number of observations in each group
+* Within-group, between-group, and total degrees of freedom
+
+
+## Calculating the sample numbers
+
+To calculate the numbers of within-group samples use the `length()` function.
+Fill in the missing code
+```{r, eval = FALSE}
+n_upper  = length(upper)   # B9
+n_middle =
+n_lower  =
+```
+
+
+
+
+The number of groups:
+```{r, eval = FALSE}
+n_between = 3
+```
+
+Total number of observations:
+
+```{r, eval = FALSE}
+n_total = sum(n_upper, n_middle, n_lower)
+```
+
+## Degrees of freedom
+
+### Within group DF
+
+The degrees of freedom for each groups are just the counts minus 1:
+
+```{r, eval = FALSE}
+
+df_upper  = n_upper - 1
+df_middle =
+df_lower  =
+
+```
+The total within-group degrees of freedom is just the sum of the individual groups' degrees of freedom:
+```{r}
+df_within = df_upper + df_middle + df_lower
+```
+
+You should get:
+```{r}
+df_within
+```
+
+
+### Total DF
+
+Total degrees of freedom is the total number of observations minus 1:
+
+```{r, eval = FALSE}
+df_total  =
+```
+
+You shoudl get:
+```{r}
+df_total
+```
+
+### Vector of DFs
+
+Create a vector to hold all of the degrees of freedom
+```{r, eval = FALSE}
+df = c(between = df_between,  within = df_within, total = df_total)
+```
+
+Your degrees of freedom vector should be:
+```{r}
+df
+```
+
+
+## Calculating means
+
+Now we need the different means to calculate the Sums of Squares for the analysis.
+
+
+### Grand mean
+The grand mean is the mean of every observation.  Use the functions `c()` and `mean()` to find it:
+
+```{r}
+grand_mean = mean(c(upper, middle, lower)) # C12
+```
+
+
+### Within-group means
+
+The within-group means calculations are similar
+
+```{r, eval = FALSE}
+mean_upper  = mean(upper)  # B10
+mean_middle =              # C10
+mean_lower  =              # D10
+```
+
+
+## Sums of Squares
+
+### Within-group SS
+We can use the function `var()` to calculate the within-group sum of squares:
+```{r, eval = FALSE}
+ss_upper  = var(upper)  * (n_upper  - 1) # B11
+ss_middle =                              # C11
+ss_lower  =                              # D11
+```
+
+You should get:
+```{r}
+ss_upper
+ss_middle
+ss_lower
+```
+
+
+The total within-group SS:
+
+```{r, eval = FALSE}
+ss_within  = sum(ss_upper, ss_middle, ss_lower) # A13
+```
+
+You should get: 
+```{r}
+ss_within
+```
+
+
+### Between-group SS
+The between-group SS terms:
+```{r, eval = FALSE}
+ss_between_upper  = ((mean_upper  - grand_mean) ^ 2) * n_upper  # B14
+ss_between_middle =                                             # C14
+ss_between_lower  =                                             # D14
+  
+ss_between = sum(ss_between_upper, ss_between_middle, ss_between_lower)
+```
+
+You should get
+```{r}
+ss_between_upper
+ss_between_middle
+ss_between_lower
+
+ss_between
+```
+
+
+
+### Total SS
+
+You can calculate the total SS in two ways.  They should produce the same quantity
+
+```{r, eval = FALSE}
+all    = c(upper, middle, lower)
+ss_total_1 = var(all) * (n_total - 1)
+ss_total_2 = (ss_between + ss_within)
+
+# This should return true if your calculations above were correct
+ss_total_1 == ss_total_2
+
+```
+
+We'll go with the first way:
+```{r, eval = FALSE}
+var(all) * (n_total - 1)
+```
+
+You should get
+```{r}
+ss_total
+```
+
+### Vector of SS
+
+Make a vector of SS for each source
+```{r, eval = FALSE}
+source = c(between = ss_between, within = ss_within, total = ss_total)
+```
+
+You shoudl get:
+```{r}
+source
+```
+
+
+
+## ANOVA table components
+
+Now we can assemble our ANOVA table
+
+
+### SS and DF
+
+We already calculated our degrees of freedom and sums of squares.
+
+### Mean Squares
+
+Calculate the mean squares for the between and within terms
+```{r, eval = FALSE}
+ms     = c(source / df)[1:2]
+```
+
+We don't calculate a mean squares for the total.
+
+You should get:
+```{r}
+ms
+```
+
+
+
+## Significance
+
+
+### F
+The F-value is just the ratio of between to within group MS
+
+```{r, eval = FALSE}
+f_val = ms[1] / ms[2]
+```
+
+You shoudl get:
+```{r}
+f_val
+```
+
+
+
+### P
+
+We need to decide our critical p-value.  We'll use 5%.
+```{r}
+p_crit = 0.05
+```
+
+
+
+### Critical F
+
+We use the `qf()` function to find a critical F value.  Be sure to use `lower.tail = FALSE`
+
+```{r}
+f_crit = qf(p_crit, df_between, df_within, lower.tail = FALSE)
+```
+
+You shoudl get:
+```{r}
+f_crit
+```
+
+
+### Observed p-value
+
+We calculate an exact p-value and compare it to our critical p-value:
+```{r, eval = FALSE}
+p_obs = pf(f_val, df_between, df_within, lower.tail = FALSE)
+```
+
+You shoudl get:
+```{r}
+p_obs
+```
+
+
+
+
+
+# Complete ANOVA table
+
+It's a pain to combine our quantities into a table in R, but we could paste them into a spreadsheet.
+
+Just to verify that your calculations were correct, you should have gotten
+
+```{r}
+# sums of squares
+source
+
+# degrees of freedom
+df
+
+# mean squares
+ms
+
+# F-value
+f_val
+
+# p-value
+p_obs
+
+# Critical F-value
+f_crit
+
+```
+
+
+### R's `aov()`
+
+Compare your calculations to R's Analysis of Variance function:
+```{r}
+fit1 = aov(height ~ site, data = sward_heights)
+summary(fit1)
+```
+
+
+
+
+
+
+# Post-hoc analysis
+
+We won't do a post-hoc Tukey analysis by hand.
+
+R's calculations produce slightly different results from the book's Excel calculations.
+
+```{r}
+# post hoc analysis
+TukeyHSD(fit1, "site", ordered = TRUE)
+```
+
+
+
+# Assignment
+
+Complete the code in the provided template script.  You can check your calculations on this page.
+
