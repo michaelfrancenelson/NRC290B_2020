@@ -93,8 +93,41 @@ Each figure is worth 15 points, allocated as follows:
 
 dir.exists("data")
 file.exists("data/butterfly-table.csv")
-dat = read.csv("data/butterfly-table.csv", row.names = 1)
+dat = t(read.csv(here("data/butterfly-table.csv"), row.names = 1, header = F))
+dat1a = (read.csv(here("data/butterfly-table.csv"), row.names = 1, header = F))
+dat1b = (read.csv(here("data/butterfly-table.csv"), row.names = 1, header = T))
+dat2 = (read.csv(here("data/butterfly-table.csv"), header = F))
+dat3 = read.csv(here("data/butterfly-table.csv"))
 
+dat1b = as.matrix(dat1b)
+
+bfdata = as.matrix(read.csv(here("data/butterfly-table.csv"), row.names = 1))
+
+bfdata = read.csv("butterfly-table.csv")
+bfdata = read.csv("butterfly-table.csv", row.names = 1)
+bfdata = as.matrix(bfdata)
+plot(bfdata[1, ])
+
+matplot(bfdata)
+
+plot(bfdata, ])
+
+dat1b
+dat3
+
+dat = dat1
+
+dat = t(dat1b)
+
+plot(dat1b[1, ])
+plot(dat[1, ])
+
+plot(dat[1, ], dat[2, ])
+plot(dat[1, ])
+plot(dat[1, ], dat[2, ])
+
+dir.exists(here("data"))
+file.exists()
 head(dat)
 
 barplot(as.matrix(dat), beside = T)
@@ -118,6 +151,7 @@ barplot(
 
 # This reads the first row as a character vector, so as.matrix doesn't work as expected.
 dat2 = read.csv("data/butterfly-table.csv")
+
 ````
 
 
