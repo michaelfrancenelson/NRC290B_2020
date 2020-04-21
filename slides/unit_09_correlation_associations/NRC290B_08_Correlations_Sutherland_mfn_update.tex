@@ -1,0 +1,145 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+  t]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usecolortheme{spruce}
+\usefonttheme{serif}
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Correlations},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\input{C:/git/NRC290B/css/headers_tikz_sutherland.tex}
+
+\title{Correlations}
+\author{Introduction to Quantitative Ecology\\
+Fall 2018\\
+Chris Sutherland\\
+\href{mailto:csutherland@umass.edu}{\nolinkurl{csutherland@umass.edu}}}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Group evaluations}
+\protect\hypertarget{group-evaluations}{}
+
+\begin{enumerate}
+\tightlist
+\item
+  We would \emph{not} use the Spearman's rank test to calculate a
+  correlation coefficient - which one?
+\end{enumerate}
+
+\scriptsize
+
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=0cm,yshift=-1cm] at (current page)
+{\includegraphics[height=1.5in]{C:/git/NRC290B/slides/tmp_images/09_sutherland/corQuiz1.pdf}};
+\end{tikzpicture}
+
+\logoSoutheast{C:/git/NRC290B/slides/slide_images/iClicker_logo.png}
+
+\end{frame}
+
+\begin{frame}{Group evaluations}
+\protect\hypertarget{group-evaluations-1}{}
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  For her PhD, Eugene is studying the effects of annual temperature on
+  American robin reproductive success (number of eggs hatched). What is
+  the \emph{dependent} variable?
+\end{enumerate}
+
+\begin{enumerate}[\hspace{0.5cm}A.]
+  \item[A)] American robin
+  \item[B)] Eugene
+  \item[C)] Temperature
+  \item[D)] Number of eggs
+\end{enumerate}
+
+\logosoutheast{C:/git/NRC290B/slides/slide_images/iClicker_logo.png}
+
+\end{frame}
+
+\end{document}

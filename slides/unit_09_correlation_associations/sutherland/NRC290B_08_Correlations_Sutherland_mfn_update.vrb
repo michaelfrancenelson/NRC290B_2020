@@ -1,0 +1,32 @@
+\frametitle{Group exercise: salamander length correlations}
+\protect\hypertarget{group-exercise-salamander-length-correlations-3}{}
+
+Correlations in \texttt{Excel}:
+
+\begin{itemize}
+\tightlist
+\item
+  Create an Excel worksheet that show the same values you got in
+  \texttt{R}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    the correlation coefficient
+  \item
+    the intercept of the relationship
+  \item
+    the slope of the relationship
+  \item
+    the \(p\)-value (see below)
+  \end{itemize}
+\item
+  \textbf{Submit the workbook}
+\end{itemize}
+
+To compute the \(p\)-value, you need to use \texttt{T.DIST.2T()} in
+Excel. This needs \(t\), \emph{test statistic}, which you can calculate
+that using \(r\) (the correlation coefficient):
+
+\[t = \frac{r \times \sqrt{n-2}}{\sqrt{1-r^2}}\]
+

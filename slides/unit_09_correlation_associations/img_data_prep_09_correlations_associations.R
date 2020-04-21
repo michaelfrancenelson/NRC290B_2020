@@ -2,10 +2,30 @@
   require(here)
   require(ggplot2)
   require(grid)
-  
+  require(gridExtra)
+  require(cowplot)
   source(here("slides", "sutherland_plot_functions.R"))
   if (!dir.exists(here(tmp_img_dir <- file.path("slides", "tmp_images")))) dir.create(here(tmp_img_dir))
   if (!dir.exists((img_dir <- file.path(tmp_img_dir, "09")))) dir.create(here(img_dir))
+  
+  
+  noisy_y = function(x, seed, slope, y_adj = 10, y_sd = 2)
+  {
+    set.seed(seed)
+    y = rnorm(length(x), y_adj + slope * x, y_sd)
+    return (y)
+  }
+  
+  noisy_line = function(n, seed, x_min, x_max, slope, y_adj = 10, y_sd = 2)
+  {
+    set.seed(seed)
+    x = runif(n, x_min, x_max)
+    noisy_y(x = x, seed = seed, slope = slope, y_adj = y_adj, y_sd = y_sd)
+    # y = rnorm(n, y_adj + slope * x, y_sd)
+    return(data.frame(x, y))
+  }
+  
+  
 }
 
 
@@ -17,7 +37,7 @@
   cex_main = 2
   pch_plots = 21
   
-  g_point = geom_point(pch = pch_plots, cex = cex, bg = bg_col)
+  g_point = function(pch, cex, bg) { geom_point(pch = pch, cex = cex, bg = bg)}
   aes_1 = aes(x = x, y = y)
   t_1 = theme_minimal() + 
     theme(
@@ -58,16 +78,15 @@
 
 if (FALSE) { # Correlation quiz 1 ----
   g1 = ggplotGrob(ggplot(data.frame(x = log(1:20), y = rlnorm(20, seq(0, 0.7, length = 20)*2, 0.1)), aes_1) +
-                    g_point + t_1 + ggtitle("A"))
+                    g_point(pch_plots, cex_main, bg_col) + t_1 + ggtitle("A"))
   g2 = ggplotGrob(ggplot(data.frame(x = 1:20, y = rnorm(20, seq(0, 0.7, length = 20)*2, 0.1)), aes_1) +
-                    g_point + t_1 + ggtitle("B"))
+                    g_point(pch_plots, cex_main, bg_col) + t_1 + ggtitle("B"))
   g3 = ggplotGrob(ggplot(data.frame(x = 1:20, y = rnorm(20, seq(0, 0.7, length = 20)*2, 0.1)), aes_1) +
-                    g_point + t_1 + ggtitle("C"))
+                    g_point(pch_plots, cex_main, bg_col) + t_1 + ggtitle("C"))
   pdf(here(img_dir, "corQuiz1.pdf"), height = 3, width = 8.5)
-  grid_row_plot(list(g1, g2, g3))
+  plot_grid(g1, g2, g3, nrow = 1)
   dev.off()
 }
-
 
 if (FALSE) { # Means density/box plots ----
   
@@ -103,90 +122,117 @@ if (FALSE) { # Means density/box plots ----
   
 }
 
-
-
-
 if (FALSE) { # Species - area curves -----
-  
-  noisy_line = function(n, seed, x_min, x_max, slope, y_adj = 10, y_sd = 2)
-  {
-    set.seed(seed)
-    x = runif(n, x_min, x_max)
-    y = rnorm(n, y_adj + slope * x, y_sd)
-    return(data.frame(x, y))
-  }
   
   sr_1 = noisy_line(n = 25, seed = 12, x_min = 0, x_max = 10, y_adj = 10, slope = 2, y_sd = 2)
   sr_2 = noisy_line(n = 25, seed = 1,  x_min = 0, x_max = 10, y_adj = 10, slope = 5, y_sd = 6)
   
   pdf(here(img_dir, "species_area_A.pdf"), height = 3, width = 4)
-  ggplot(sr_1, aes_1) + g_point + ylab("Dependent Variable") + xlab("")
-  dev.off()
-  
-  pdf(here(img_dir, "species_area_with.pdf"), height = 3, width = 4)
-  ggplot(sr_2, aes_1) + g_point + ylab("Species Richness") + xlab("")
-  dev.off()
-  
-  pdf(here(img_dir, "species_area_without.pdf"), height = 3, width = 4)
-  ggplot(sr_2, aes_1) + g_point + ylab("Species Richness") + xlab("Area (ha)")
+  ggplot(sr_1, aes_1) + g_point(pch_plots, cex_main, bg_col) + ylab("Dependent Variable") + xlab("")
   dev.off()
   
   pdf(here(img_dir, "species_area_B.pdf"), height = 3, width = 4)
-  ggplot(sr_1, aes_1) + g_point + ylab("Dependent Variable") + xlab("Independent Variable")
+  ggplot(sr_1, aes_1) + g_point(pch_plots, cex_main, bg_col) + ylab("Dependent Variable") + xlab("Independent Variable")
   dev.off()
   
+  pdf(here(img_dir, "species_area_without_xlab.pdf"), height = 3, width = 4)
+  ggplot(sr_2, aes_1) + g_point(pch_plots, cex_main, bg_col) + ylab("Species Richness") + xlab("")
+  dev.off()
+  
+  pdf(here(img_dir, "species_area_with_xlab.pdf"), height = 3, width = 4)
+  ggplot(sr_2, aes_1) + g_point(pch_plots, cex_main, bg_col) + ylab("Species Richness") + xlab("Area (ha)")
+  dev.off()
 }
 
-{ # Correlation direction plots
+if (FALSE) { # Correlation direction plots ----
   
-  
-  noisy_y = function(x, seed, slope, y_adj = 10, y_sd = 2)
-  {
-    set.seed(seed)
-    y = rnorm(length(x), y_adj + slope * x, y_sd)
-    return (y)
-  }
+  save_plots = TRUE
   
   x <- runif(25, 0, 10)
-  data.frame(x, 
-             pos = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = 2),
-             none = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = 0),
-             neg = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = -4))
   
-  X <- runif(25, 0, 10)
-  Pos <- rnorm(25, 10 + 2*X, 2)
-  No <- rnorm(25, 10 + 0*X, 2)
-  Neg <- rnorm(25, 10 - 2*X, 2)
+  dat = data.frame(x, 
+                   pos = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = 2),
+                   none = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = 0),
+                   neg = noisy_y(x, seed = 123, y_adj = 10, y_sd = 2, slope = -4))
   
-  # pdf(here(img_dir, "signA.pdf"), height = 2, width = 6)
-  par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
-  plot(X, Pos, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-  box(bty = "l")
-  plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-  box(bty = "l")
-  plot(X, Neg, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-  box(bty = "l")
-  dev.off()
+  t_3 = theme(axis.ticks = element_blank(), axis.text = element_blank())
+  
+  gg_3 = g_point(pch_plots, cex_main, bg_col) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 
   
   
-  pdf(here(img_dir, "signB.pdf"), height = 2, width = 6)
-  par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
-  plot(X, Pos, type = "p", bg = adjustcolor(3, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Positive Correlation", axes = F)
-  box(bty = "l")
-  plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "No Correlation", axes = F)
-  box(bty = "l")
-  plot(X, Neg, type = "p", bg = adjustcolor(2, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Negative Correlation", axes = F)
-  box(bty = "l")
-  dev.off()
+  if (save_plots) pdf(here(img_dir, "signA.pdf"), height = 3, width = 9)
+  plot_grid(
+    ggplot(dat, aes(x = x, y = pos)) + g_point(pch_plots, cex_main, adjustcolor(3, 0.3)) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("Positive Correlation"),
+    ggplot(dat, aes(x = x, y = none)) + g_point(pch_plots, cex_main, bg_col) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("No Correlation"),
+    ggplot(dat, aes(x = x, y = neg)) + g_point(pch_plots, cex_main, bg_col) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("Negative Correlation"),
+    nrow = 1)
+  if (save_plots) dev.off()
   
-  
-  
-    
+  if (save_plots) pdf(here(img_dir, "signB.pdf"), height = 3, width = 9)
+  plot_grid(
+    ggplot(dat, aes(x = x, y = pos)) + g_point(pch_plots, cex_main, adjustcolor(3, 0.3)) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("Positive Correlation"),
+    ggplot(dat, aes(x = x, y = none)) + g_point(pch_plots, cex_main, adjustcolor(1, 0.3)) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("No Correlation"),
+    ggplot(dat, aes(x = x, y = neg)) + g_point(pch_plots, cex_main, adjustcolor(2, 0.3)) + xlab("Predictor Variable") + ylab("Response Variable") + t_3 + ggtitle("Negative Correlation"),
+    nrow = 1)
+  if (save_plots) dev.off()
 }
 
 
+if (FALSE)
+{
+  mayfly <- data.frame(Speed = c(2, 3, 5, 9, 14, 24, 29, 34), 
+                       Abundance = c(6, 3, 5, 23, 16, 12, 48, 43))
+  mayfly$Abundance.rank <- rank(mayfly$Abundance)
+  mayfly$Speed.rank <- rank(mayfly$Speed)
 
+    pdf(here(img_dir, "spearMayfly.pdf"), height = 3.5, width = 3.5, bg = "white")
+  
+  par(mfrow = c(1, 1), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1))
+  with(mayfly, 
+       plot(Speed, Abundance, pch = 21, bg = adjustcolor(4, 0.5), cex = 1.5, las = 1, ylim = c(0, 50))
+  )
+  dev.off()
+  
+  head(mayfly)
+  mayfly$Diff <- mayfly$Abundance.rank - mayfly$Speed.rank
+  mayfly$Diff.sq <- mayfly$Diff^2
+  
+  pdf(here(img_dir, "spearMayfly.pdf"), height = 3.5, width = 3.5, bg = "white")
+  par(mfrow = c(1, 1), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1))
+  with(mayfly, 
+       plot(Speed, Abundance, pch = 21, bg = adjustcolor(4, 0.5), cex = 1.5, las = 1, ylim = c(0, 50))
+  )
+  dev.off()
+  mayfly <- mayfly[, 1:2]
+  mayfly
+  
+  pdf(here(img_dir, "spearMayfly.pdf"), height = 3.5, width = 3.5, bg = "white")
+  par(mfrow = c(1, 1), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1))
+  with(mayfly, 
+       plot(Speed, Abundance, pch = 21, bg = adjustcolor(4, 0.5), cex = 1.5, las = 1, ylim = c(0, 50))
+  )
 
+  
+  cor(var1, var2, method = 'spearman')
+  cor.test(var1, var2, method = 'spearman')
+  cor(mayfly$Speed, mayfly$Abundance, method = 'spearman')
+  cor(mayfly$Speed, mayfly$Abundance, method = 'spearman')
+  cor(var1, var2, method = 'pearson')
+  cor.test(var1, var2, method = 'pearson')
+  
+  cor(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  cor(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  cor(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  cor.test(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  cor(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  cor.test(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  lm(mayfly$Abundance ~ mayfly$Speed)
+  summary(lm(mayfly$Abundance ~ mayfly$Speed))
+  cor.test(mayfly$Speed, mayfly$Abundance, method = 'pearson')
+  summary(lm(mayfly$Abundance ~ mayfly$Speed))
+  cor.test(mayfly$Speed, mayfly$Abundance, method = 'spearman')
+  summary(lm(mayfly$Abundance ~ mayfly$Speed))
+}
 # 
 # pdf(here(img_dir, "corQuiz1.pdf"), height = 3, width = 8.5)
 # par(mfrow = c(1, 3), mar = c(2, 2, 4, 1), oma = c(0, 0, 0, 0))
@@ -321,35 +367,32 @@ if (FALSE) { # Species - area curves -----
 # plot(AR, SR, type = "p", bg = adjustcolor(4, 0.4), xlab = "Independent variable", ylab = "Dependent variable", ylim = c(5, 30), las = 1, bty = "l", pch = 21, cex = 2, axes = F)
 # box(bty = "l")
 # dev.off()
-
-
-
-
-X <- runif(25, 0, 10)
-Pos <- rnorm(25, 10 + 2*X, 2)
-No <- rnorm(25, 10 + 0*X, 2)
-Neg <- rnorm(25, 10 - 2*X, 2)
-
-# pdf(here(img_dir, "signA.pdf"), height = 2, width = 6)
-par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
-plot(X, Pos, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-box(bty = "l")
-plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-box(bty = "l")
-plot(X, Neg, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
-box(bty = "l")
-dev.off()
-
-
-pdf(here(img_dir, "signB.pdf"), height = 2, width = 6)
-par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
-plot(X, Pos, type = "p", bg = adjustcolor(3, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Positive Correlation", axes = F)
-box(bty = "l")
-plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "No Correlation", axes = F)
-box(bty = "l")
-plot(X, Neg, type = "p", bg = adjustcolor(2, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Negative Correlation", axes = F)
-box(bty = "l")
-dev.off()
+# 
+# X <- runif(25, 0, 10)
+# Pos <- rnorm(25, 10 + 2*X, 2)
+# No <- rnorm(25, 10 + 0*X, 2)
+# Neg <- rnorm(25, 10 - 2*X, 2)
+# 
+# # pdf(here(img_dir, "signA.pdf"), height = 2, width = 6)
+# par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
+# plot(X, Pos, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
+# box(bty = "l")
+# plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
+# box(bty = "l")
+# plot(X, Neg, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, axes = F)
+# box(bty = "l")
+# dev.off()
+# 
+# 
+# pdf(here(img_dir, "signB.pdf"), height = 2, width = 6)
+# par(mfrow = c(1, 3), oma = c(0, 0, 0, 0), mar = c(4, 4, 3, 1), mgp = c(1, 1, 1))
+# plot(X, Pos, type = "p", bg = adjustcolor(3, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Positive Correlation", axes = F)
+# box(bty = "l")
+# plot(X, No, type = "p", bg = adjustcolor(1, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "No Correlation", axes = F)
+# box(bty = "l")
+# plot(X, Neg, type = "p", bg = adjustcolor(2, 0.3), xlab = "Independent", ylab = "Dependent", las = 1, bty = "l", pch = 21, cex = 1.8, main = "Negative Correlation", axes = F)
+# box(bty = "l")
+# dev.off()
 
 
 mayfly <- data.frame(Speed = c(2, 3, 5, 9, 14, 24, 29, 34), 
