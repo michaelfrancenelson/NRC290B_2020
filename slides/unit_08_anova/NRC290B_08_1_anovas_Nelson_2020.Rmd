@@ -16,16 +16,44 @@ source(here("data", "environment_vars.R"))
 knitr::opts_chunk$set(root.dir = here(), error = TRUE)
 knitr::opts_knit$set(echo = TRUE, error = TRUE, root.dir = here())
 i = 1
+graze <- data.frame(graze= factor(rep(rep(c("Lo","Mid","Hi"),each=3),2),
+                                  levels=c("Lo","Mid","Hi")),
+                    Site = factor(rep(c("Top","Lower"),each=9), 
+                                  levels=c("Lower","Top")),
+                    Abundance = c(9,11,6,14,17,19,28,31,32,
+                                  7,6,5,14,17,15,44,38,37))
 ```
 
 
 ## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
 
+I want to compare fish weights in three lakes.  I've sampled 32 fishes from each lake.
+
+What statistical analysis should I perform?
+
 \begin{enumerate}[A]
-\item \texttt{two-sample t-test}
-\item \texttt{Mann-Whitney paried test}
-\item \texttt{Mann-Whitney U test}
-\item \texttt{paired t-test}
+\item \texttt{Multiple linear regression}
+\item \texttt{t-test}
+\item \texttt{one-way ANOVA}
+\item \texttt{Chi-square test}
+\end{enumerate}
+
+\logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
+
+
+
+
+## iClicker Question `r colorize(i, "blue")` `r i = i + 1`
+
+I want to compare fish weights in two lakes.  I've sampled 32 fishes from each lake.
+
+What statistical analysis should I perform?
+
+\begin{enumerate}[A]
+\item \texttt{Multiple linear regression}
+\item \texttt{t-test}
+\item \texttt{one-way ANOVA}
+\item \texttt{Chi-square test}
 \end{enumerate}
 
 \logoSoutheast{`r here::here("slides", "slide_images", "iClicker_logo.png")`}
@@ -34,10 +62,17 @@ i = 1
 
 
 
-
-
-
 ## Announcements
+
+Update to week 8 assignment
+
+This week's material builds on ideas from pairwise group comparisons.
+
+The ANOVA material is more *dense* than what we've covered up until this point.
+
+We're going to have to work on our *statistical intuition* to master these *inferential statistics* concepts.
+
+
 
 
 
@@ -51,7 +86,6 @@ Tuesday: Differences between more than two samples:
     - Two-way ANOVA
     - Multipe testing
 
-
 Thursday
 
 - Continue ANOVA concepts
@@ -60,16 +94,50 @@ Thursday
 
 
 
-# Beyond two groups
+## Moving beyond two groups
+
+T-tests are great, but what if we need to analyze more complicated scenarios?
+
+Let's walk through some sampling and experimental scenarios to build intuition.
+
+
+Scenario context: We're interested in bluegill population densities in Massachusetts lakes.
 
 
 
 
-## A question!
+\begin{tikzpicture}[remember picture,overlay]
+\node[yshift = 2.9cm] at (current page.south)
+{\includegraphics[height = 2.5cm]{`r here("slides", "slide_images", "bluegill.jpg")`}};
+\end{tikzpicture}
+
+\footnotetext[1]{Image credit: New York Fish and Game Commission}
+
+
+
+```{r, include = FALSE, echo = FALSE}
+i = 1
+```
+
+
+
+## Scenario `r colorize(i, "black")`
 
 Having just analyzed some fish counts data in 16 lakes in Massachusetts, Thorsten found a significant 'lake' effect using an ANOVA, i.e., the mean number of fish was not the same in all lakes. 
 
-1. What would Thorsten do to find out *which lakes were different from eachother*?
+1. Thorsten wants to know which *which lakes are different from each other*.
+    - Think carefully: what does this actually mean? 
+    - What is the sampling unit?
+    - What did he measure?
+    - What would he need to compare?
+
+
+
+## Scenario `r colorize(i, "black")`
+
+Having just analyzed some fish counts data in 16 lakes in Massachusetts, Thorsten found a significant 'lake' effect using an ANOVA, i.e., the mean number of fish was not the same in all lakes. 
+
+2. What would Thorsten do to find out *which lakes were different from eachother*?
 
 \begin{enumerate}[\hspace{0.5cm}A.]
   \item[A)] A series of $t$-tests
@@ -79,44 +147,25 @@ Having just analyzed some fish counts data in 16 lakes in Massachusetts, Thorste
 
 
 
+`r i = i + 1`
+## Scenario `r colorize(i, "black")`
 
-## A question!
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 **low salinity** lakes and 30 **high salinity** lakes: 
 
-I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes: 
-
-1. Which statistical test should I use?
-
-\begin{enumerate}[\hspace{0.5cm}A.]
-  \item[A)] A $t$-test
-  \item[B)] A One-Way ANOVA 
-  \item[C)] A Chi-square test
-  \item[D)] A Two-Way ANOVA
-\end{enumerate}
+1.  What is different from the last scenario?
+2.  What is the sampling unit?
+3.  What specific question(s) should I ask?
+4.  What, specifically, do I want to compare?
 
 
 
 
-## A question!
 
-I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes: 
+## Scenario `r colorize(i, "black")`
 
-2. Which is the test statistic for the test?
+I am interested in testing whether there is a significant difference between the population sizes of fish in 30 **low salinity** lakes and 30 **high salinity** lakes: 
 
-\begin{enumerate}[\hspace{0.5cm}A.]
-  \item[A)] $t$
-  \item[B)] $F$ 
-  \item[C)] $r$
-  \item[D)] $\chi^2$
-\end{enumerate}
-
-
-
-
-## A question!
-
-I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes. In fact, I actually sampled 10 large, 10 medium, and 10 small lakes in each of the high and low salinity lakes. I want to explore whether there are differences in population size based on lake salinity and lake size. 
-
-3. Now which statistical test should I use?
+5. Which statistical test could I use?
 
 \begin{enumerate}[\hspace{0.5cm}A.]
   \item[A)] A $t$-test
@@ -125,21 +174,44 @@ I am interested in testing whether there is a significant difference between the
   \item[D)] A Two-Way ANOVA
 \end{enumerate}
 
+6. Which is the test statistic for the test I chose?
 
 
 
-## A question!
 
-I am interested in testing whether there is a significant difference between the population sizes of fish in 30 low salinity lakes and 30 high salinity lakes. In fact, I actually sampled 10 large, 10 medium, and 10 small lakes in each of the high and low salinity lakes. I want to explore whether there are differences in population size based on lake salinity and lake size. 
+`r i = i + 1`
+## Scenario `r colorize(i, "black")`
 
-4. Now Which is the test statistic for the test?
+I am interested in testing whether there is a significant difference between the population density of fish in 30 **low salinity** lakes and 30 **high salinity** lakes. 
+
+In fact, I actually sampled 10 **large**, 10 **medium**, and 10 **small** lakes in each of the high and low salinity lakes. 
+
+I want to explore whether there are differences in population size based on lake **salinity** and lake **size**. 
+
+1. How has our sampling scheme changed?
+2. What is the sampling unit?
+3. How has our question changed?
+
+
+
+## Scenario `r colorize(i, "black")`
+
+I am interested in testing whether there is a significant difference between the population density of fish in 30 **low salinity** lakes and 30 **high salinity** lakes. 
+
+In fact, I actually sampled 10 **large**, 10 **medium**, and 10 **small** lakes in each of the high and low salinity lakes. 
+
+I want to explore whether there are differences in population size based on lake **salinity** and lake **size**. 
+
+4.  Now which statistical test should I use?
 
 \begin{enumerate}[\hspace{0.5cm}A.]
-  \item[A)] $t$
-  \item[B)] $F$ 
-  \item[C)] $r$
-  \item[D)] $\chi^2$
+  \item[A)] A $t$-test
+  \item[B)] A One-Way ANOVA 
+  \item[C)] A Chi-square test
+  \item[D)] A Two-Way ANOVA
 \end{enumerate}
+
+5.  Now which is the test statistic for the test?
 
 
 
@@ -242,10 +314,9 @@ Plants productivity (dry mass in grams) related to fertilizer treatment
 
 When there are more than 2 groups
 
-- t-test doesn't help
-   - need to do all possible pairs
-   - time consuming
-   - get spurious differences just by chance
+- t-test is probably not optimal:
+   - We would need to do all possible pairs.
+   - We might get spurious differences just by chance.  Why?
 
 \begin{tikzpicture}[overlay]
 \node[xshift=-0.79cm,yshift=-3.8cm] (one) at (current page.south) {\includegraphics[height=0.62in]{`r here("slides", "slide_images", "ANOVA", "pots.png")`}};
@@ -338,13 +409,16 @@ Hypotheses:
 
 ## ANOVA explained
 
-The ANOVA partitions the *total* variation into *within* sample variation with *between* sample variation to determine whether samples come from a single distribution or not.
+The ANOVA partitions the *total* variation into *within* sample (group) variation with *between* sample (group) variation to determine whether samples come from a single distribution or not.
 
 
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=0cm,yshift=-1cm] at (current page)
 {\includegraphics[height=2.25in]{`r here("slides", "slide_images", "varbox.pdf")`}};
 \end{tikzpicture}
+
+
+
 
 ## ANOVA and the Sums of Squares
 
@@ -357,9 +431,12 @@ $$SS_T = \sum(x - \bar{x})^2$$
 {\includegraphics[height=2.75in]{`r here("slides", "slide_images", "sst.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
-- *Within-sample* sums of squares ($SS_T$)
+- *Within-sample* sums of squares ($SS_W$)
 - add up the within sample SS
 
 $$SS_W = \sum(x_1 - \bar{x}_1)^2 + \sum(x_2 - \bar{x}_2)^2 + \sum(x_3 - \bar{x}_3)^2$$
@@ -369,9 +446,12 @@ $$SS_W = \sum(x_1 - \bar{x}_1)^2 + \sum(x_2 - \bar{x}_2)^2 + \sum(x_3 - \bar{x}_
 {\includegraphics[height=2.75in]{`r here("slides", "slide_images", "ssw.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
-- *Within-sample* sums of squares ($SS_T$)
+- *Within-sample* sums of squares ($SS_W$)
 - more generally ($g$ is the number of groups)
 
 $$SS_W = \sum_g \sum_i (x_{ig} - \bar{x}_g)^2$$
@@ -381,9 +461,12 @@ $$SS_W = \sum_g \sum_i (x_{ig} - \bar{x}_g)^2$$
 {\includegraphics[height=2.75in]{`r here("slides", "slide_images", "ssw.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
-- *Between-sample* sums of squares ($SS_T$)
+- *Between-sample* sums of squares ($SS_B$)
 - add up the differences in the means
 
 $$SS_B = n_1 (\bar{x}_1 - \bar{x})^2 + n_2 (\bar{x}_2 - \bar{x})^2 + n_3 (\bar{x}_3 - \bar{x})^2$$
@@ -393,9 +476,12 @@ $$SS_B = n_1 (\bar{x}_1 - \bar{x})^2 + n_2 (\bar{x}_2 - \bar{x})^2 + n_3 (\bar{x
 {\includegraphics[height=2.75in]{`r here("slides", "slide_images", "ssb.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
-- *Between-sample* sum of squares ($SS_T$)
+- *Between-sample* sum of squares ($SS_B$)
 - more generally ($g$ is the number of groups)
 
 $$SS_B = \sum_g n_g (\bar{x}_g - \bar{x})^2$$
@@ -404,6 +490,9 @@ $$SS_B = \sum_g n_g (\bar{x}_g - \bar{x})^2$$
 \node[xshift=0cm,yshift=-2.5cm] at (current page)
 {\includegraphics[height=2.75in]{`r here("slides", "slide_images", "ssb.pdf")`}};
 \end{tikzpicture}
+
+
+
 
 ## ANOVA and the Sums of Squares
 
@@ -414,6 +503,9 @@ Total:
 {\includegraphics[height=3in]{`r here("slides", "slide_images", "sst.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
 Within group:
@@ -423,6 +515,9 @@ Within group:
 {\includegraphics[height=3in]{`r here("slides", "slide_images", "ssw.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
 Between group:
@@ -431,6 +526,8 @@ Between group:
 \node[xshift=0cm,yshift=-1cm] at (current page)
 {\includegraphics[height=3in]{`r here("slides", "slide_images", "ssb.pdf")`}};
 \end{tikzpicture}
+
+
 
 
 ## ANOVA and the Sums of Squares
@@ -463,12 +560,18 @@ $SS_B = \sum_g n_g (\bar{x}_g - \bar{x})^2$
 {\includegraphics[height=1.4in]{`r here("slides", "slide_images", "ssb.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA degrees of freedom
 
 If we define the following:
 
 - $n$ is the total sample size (number of observations)
 - $g$ is the number of groups/samples
+
+
+
 
 ## ANOVA degrees of freedom
 
@@ -483,6 +586,10 @@ Then the degrees of freedom ($df$) are:
 - Within: $df_W = g-1$
 - Between: $df_B = n-g$
 
+
+
+
+
 ## ANOVA the *mean square*
 
 The mean square ($MS$) is the sum of squares divided by the degrees of freedom:
@@ -494,6 +601,9 @@ So:
 - Total: $MS_T = SS_T/df_T$
 - Within: $MS_W = SS_W/df_W$
 - Between: $MS_B = SS_B/df_B$
+
+
+
 
 ## ANOVA all the ingredients
 
@@ -514,11 +624,14 @@ Between & $\sum_g n_g (\bar{x}_g - \bar{x})^2$   & $g-1$ & $SS_B/df_B$ \\
 
 \vfill
 
+
+
+
 ## ANOVA the statistical test
 
 ANOVA results are usually presented in an ANOVA table
 
-\begin{center}
+<!-- \begin{center} -->
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{lccccc}
 \toprule
@@ -529,13 +642,16 @@ Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
 Total               & $SS_T$ & $df_T$ &   --   &           \\
 \bottomrule
 \end{tabular}
-\end{center}
+<!-- \end{center} -->
+
+
+
 
 ## ANOVA the statistical test
 
 ANOVA results are usually presented in an ANOVA table
 
-\begin{center}
+<!-- \begin{center} -->
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{lccccc}
 \toprule
@@ -546,17 +662,21 @@ Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
 Total               & $SS_T$ & $df_T$ &   --   &           \\
 \bottomrule
 \end{tabular}
-\end{center}
+<!-- \end{center} -->
 
 - $F$ is the test statistic for the ANOVA
 
 $$F = \frac{MS_B}{MS_W}$$
 
+
+
+
+
 ## ANOVA the statistical test
 
 ANOVA results are usually presented in an ANOVA table
 
-\begin{center}
+<!-- \begin{center} -->
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{lccccc}
 \toprule
@@ -567,11 +687,14 @@ Within              & $SS_W$ & $df_W$ & $MS_W$ &           \\
 Total               & $SS_T$ & $df_T$ &   --   &           \\
 \bottomrule
 \end{tabular}
-\end{center}
+<!-- \end{center} -->
 
 - $p$ is the probability of observing the $F$ statistic with a given degrees of freedom if the null hypothesis is true:
     - null hypothesis is 'no difference between the means'
     - based on the $F$-distribution
+
+
+
 
 ## ANOVA the $F$ distribution
 
@@ -595,6 +718,9 @@ Total               & $SS_T$ & $df_T$ &   --   &           \\
 {\LARGE $F = \frac{MS_B}{MS_W}$};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA and the Sums of Squares
 
 \begin{tikzpicture}[remember picture,overlay]
@@ -611,6 +737,9 @@ Total               & $SS_T$ & $df_T$ &   --   &           \\
 \node[xshift=0cm,yshift=-2.5cm] at (current page)
 {\includegraphics[height=1.5in]{`r here("slides", "slide_images", "ssw.pdf")`}};
 \end{tikzpicture}
+
+
+
 
 ## ANOVA and the Sums of Squares
 
@@ -629,6 +758,9 @@ Total               & $SS_T$ & $df_T$ &   --   &           \\
 {\includegraphics[height=1.5in]{`r here("slides", "slide_images", "sswA.pdf")`}};
 \end{tikzpicture}
 
+
+
+
 ## ANOVA the $p$ value
 
 Hypotheses:
@@ -639,6 +771,9 @@ Hypotheses:
     - all means are not equal
 
 When do we reject or fail to reject the null hypothesis?
+
+
+
 
 ## ANOVA the $p$ value
 
@@ -655,12 +790,18 @@ When do we reject or fail to reject the null hypothesis?
 - if $p<0.05$ we reject the null hypothesis
 - if $p>0.05$ we *fail to* reject the null hypothesis
 
+
+
+
 ## Pairwise comparisons with ANOVA
 
 The $F$ statistic tells us whether there are differences, but *not* what the differences are:
 
 - *Cannot* use *t*-tests to make pairwise comparisons
     - multiple *t*-tests will lead to significant results by chance
+
+
+
 
 ## Pairwise comparisons with ANOVA
 
@@ -673,6 +814,9 @@ The $F$ statistic tells us whether there are differences, but *not* what the dif
     - a pair, so degrees of freedom is 1
     - 5% critical value for $df=1$ is 4.303
         - if $t>4.303$ then $p<0.05$
+
+
+
 
 ## Pairwise comparisons with ANOVA
 
@@ -687,6 +831,8 @@ The $F$ statistic tells us whether there are differences, but *not* what the dif
         - if $t>4.303$ then $p<0.05$
 
 $$t_{a,b} = \frac{|\bar{x}_a - \bar{x}_b|}{\sqrt{\frac{MS_W \bigg(\frac{1}{n_a}+\frac{1}{n_b}\bigg)}{2}}}$$
+
+
 
 
 ## Pairwise comparisons with ANOVA
@@ -709,6 +855,8 @@ The $F$ statistic tells us whether there are differences, but *not* what the dif
 
 
 
+
+
 ## ANOVA Recap
 
 Comparing differences between >2 samples (groups) using ANOVA
@@ -723,16 +871,19 @@ Comparing differences between >2 samples (groups) using ANOVA
 
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-3cm,yshift=-3cm] at (current page)
-{\includegraphics[height=1.8in]{`r here("slides", "slide_images", "anovaNULL.pdf")`}};
+{\includegraphics[height=1.6in]{`r here("slides", "slide_images", "anovaNULL.pdf")`}};
 \node[xshift=3cm,yshift=-3cm] at (current page)
-{\includegraphics[height=1.8in]{`r here("slides", "slide_images", "anovaALT.pdf")`}};
+{\includegraphics[height=1.6in]{`r here("slides", "slide_images", "anovaALT.pdf")`}};
 \end{tikzpicture}
+
+
+
 
 ## ANOVA Recap
 
 Comparing differences between >2 groups using ANOVA
 
-\begin{center}
+<!-- \begin{center} -->
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{lccccc}
 \toprule
@@ -743,15 +894,18 @@ Within              & $SS_W$ & $df_W$ & $MS_W$ &                     &     \\
 Total               & $SS_T$ & $df_T$ &   --   &                     &     \\
 \bottomrule
 \end{tabular}
-\end{center}
+<!-- \end{center} -->
 
 
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-3cm,yshift=-3cm] at (current page)
-{\includegraphics[height=1.8in]{`r here("slides", "slide_images", "anovaNULL.pdf")`}};
+{\includegraphics[height=1.6in]{`r here("slides", "slide_images", "anovaNULL.pdf")`}};
 \node[xshift=3cm,yshift=-3cm] at (current page)
-{\includegraphics[height=1.8in]{`r here("slides", "slide_images", "anovaALT.pdf")`}};
+{\includegraphics[height=1.6in]{`r here("slides", "slide_images", "anovaALT.pdf")`}};
 \end{tikzpicture}
+
+
+
 
 ## ANOVA Recap
 
@@ -774,6 +928,8 @@ Comparing differences between >2 groups using ANOVA
 \end{tikzpicture}
 
 
+
+
 ## More than one factor with ANOVA
 
 So far we have looked at multiple levels within a single factor
@@ -787,460 +943,3 @@ In some cases, we may be interested in >1 factor
 - 3 factors: *three-way* ANOVA
 - $\cdots$ multi-way ANOVA
 
-## Two-way ANOVA
-
-Let's use a grazing example:
-
-\begin{center}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{lcc}
-\hline
-           & \multicolumn{2}{c}{Site}  \\
-\cline{2-3}
-Grazing Treatment & Top     & Lower    \\
-\hline
-Lo                &  9      &  7       \\
-Lo                & 11      &  6       \\
-Lo                &  6      &  5       \\
-Mid               & 14      &  14      \\
-Mid               & 17      &  17      \\
-Mid               & 19      &  15      \\
-Hi                & 28      &  44      \\
-Hi                & 31      &  38      \\
-Hi                & 32      &  37      \\
-\hline
-\end{tabular}
-\end{center}
-
-
-## Two-way ANOVA
-
-Lets use the example from the book (in `R` looks like this):
-
-```{r}
-graze
-```
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=20cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twoway.pdf")`}};
-\end{tikzpicture}
-
-## Two-way ANOVA
-
-Lets use the example from the book (in `R` looks like this):
-
-```{r}
-graze
-```
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twoway.pdf")`}};
-\end{tikzpicture}
-
-## Two-way ANOVA
-
-Lets use the example from the book (in `R` looks like this):
-
-```{r}
-graze
-```
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twowaypt.pdf")`}};
-\end{tikzpicture}
-
-## Conducting the ANOVA
-
-\vfill
-
-Step one:
-
-- SS for each factor
-    - graze
-    - site
-- $SS_{graze} = \sum(x_{i,graze} - \bar{x}_{graze})^2$
-- Ignore site grouping
-
-\vfill
-
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twowayptA.pdf")`}};
-\end{tikzpicture}
-
-## Conducting the ANOVA
-
-\vfill
-
-Step one:
-
-- SS for each factor
-    - graze
-    - site
-- $SS_{site} = \sum(x_{i,site} - \bar{x}_{site})^2$
-- Ignore graze grouping
-
-\vfill
-
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twowayptB.pdf")`}};
-\end{tikzpicture}
-
-## Conducting the ANOVA
-
-\vfill
-
-Step two:
-
-- SS for each combinations of factors
-- Treat all groupings as unique
-- $SS_{within} = (x_{i,g} - \bar{x}_{g})^2$
-
-\vfill
-
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twowayptC.pdf")`}};
-\end{tikzpicture}
-
-## Conducting the ANOVA
-
-\vfill
-
-Step three:
-
-- Sums of squares of both factors
-- $SS_{both} = SS_{total} - SS_{graze} - SS{site} - SS_{within}$
-
-\vfill
-
-
-## Conducting the ANOVA
-
-\vfill
-
-Step four:
-
-- Total sums of squares
-- $SS_{total} = \sum(x_{i} - \bar{x})^2$
-- the *null* model
-- Ignore all group structure
-
-\vfill
-
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=3.5cm,yshift=-1cm] at (current page)
-{\includegraphics[height=2.2in]{`r here("slides", "slide_images", "twowayptD.pdf")`}};
-\end{tikzpicture}
-
-## Conducting the ANOVA - sums of squares
-
-\vfill
-
-\begin{center}
-\renewcommand{\arraystretch}{1.4}
-\scalebox{0.8}{
-\begin{tabular}{llllll}
-\toprule
-                            & $SS$           & $df$ & $MS$ & $F$ & $p$ \\ \hline
-Graze                       & $SS_{graze}$   &      &      &     &     \\
-Site                        & $SS_{site}$    &      &      &     &     \\
-Both factors(interaction)   & $SS_{both}$    &      &      &     &     \\
-Within group                & $SS_{within}$  &      &      &     &     \\
-Total                       & $SS_{total}$   &      &      &     &     \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-
-\vfill
-
-## Degrees of freedom
-
-In general:
-
-- Factor 1 (F1): number of levels - 1
-- Factor 2 (F2): number of levels - 1
-- Within: $n$ - (levels in F1 $\times$ levels in F2)
-- Total: $n$ - 1
-
-## Degrees of freedom
-
-In general:
-
-- Factor 1 (F1): number of levels - 1
-- Factor 2 (F2): number of levels - 1
-- Within: $n$ - (levels in F1 $\times$ levels in F2)
-- Total: $n$ - 1
-
-\vspace{0.5cm}
-
-Grazing example:
-
-- Graze: $3-1=2$
-- Site: $2-1=1$
-- Within: $18 - (3 \times 2) = 12$
-- Total: $18 - 1 = 17$
-
-## Degrees of freedom
-
-In general:
-
-- Factor 1 (F1): number of levels - 1
-- Factor 2 (F2): number of levels - 1
-- Within: $n$ - (levels in F1 $\times$ levels in F2)
-- Total: $n$ - 1
-
-\begin{center}
-\renewcommand{\arraystretch}{1.4}
-\scalebox{0.8}{
-\begin{tabular}{llllll}
-\toprule
-         & $SS$           & $df$          & $MS$   & $F$                 & $p$ \\
-\hline
-Graze            & $SS_{graze}$   & $df_{graze}$  &        &                     &     \\
-Site                    & $SS_{site}$    & $df_{site}$   &        &                     &     \\
-Both factors(interaction)   & $SS_{both}$    & $df_{both}$   &        &                     &     \\
-Within group                & $SS_{within}$  & $df_{within}$ &        &                     &     \\
-Total                       & $SS_{total}$   & $df_{total}$  &        &                     &     \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-
-## Mean squares
-
-- the mean squares are calculated by dividing the sums of squares by the degrees of freedom for each element
-
-\vspace{1.2cm}
-
-\begin{center}
-\renewcommand{\arraystretch}{1.4}
-\scalebox{0.8}{
-\begin{tabular}{llllll}
-\toprule
-         & $SS$           & $df$          & $MS$                                          & $F$                              & $p$ \\
-\hline
-Graze                    & $SS_{graze}$   & $df_{graze}$  & $MS_{graze}=\frac{SS_{graze}}{df_{graze}}$    &   &     \\
-Site                    & $SS_{site}$    & $df_{site}$   & $MS_{site}=\frac{SS_{site}}{df_{site}}$       &    &     \\
-Both factors                & $SS_{both}$    & $df_{both}$   & $MS_{both}=\frac{SS_{both}}{df_{both}}$       &    &     \\
-Within group                & $SS_{within}$  & $df_{within}$ & $MS_{within}=\frac{SS_{within}}{df_{within}}$ &                                  &     \\
-Total                       & $SS_{total}$   & $df_{total}$  &                                               &                                  &     \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-
-## F statistic
-
-- the $F$-statistic is calculated by taking the element of interest divided by the within group MS (the *error* term)
-
-\vspace{1.2cm}
-\begin{center}
-\renewcommand{\arraystretch}{1.4}
-\scalebox{0.8}{
-\begin{tabular}{llllll}
-\toprule
-        & $SS$           & $df$          & $MS$                                          & $F$                              & $p$ \\
-\hline
-Graze            & $SS_{graze}$   & $df_{graze}$  & $MS_{graze}=\frac{SS_{graze}}{df_{graze}}$    & $\frac{MS_{graze}}{MS_{within}}$ &     \\
-Site                    & $SS_{site}$    & $df_{site}$   & $MS_{site}=\frac{SS_{site}}{df_{site}}$       & $\frac{MS_{site}}{MS_{within}}$  &     \\
-Both factors                & $SS_{both}$    & $df_{both}$   & $MS_{both}=\frac{SS_{both}}{df_{both}}$       & $\frac{MS_{both}}{MS_{within}}$  &     \\
-Within group                & $SS_{within}$  & $df_{within}$ & $MS_{within}=\frac{SS_{within}}{df_{within}}$ &                                  &     \\
-Total                       & $SS_{total}$   & $df_{total}$  &                                               &                                  &     \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-
-## ANOVA the $F$ distribution
-
-
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=0cm,yshift=-0.5cm] at (current page)
-{\includegraphics[height=3in]{`r here("slides", "slide_images", "FFF.pdf")`}};
-\end{tikzpicture}
-
-
-## ANOVA in practice - R
-
-- Read in the data as a data frame
-
-```{r}
-graze
-```
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-oneway.site <- aov(Abundance ~ Site, data = graze)
-summary(oneway.site)
-```
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-oneway.site <- aov(Abundance ~ Site, data = graze)
-summary(oneway.site)
-```
-
-<!-- \begin{tikzpicture}[remember picture,overlay] -->
-<!-- \node[xshift=0cm,yshift=-2.5cm] at (current page) -->
-<!-- {\includegraphics[height=1.2in]{SiteExcel4.png}}; -->
-<!-- \end{tikzpicture} -->
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-oneway.graze <- aov(Abundance ~ graze, data = graze)
-summary(oneway.graze)
-```
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-oneway.graze <- aov(Abundance ~ graze, data = graze)
-summary(oneway.graze)
-```
-
-<!-- \begin{tikzpicture}[remember picture,overlay] -->
-<!-- \node[xshift=0cm,yshift=-2.5cm] at (current page) -->
-<!-- {\includegraphics[height=1.2in]{GrazeExcel4.png}}; -->
-<!-- \end{tikzpicture} -->
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-twoway.additive <- aov(Abundance ~ Site + graze, data = graze)
-summary(twoway.additive)
-```
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-twoway.additive <- aov(Abundance ~ Site + graze, data = graze)
-summary(twoway.additive)
-```
-
-\normalsize
-
-<!-- - Excel only *fits* the interaction model -->
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-twoway.interaction <- aov(Abundance ~ Site * graze, data = graze)
-summary(twoway.interaction)
-```
-
-## Any ANOVA in practice - R
-
-- Conduct *any* test using formula syntax
-
-```{r}
-twoway.interaction <- aov(Abundance ~ Site * graze, data = graze)
-summary(twoway.interaction)
-```
-
-<!-- \begin{tikzpicture}[remember picture,overlay] -->
-<!-- \node[xshift=0cm,yshift=-2.5cm] at (current page) -->
-<!-- {\includegraphics[height=1.2in]{TWExcel5.png}}; -->
-<!-- \end{tikzpicture} -->
-
-## Group Exercise - *salamANOVA*
-
-We will conduct three analyses using the *salamANOVA*. We are interested in whether salamander snout-to-vent length (SVL) varies by sex and/or site. The data look like this:
-
-```{r}
-str(sals)
-```
-
-\normalsize
-
-- `Site`: there are four sites (`P1A`, `P1B`, `P2A`, `P2B`)
-- `Sex`: `M` (male) and `F` (female)
-- `SVL`: the snout-to-vent length in mm
-
-## Group Exercise - *salamANOVA*
-
-Analysis 1: Does SVL vary by sex?
-
-- What is the null hypothesis?
-- Make a plot to visualize the hypothesis.
-- What statistical test will you use to test $H_0$?
-- What is the:
-    - test statistic for this particulat test (e.g., $t$, $F$, etc)
-    - degrees of freedom (calculate this)
-    - significance level
-- Conduct the analysis:
-    - what is the value of the test statistic
-    - what the $p$-value
-- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
-
-## Group Exercise - *salamANOVA*
-
-Analysis 2: Does SVL vary by site?
-
-- What is the null hypothesis?
-- Make a plot to visualize the hypothesis.
-- What statistical test will you use to test $H_0$?
-- What is the:
-    - test statistic for this particulat test (e.g., $t$, $F$, etc)
-    - degrees of freedom (calculate this)
-    - significance level
-- Conduct the analysis:
-    - what is the value of the test statistic
-    - what the $p$-value
-- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
-
-## Group Exercise - *salamANOVA*
-
-Analysis 3: Does SVL vary by sex and/or site?
-
-- What is the null hypothesis?
-- Make a plot to visualize the hypothesis.
-- What statistical test will you use to test $H_0$?
-- What is the:
-    - test statistic for this particulat test (e.g., $t$, $F$, etc)
-    - degrees of freedom (calculate this)
-    - significance level
-- Conduct the analysis:
-    - what is the value of the test statistic
-    - what the $p$-value
-- Write a short paragraph reporting the conclusion, use values from the statistical test to suppo, supported by the results from the test.
-
-
-## Group Exercise - *salamANOVA*
-
-Assignment: Statistical analysis of variation in salamnder SVL.
-
-- Write a report with four sections:
-    1. Analysis 1
-    2. Analysis 2
-    3. Analysis 3
-    4. Reflection: how does analysis 3 compare to analyses 1 and 2?
-- Sections 1 to 3 sould report on each of the prompts in the previous slides.
-- Section 4 is an opportunity to demonstrate your undertanding of the material covered over the previous weeks.
-- Assignment due: 11.55pm Tuesday November 20$^th$
